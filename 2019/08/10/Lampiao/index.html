@@ -96,16 +96,16 @@
 
 
 
-  <meta name="description" content="前言靶机难度不大 渗透测试信息收集 IP 端口  netdiscover -r 192.168.64.0/24    ​    namp -A -oN nmap.txt 192.168.64.146 123456789101112131415PORT   STATE SERVICE VERSION22/tcp open  ssh     OpenSSH 6.6.1p1 Ubuntu 2ubuntu">
+  <meta name="description" content="前言靶机难度不大 渗透测试信息收集 IP 端口  netdiscover -r 192.168.64.0/24     ​    namp -A -oN nmap.txt 192.168.64.146 123456789101112131415PORT   STATE SERVICE VERSION22/tcp open  ssh     OpenSSH 6.6.1p1 Ubuntu 2ubunt">
 <meta name="keywords" content="渗透测试,提权,vulnhub">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Lampiao渗透实战">
 <meta property="og:url" content="https://songxpu.github.io/2019/08/10/Lampiao/index.html">
 <meta property="og:site_name" content="Pines404">
-<meta property="og:description" content="前言靶机难度不大 渗透测试信息收集 IP 端口  netdiscover -r 192.168.64.0/24    ​    namp -A -oN nmap.txt 192.168.64.146 123456789101112131415PORT   STATE SERVICE VERSION22/tcp open  ssh     OpenSSH 6.6.1p1 Ubuntu 2ubuntu">
+<meta property="og:description" content="前言靶机难度不大 渗透测试信息收集 IP 端口  netdiscover -r 192.168.64.0/24     ​    namp -A -oN nmap.txt 192.168.64.146 123456789101112131415PORT   STATE SERVICE VERSION22/tcp open  ssh     OpenSSH 6.6.1p1 Ubuntu 2ubunt">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/10/Lampiao/Lampiao%5Cip.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/10/Lampiao/Lampiao%5Cport1.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/10/Lampiao/ip.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/10/Lampiao/port1.png">
 <meta property="og:image" content="https://songxpu.github.io/2019/08/10/Lampiao/web1.png">
 <meta property="og:image" content="https://songxpu.github.io/2019/08/10/Lampiao/web指纹.png">
 <meta property="og:image" content="https://songxpu.github.io/2019/08/10/Lampiao/目录.png">
@@ -113,13 +113,13 @@
 <meta property="og:image" content="https://songxpu.github.io/2019/08/10/Lampiao/msf_options.png">
 <meta property="og:image" content="https://songxpu.github.io/2019/08/10/Lampiao/msf_meter.png">
 <meta property="og:image" content="https://songxpu.github.io/2019/08/10/Lampiao/源码目录.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/10/Lampiao/Lampiao%5Cmysql_user.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/10/Lampiao/mysql_user.png">
 <meta property="og:image" content="https://songxpu.github.io/2019/08/10/Lampiao/dirtycow.png">
-<meta property="og:updated_time" content="2019-08-10T10:02:29.189Z">
+<meta property="og:updated_time" content="2019-08-10T10:19:51.900Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Lampiao渗透实战">
-<meta name="twitter:description" content="前言靶机难度不大 渗透测试信息收集 IP 端口  netdiscover -r 192.168.64.0/24    ​    namp -A -oN nmap.txt 192.168.64.146 123456789101112131415PORT   STATE SERVICE VERSION22/tcp open  ssh     OpenSSH 6.6.1p1 Ubuntu 2ubuntu">
-<meta name="twitter:image" content="https://songxpu.github.io/2019/08/10/Lampiao/Lampiao%5Cip.png">
+<meta name="twitter:description" content="前言靶机难度不大 渗透测试信息收集 IP 端口  netdiscover -r 192.168.64.0/24     ​    namp -A -oN nmap.txt 192.168.64.146 123456789101112131415PORT   STATE SERVICE VERSION22/tcp open  ssh     OpenSSH 6.6.1p1 Ubuntu 2ubunt">
+<meta name="twitter:image" content="https://songxpu.github.io/2019/08/10/Lampiao/ip.png">
 
 
 
@@ -439,7 +439,7 @@
                 
               
 
-              <time title="创建时间：2019-08-10 17:52:11 / 修改时间：18:02:29" itemprop="dateCreated datePublished" datetime="2019-08-10T17:52:11+08:00">2019-08-10</time>
+              <time title="创建时间：2019-08-10 17:52:11 / 修改时间：18:19:51" itemprop="dateCreated datePublished" datetime="2019-08-10T17:52:11+08:00">2019-08-10</time>
             
 
             
@@ -537,7 +537,8 @@
 <p><code>netdiscover -r 192.168.64.0/24</code></p>
 </li>
 </ul>
-<p><img src="//songxpu.github.io/2019/08/10/Lampiao/Lampiao%5Cip.png" alt="1"></p>
+<img src="//songxpu.github.io/2019/08/10/Lampiao/ip.png" width="700">
+
 <p>​    <code>namp -A -oN nmap.txt 192.168.64.146</code></p>
 <figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">PORT</span>   <span class="selector-tag">STATE</span> <span class="selector-tag">SERVICE</span> <span class="selector-tag">VERSION</span></span><br><span class="line"><span class="selector-tag">22</span>/<span class="selector-tag">tcp</span> <span class="selector-tag">open</span>  <span class="selector-tag">ssh</span>     <span class="selector-tag">OpenSSH</span> <span class="selector-tag">6</span><span class="selector-class">.6</span><span class="selector-class">.1p1</span> <span class="selector-tag">Ubuntu</span> <span class="selector-tag">2ubuntu2</span><span class="selector-class">.7</span> (Ubuntu Linux; protocol <span class="number">2.0</span>)</span><br><span class="line">| <span class="selector-tag">ssh-hostkey</span>: </span><br><span class="line">|   <span class="selector-tag">1024</span> <span class="selector-tag">46</span><span class="selector-pseudo">:b1</span><span class="selector-pseudo">:99</span><span class="selector-pseudo">:60</span><span class="selector-pseudo">:7d</span><span class="selector-pseudo">:81</span><span class="selector-pseudo">:69</span><span class="selector-pseudo">:3c</span><span class="selector-pseudo">:ae</span><span class="selector-pseudo">:1f</span><span class="selector-pseudo">:c7</span><span class="selector-pseudo">:ff</span><span class="selector-pseudo">:c3</span><span class="selector-pseudo">:66</span><span class="selector-pseudo">:e3</span><span class="selector-pseudo">:10</span> (DSA)</span><br><span class="line">|   <span class="selector-tag">2048</span> <span class="selector-tag">f3</span><span class="selector-pseudo">:e8</span><span class="selector-pseudo">:88</span><span class="selector-pseudo">:f2</span><span class="selector-pseudo">:2d</span><span class="selector-pseudo">:d0</span><span class="selector-pseudo">:b2</span><span class="selector-pseudo">:54</span><span class="selector-pseudo">:0b</span><span class="selector-pseudo">:9c</span><span class="selector-pseudo">:ad</span><span class="selector-pseudo">:61</span><span class="selector-pseudo">:33</span><span class="selector-pseudo">:59</span><span class="selector-pseudo">:55</span><span class="selector-pseudo">:93</span> (RSA)</span><br><span class="line">|   <span class="selector-tag">256</span> <span class="selector-tag">ce</span><span class="selector-pseudo">:63</span><span class="selector-pseudo">:2a</span><span class="selector-pseudo">:f7</span><span class="selector-pseudo">:53</span><span class="selector-pseudo">:6e</span><span class="selector-pseudo">:46</span><span class="selector-pseudo">:e2</span><span class="selector-pseudo">:ae</span><span class="selector-pseudo">:81</span><span class="selector-pseudo">:e3</span><span class="selector-pseudo">:ff</span><span class="selector-pseudo">:b7</span><span class="selector-pseudo">:16</span><span class="selector-pseudo">:f4</span><span class="selector-pseudo">:52</span> (ECDSA)</span><br><span class="line">|<span class="selector-tag">_</span>  <span class="selector-tag">256</span> <span class="selector-tag">c6</span><span class="selector-pseudo">:55</span><span class="selector-pseudo">:ca</span><span class="selector-pseudo">:07</span><span class="selector-pseudo">:37</span><span class="selector-pseudo">:65</span><span class="selector-pseudo">:e3</span><span class="selector-pseudo">:06</span><span class="selector-pseudo">:c1</span><span class="selector-pseudo">:d6</span><span class="selector-pseudo">:5b</span><span class="selector-pseudo">:77</span><span class="selector-pseudo">:dc</span><span class="selector-pseudo">:23</span><span class="selector-pseudo">:df</span><span class="selector-pseudo">:cc</span> (EdDSA)</span><br><span class="line"><span class="selector-tag">80</span>/<span class="selector-tag">tcp</span> <span class="selector-tag">open</span>  <span class="selector-tag">http</span>?</span><br><span class="line"><span class="selector-tag">MAC</span> <span class="selector-tag">Address</span>: <span class="selector-tag">00</span><span class="selector-pseudo">:0C</span><span class="selector-pseudo">:29</span><span class="selector-pseudo">:70</span><span class="selector-pseudo">:1E</span><span class="selector-pseudo">:63</span> (VMware)</span><br><span class="line"><span class="selector-tag">Device</span> <span class="selector-tag">type</span>: <span class="selector-tag">general</span> <span class="selector-tag">purpose</span></span><br><span class="line"><span class="selector-tag">Running</span>: <span class="selector-tag">Linux</span> <span class="selector-tag">3</span><span class="selector-class">.X</span>|<span class="selector-tag">4</span><span class="selector-class">.X</span></span><br><span class="line"><span class="selector-tag">OS</span> <span class="selector-tag">CPE</span>: <span class="selector-tag">cpe</span>:/<span class="selector-tag">o</span><span class="selector-pseudo">:linux</span><span class="selector-pseudo">:linux_kernel</span><span class="selector-pseudo">:3</span> <span class="selector-tag">cpe</span>:/<span class="selector-tag">o</span><span class="selector-pseudo">:linux</span><span class="selector-pseudo">:linux_kernel</span><span class="selector-pseudo">:4</span></span><br><span class="line"><span class="selector-tag">OS</span> <span class="selector-tag">details</span>: <span class="selector-tag">Linux</span> <span class="selector-tag">3</span><span class="selector-class">.2</span> <span class="selector-tag">-</span> <span class="selector-tag">4</span><span class="selector-class">.8</span></span><br><span class="line"><span class="selector-tag">Network</span> <span class="selector-tag">Distance</span>: <span class="selector-tag">1</span> <span class="selector-tag">hop</span></span><br><span class="line"><span class="selector-tag">Service</span> <span class="selector-tag">Info</span>: <span class="selector-tag">OS</span>: <span class="selector-tag">Linux</span>; <span class="selector-tag">CPE</span>: <span class="selector-tag">cpe</span>:/<span class="selector-tag">o</span><span class="selector-pseudo">:linux</span><span class="selector-pseudo">:linux_kernel</span></span><br></pre></td></tr></table></figure>
 
@@ -546,7 +547,8 @@
 <blockquote>
 <p>-sS    TCP SYN扫描</p>
 </blockquote>
-<p><img src="//songxpu.github.io/2019/08/10/Lampiao/Lampiao%5Cport1.png" alt="2"></p>
+<img src="//songxpu.github.io/2019/08/10/Lampiao/port1.png" width="700">
+
 <p>访问<code>192.168.64.146:1898</code></p>
 <img src="//songxpu.github.io/2019/08/10/Lampiao/web1.png" width="700">
 
@@ -608,7 +610,8 @@
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">$databases = <span class="keyword">array</span> (</span><br><span class="line">  <span class="string">'default'</span> =&gt; </span><br><span class="line">  <span class="keyword">array</span> (</span><br><span class="line">    <span class="string">'default'</span> =&gt; </span><br><span class="line">    <span class="keyword">array</span> (</span><br><span class="line">      <span class="string">'database'</span> =&gt; <span class="string">'drupal'</span>,</span><br><span class="line">      <span class="string">'username'</span> =&gt; <span class="string">'drupaluser'</span>,</span><br><span class="line">      <span class="string">'password'</span> =&gt; <span class="string">'Virgulino'</span>,</span><br><span class="line">      <span class="string">'host'</span> =&gt; <span class="string">'localhost'</span>,</span><br><span class="line">      <span class="string">'port'</span> =&gt; <span class="string">''</span>,</span><br><span class="line">      <span class="string">'driver'</span> =&gt; <span class="string">'mysql'</span>,</span><br><span class="line">      <span class="string">'prefix'</span> =&gt; <span class="string">''</span>,</span><br><span class="line">    ),</span><br><span class="line">  ),</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
 
 <p>此处使用该账号信息进入到mysql，从user表中获取到Linux的账号信息</p>
-<p><img src="//songxpu.github.io/2019/08/10/Lampiao/Lampiao%5Cmysql_user.png" alt="9"></p>
+<img src="//songxpu.github.io/2019/08/10/Lampiao/mysql_user.png" width="700">
+
 <p>ps：此处应该可以尝试暴力破解，但加了salt很难破解，需要通过工具字典爆。</p>
 <p>但通过网络教程来看，用户tiago的密码恰好为Virgulino，通过ssh登录成功。</p>
 <p>通过脏牛提权</p>

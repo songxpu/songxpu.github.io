@@ -104,13 +104,13 @@
 <meta property="og:site_name" content="Pines404">
 <meta property="og:description" content="前言直接使用VMware打开即可，使靶机与攻击机位于同一网段即可。 渗透测试主机发现（1）netdiscover  netdiscover是基于ARP的网络扫描工具 ARP是将IP地址转化物理地址的网络协议。通过该协议，可以判断某个IP地址是否被使用，从而发现网络中存活的主机。Kali Linux提供的netdiscover工具，就是借助该协议实施主机发现。它既可以以被动模式嗅探存活的主机，也可以">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/LazySysAdmin%5Cnetdiscover.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/LazySysAdmin%5Cnmap.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/LazySysAdmin%5Cenumerate.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/LazySysAdmin%5Cdirbuster1.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/LazySysAdmin%5Cdirbuster2.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/LazySysAdmin%5Cwpscan_u.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/LazySysAdmin%5Cwpscan_user.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/netdiscover.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/nmap.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/enumerate.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/dirbuster1.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/dirbuster2.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/wpscan_u.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/wpscan_user.png">
 <meta property="og:image" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/wp1.png">
 <meta property="og:image" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/Samba_1.png">
 <meta property="og:image" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/smb_linux.png">
@@ -118,11 +118,11 @@
 <meta property="og:image" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/WordPress_admin.png">
 <meta property="og:image" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/蚁剑.png">
 <meta property="og:image" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/kali.png">
-<meta property="og:updated_time" content="2019-08-10T10:15:40.946Z">
+<meta property="og:updated_time" content="2019-08-10T10:23:11.845Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LazySysAdmin渗透实战">
 <meta name="twitter:description" content="前言直接使用VMware打开即可，使靶机与攻击机位于同一网段即可。 渗透测试主机发现（1）netdiscover  netdiscover是基于ARP的网络扫描工具 ARP是将IP地址转化物理地址的网络协议。通过该协议，可以判断某个IP地址是否被使用，从而发现网络中存活的主机。Kali Linux提供的netdiscover工具，就是借助该协议实施主机发现。它既可以以被动模式嗅探存活的主机，也可以">
-<meta name="twitter:image" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/LazySysAdmin%5Cnetdiscover.png">
+<meta name="twitter:image" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/netdiscover.png">
 
 
 
@@ -442,7 +442,7 @@
                 
               
 
-              <time title="创建时间：2019-08-10 18:02:50 / 修改时间：18:15:40" itemprop="dateCreated datePublished" datetime="2019-08-10T18:02:50+08:00">2019-08-10</time>
+              <time title="创建时间：2019-08-10 18:02:50 / 修改时间：18:23:11" itemprop="dateCreated datePublished" datetime="2019-08-10T18:02:50+08:00">2019-08-10</time>
             
 
             
@@ -541,14 +541,12 @@
 <p>ARP是将IP地址转化物理地址的网络协议。通过该协议，可以判断某个IP地址是否被使用，从而发现网络中存活的主机。Kali Linux提供的netdiscover工具，就是借助该协议实施主机发现。它既可以以被动模式嗅探存活的主机，也可以以主动模式扫描主机。用户还可以根据网络稳定性，调整发包速度和数量。</p>
 </blockquote>
 <p><strong>payload</strong>:<code>netdiscover -r 192.168.64.0/24</code></p>
-<img src width height>
+<img src="//songxpu.github.io/2019/08/10/LazySysAdmin/netdiscover.png" width="700">
 
-<p><img src="//songxpu.github.io/2019/08/10/LazySysAdmin/LazySysAdmin%5Cnetdiscover.png" alt="1"></p>
 <p><strong>（2）nmap</strong></p>
 <p><strong>payload</strong>:<code>nmap -sP 192.168.64.0/24</code></p>
-<img src width height>
+<img src="//songxpu.github.io/2019/08/10/LazySysAdmin/nmap.png" width="700">
 
-<p><img src="//songxpu.github.io/2019/08/10/LazySysAdmin/LazySysAdmin%5Cnmap.png" alt="1"></p>
 <h4 id="端口扫描"><a href="#端口扫描" class="headerlink" title="端口扫描"></a>端口扫描</h4><p><strong>payload</strong>:<code>nmap -A -oN  /root/Desktop/Lazysysadmin_info.csv 192.168.64.143</code></p>
 <figure class="highlight coq"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"># Nmap <span class="number">7.70</span> scan initiated Tue Jul <span class="number">30</span> <span class="number">06</span>:<span class="number">25</span>:<span class="number">24</span> <span class="number">2019</span> <span class="built_in">as</span>: nmap -A -oN /root/Desktop/Lazysysadmin_info.csv <span class="number">192.168</span><span class="number">.64</span><span class="number">.143</span></span><br><span class="line">Nmap scan report <span class="keyword">for</span> <span class="number">192.168</span><span class="number">.64</span><span class="number">.143</span></span><br><span class="line">Host is up (<span class="number">0.00064</span>s latency).</span><br><span class="line">Not shown: <span class="number">994</span> closed ports</span><br><span class="line">PORT     STATE SERVICE     VERSION</span><br><span class="line"><span class="number">22</span>/tcp   open  ssh         OpenSSH <span class="number">6.6</span><span class="number">.1</span>p1 Ubuntu <span class="number">2</span>ubuntu2<span class="number">.8</span> (Ubuntu Linux; protocol <span class="number">2.0</span>)</span><br><span class="line">| <span class="type">ssh</span>-hostkey: </span><br><span class="line">|   <span class="type">1024</span> b5:<span class="number">38</span>:<span class="number">66</span>:<span class="number">0</span>f:a1:ee:cd:<span class="number">41</span>:<span class="number">69</span>:<span class="number">3</span>b:<span class="number">82</span>:cf:ad:a1:f7:<span class="number">13</span> (DSA)</span><br><span class="line">|   <span class="type">2048</span> <span class="number">58</span>:<span class="number">5</span>a:<span class="number">63</span>:<span class="number">69</span>:d0:da:dd:<span class="number">51</span>:cc:c1:<span class="number">6</span>e:<span class="number">00</span>:fd:<span class="number">7</span>e:<span class="number">61</span>:d0 (RSA)</span><br><span class="line">|   <span class="type">256</span> <span class="number">61</span>:<span class="number">30</span>:f3:<span class="number">55</span>:<span class="number">1</span>a:<span class="number">0</span>d:de:c8:<span class="number">6</span>a:<span class="number">59</span>:<span class="number">5</span>b:c9:<span class="number">9</span>c:b4:<span class="number">92</span>:<span class="number">04</span> (ECDSA)</span><br><span class="line">|<span class="type">_</span>  <span class="number">256</span> <span class="number">1</span>f:<span class="number">65</span>:c0:dd:<span class="number">15</span>:e6:e4:<span class="number">21</span>:f2:c1:<span class="number">9</span>b:a3:b6:<span class="number">55</span>:a0:<span class="number">45</span> (ED25519)</span><br><span class="line"><span class="number">80</span>/tcp   open  http        Apache httpd <span class="number">2.4</span><span class="number">.7</span> ((Ubuntu))</span><br><span class="line">|<span class="type">_http</span>-generator: Silex v2<span class="number">.2</span><span class="number">.7</span></span><br><span class="line">| <span class="type">http</span>-robots.txt: <span class="number">4</span> disallowed entries </span><br><span class="line">|<span class="type">_</span>/old/ /test/ /TR2/ /Backnode_files/</span><br><span class="line">|<span class="type">_http</span>-server-header: Apache/<span class="number">2.4</span><span class="number">.7</span> (Ubuntu)</span><br><span class="line">|<span class="type">_http</span>-title: Backnode</span><br><span class="line"><span class="number">139</span>/tcp  open  netbios-ssn Samba smbd <span class="number">3.</span>X - <span class="number">4.</span>X (workgroup: WORKGROUP)</span><br><span class="line"><span class="number">445</span>/tcp  open  netbios-ssn Samba smbd <span class="number">4.3</span><span class="number">.11</span>-Ubuntu (workgroup: WORKGROUP)</span><br><span class="line"><span class="number">3306</span>/tcp open  mysql       MySQL (unauthorized)</span><br><span class="line"><span class="number">6667</span>/tcp open  irc         InspIRCd</span><br><span class="line">| <span class="type">irc</span>-info: </span><br><span class="line">|   <span class="type">server</span>: Admin.local</span><br><span class="line">|   <span class="type">users</span>: <span class="number">1</span></span><br><span class="line">|   <span class="type">servers</span>: <span class="number">1</span></span><br><span class="line">|   <span class="type">chans</span>: <span class="number">0</span></span><br><span class="line">|   <span class="type">lusers</span>: <span class="number">1</span></span><br><span class="line">|   <span class="type">lservers</span>: <span class="number">0</span></span><br><span class="line">|   <span class="type">source</span> <span class="keyword">ident</span>: nmap</span><br><span class="line">|   <span class="type">source</span> host: <span class="number">192.168</span><span class="number">.64</span><span class="number">.131</span></span><br><span class="line">|<span class="type">_</span>  error: Closing link: (nmap@<span class="number">192.168</span><span class="number">.64</span><span class="number">.131</span>) [Client exited]</span><br><span class="line">MAC Address: <span class="number">00</span>:<span class="number">0</span>C:<span class="number">29</span>:DE:C8:B4 (VMware)</span><br><span class="line">Device type: general purpose</span><br><span class="line">Running: Linux <span class="number">3.</span>X|<span class="type">4</span>.X</span><br><span class="line">OS CPE: cpe:/o:linux:linux_kernel:<span class="number">3</span> cpe:/o:linux:linux_kernel:<span class="number">4</span></span><br><span class="line">OS details: Linux <span class="number">3.2</span> - <span class="number">4.9</span></span><br><span class="line">Network Distance: <span class="number">1</span> hop</span><br><span class="line">Service <span class="keyword">Info</span>: Hosts: LAZYSYSADMIN, Admin.local; OS: Linux; CPE: cpe:/o:linux:linux_kernel</span><br><span class="line"></span><br><span class="line">Host script results:</span><br><span class="line">|<span class="type">_clock</span>-skew: mean: <span class="number">-8</span>d02h13m08s, deviation: <span class="number">5</span>h46m24s, median: <span class="number">-7</span>d22h53m09s</span><br><span class="line">|<span class="type">_nbstat</span>: NetBIOS name: LAZYSYSADMIN, NetBIOS user: &lt;unknown&gt;, NetBIOS MAC: &lt;unknown&gt; (unknown)</span><br><span class="line">| <span class="type">smb</span>-os-discovery: </span><br><span class="line">|   <span class="type">OS</span>: Windows <span class="number">6.1</span> (Samba <span class="number">4.3</span><span class="number">.11</span>-Ubuntu)</span><br><span class="line">|   <span class="type">Computer</span> name: lazysysadmin</span><br><span class="line">|   <span class="type">NetBIOS</span> computer name: LAZYSYSADMIN\x00</span><br><span class="line">|   <span class="type">Domain</span> name: \x00</span><br><span class="line">|   <span class="type">FQDN</span>: lazysysadmin</span><br><span class="line">|<span class="type">_</span>  System <span class="built_in">time</span>: <span class="number">2019</span><span class="number">-07</span><span class="number">-22</span>T21:<span class="number">32</span>:<span class="number">29</span>+<span class="number">10</span>:<span class="number">00</span></span><br><span class="line">| <span class="type">smb</span>-security-mode: </span><br><span class="line">|   <span class="type">account_used</span>: guest</span><br><span class="line">|   <span class="type">authentication_level</span>: user</span><br><span class="line">|   <span class="type">challenge_response</span>: supported</span><br><span class="line">|<span class="type">_</span>  message_signing: disabled (dangerous, but default)</span><br><span class="line">| <span class="type">smb2</span>-security-mode: </span><br><span class="line">|   <span class="type">2</span><span class="number">.02</span>: </span><br><span class="line">|<span class="type">_</span>    Message signing enabled but not required</span><br><span class="line">| <span class="type">smb2</span>-<span class="built_in">time</span>: </span><br><span class="line">|   <span class="type">date</span>: <span class="number">2019</span><span class="number">-07</span><span class="number">-22</span> <span class="number">07</span>:<span class="number">32</span>:<span class="number">29</span></span><br><span class="line">|<span class="type">_</span>  start_date: N/A</span><br><span class="line"></span><br><span class="line">TRACEROUTE</span><br><span class="line">HOP RTT     ADDRESS</span><br><span class="line"><span class="number">1</span>   <span class="number">0.64</span> ms <span class="number">192.168</span><span class="number">.64</span><span class="number">.143</span></span><br><span class="line"></span><br><span class="line">OS and Service detection performed. Please report any incorrect results <span class="built_in">at</span> https://nmap.org/submit/ .</span><br><span class="line"># Nmap done <span class="built_in">at</span> Tue Jul <span class="number">30</span> <span class="number">06</span>:<span class="number">25</span>:<span class="number">48</span> <span class="number">2019</span> -- <span class="number">1</span> IP address (<span class="number">1</span> host up) scanned <span class="built_in">in</span> <span class="number">23.64</span> seconds</span><br></pre></td></tr></table></figure>
 
@@ -563,34 +561,28 @@
 <p>Windows平台上曾经出现过一个第三方的信息枚举工具 enum.exe，其利用SMB协议枚举Windows系统和SAMBA服务，以此来获得目标系统大量的重要信息，其枚举结果可能包含目标系统的用户帐号、组帐号、共享目录、密码策略等机密重要信息。enum4linux作为其Linux平台的复刻作品，全面兼容了enum.exe的所有功能。对于安全防护不足的SMB/SAMBA服务，enum4linux可直接枚举重要信息，甚至帮助我们发现潜在漏洞的存在。</p>
 </blockquote>
 <p><strong>payload</strong>:<code>enum4linux 192.168.64.143</code></p>
-<img src width height>
+<img src="//songxpu.github.io/2019/08/10/LazySysAdmin/enumerate.png" width height>
 
-<p><img src="//songxpu.github.io/2019/08/10/LazySysAdmin/LazySysAdmin%5Cenumerate.png" alt="1"></p>
 <p>获取到远程主机共享了print和share两个文件夹。</p>
-<h4 id="web目录扫描"><a href="#web目录扫描" class="headerlink" title="web目录扫描"></a>web目录扫描</h4><img src width height>
+<h4 id="web目录扫描"><a href="#web目录扫描" class="headerlink" title="web目录扫描"></a>web目录扫描</h4><img src="//songxpu.github.io/2019/08/10/LazySysAdmin/dirbuster1.png" width="700" height>
 
-<img src width height>
+<img src="//songxpu.github.io/2019/08/10/LazySysAdmin/dirbuster2.png" width="7050" height>
 
-<p><img src="//songxpu.github.io/2019/08/10/LazySysAdmin/LazySysAdmin%5Cdirbuster1.png" alt="1"></p>
-<p><img src="//songxpu.github.io/2019/08/10/LazySysAdmin/LazySysAdmin%5Cdirbuster2.png" alt="1"></p>
 <p>可看出，主要web应用有phpMyAdmin和WordPress</p>
 <h4 id="WPScan扫描"><a href="#WPScan扫描" class="headerlink" title="WPScan扫描"></a>WPScan扫描</h4><p>参考文章：<a href="https://www.freebuf.com/sectool/174663.html" target="_blank" rel="noopener">WPScan使用攻略</a></p>
 <blockquote>
 <p>采用Ruby编写，能够扫描WordPress网站中的多种安全漏洞，其中包括主题漏洞、插件漏洞和WordPress本身的漏洞。最新版本WPScan的数据库中包含超过18000种插件漏洞和2600种主题漏洞，并且支持最新版本的WordPress。值得注意的是，它不仅能够扫描类似robots.txt这样的敏感文件，而且还能够检测当前已启用的插件和其他功能。</p>
 </blockquote>
 <p><strong>扫描WordPress站点</strong>:<code>wpscan -u http://192.168.64.143/wordpress/</code></p>
-<p><img src="//songxpu.github.io/2019/08/10/LazySysAdmin/LazySysAdmin%5Cwpscan_u.png" alt="1"></p>
-<img src width height>
+<img src="//songxpu.github.io/2019/08/10/LazySysAdmin/wpscan_u.png" width="700" height>
 
 <p>仅获得服务器的基本信息（PHP版本、Apache以及系统的信息），并没有其他的插件，不存在漏洞利用点。</p>
 <p><strong>枚举WordPress用户</strong>：<code>wpscan -u http://192.168.64.143/wordpress/ --enumerate u</code></p>
-<p><img src="//songxpu.github.io/2019/08/10/LazySysAdmin/LazySysAdmin%5Cwpscan_user.png" alt="1"></p>
-<img src width height>
+<img src="//songxpu.github.io/2019/08/10/LazySysAdmin/wpscan_user.png" width height>
 
 <h4 id="Web站点信息"><a href="#Web站点信息" class="headerlink" title="Web站点信息"></a>Web站点信息</h4><p>（1）togie可能是什么的账户名</p>
 <p>（2）WPScan枚举出admin和ulgrmbcg两个用户名</p>
-<p><img src="//songxpu.github.io/2019/08/10/LazySysAdmin/wp1.png" alt="1"></p>
-<img src width height>
+<img src="//songxpu.github.io/2019/08/10/LazySysAdmin/wp1.png" width="700" height>
 
 <h4 id="Samba协议登录"><a href="#Samba协议登录" class="headerlink" title="Samba协议登录"></a>Samba协议登录</h4><p>由上面enumlinux扫描获取到两个共享文件夹，访问:</p>
 <p><strong>windows</strong>下:<code>\\192.168.64.143\share$</code></p>
