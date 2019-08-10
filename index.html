@@ -425,7 +425,7 @@
                 
               
 
-              <time title="创建时间：2019-08-10 17:26:14 / 修改时间：17:37:45" itemprop="dateCreated datePublished" datetime="2019-08-10T17:26:14+08:00">2019-08-10</time>
+              <time title="创建时间：2019-08-10 17:26:14 / 修改时间：17:48:54" itemprop="dateCreated datePublished" datetime="2019-08-10T17:26:14+08:00">2019-08-10</time>
             
 
             
@@ -514,13 +514,13 @@
           
             <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>这里自动设置的是桥接，记得修改为NAT</p>
 <p>靶机难度不大，但是十分狗血，莫名其妙的问题一大堆</p>
-<h3 id="渗透测试"><a href="#渗透测试" class="headerlink" title="渗透测试"></a>渗透测试</h3><h5 id="主机发现"><a href="#主机发现" class="headerlink" title="主机发现"></a>主机发现</h5><p><strong>netdiscover</strong>:<code>netdiscover -r 192.168.64.0/24</code></p>
+<h3 id="渗透测试"><a href="#渗透测试" class="headerlink" title="渗透测试"></a>渗透测试</h3><h4 id="主机发现"><a href="#主机发现" class="headerlink" title="主机发现"></a>主机发现</h4><p><strong>netdiscover</strong>:<code>netdiscover -r 192.168.64.0/24</code></p>
 <img src="//songxpu.github.io/2019/08/10/g0rmint/ip.png" width="700" height>
 
-<h5 id="端口扫描"><a href="#端口扫描" class="headerlink" title="端口扫描"></a>端口扫描</h5><img src="//songxpu.github.io/2019/08/10/g0rmint/nmap-A.png" width="700" height>
+<h4 id="端口扫描"><a href="#端口扫描" class="headerlink" title="端口扫描"></a>端口扫描</h4><img src="//songxpu.github.io/2019/08/10/g0rmint/nmap-A.png" width="700" height>
 
 <p>仅开放22与80端口，看样子需要从web层面进行渗透</p>
-<h5 id="Web信息收集"><a href="#Web信息收集" class="headerlink" title="Web信息收集"></a>Web信息收集</h5><p><strong>（1）目录扫描</strong></p>
+<h4 id="Web信息收集"><a href="#Web信息收集" class="headerlink" title="Web信息收集"></a>Web信息收集</h4><p><strong>（1）目录扫描</strong></p>
 <p>扫描器发现，网站根目录下存在robots.txt，打开提示/g0rmint/</p>
 <p>继续使用扫描器发现：login.php</p>
 <p>介绍kali下的目录扫描工具:<strong>dirb</strong></p>
@@ -539,7 +539,7 @@
 <img src="//songxpu.github.io/2019/08/10/g0rmint/info.png" width="700" height>
 
 <p>访问info.php，得到信息：backup.zip；成功下载获取源码</p>
-<h5 id="代码审计"><a href="#代码审计" class="headerlink" title="代码审计"></a>代码审计</h5><img src="//songxpu.github.io/2019/08/10/g0rmint/源码.png" width="500" height>
+<h4 id="代码审计"><a href="#代码审计" class="headerlink" title="代码审计"></a>代码审计</h4><img src="//songxpu.github.io/2019/08/10/g0rmint/源码.png" width="500" height>
 
 <p>想着登录到后台，从<code>db.sql</code>中找到了一条信息</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`g0rmint`</span> (<span class="string">`id`</span>, <span class="string">`username`</span>, <span class="string">`email`</span>, <span class="string">`pass`</span>) <span class="keyword">VALUES</span> (<span class="number">1</span>, <span class="string">'demo'</span>, <span class="string">'demo@example.com'</span>, <span class="string">'fe01ce2a7fbac8fafaed7c982a04e229'</span>);`</span><br></pre></td></tr></table></figure>
@@ -557,7 +557,7 @@
 <p>修改登录，最终成功登录进入后台：</p>
 <img src="//songxpu.github.io/2019/08/10/g0rmint/后台.png" width="800" height>
 
-<h5 id="getshell"><a href="#getshell" class="headerlink" title="getshell"></a>getshell</h5><p>发现后台并没有什么利用点，继续审查代码</p>
+<h4 id="getshell"><a href="#getshell" class="headerlink" title="getshell"></a>getshell</h4><p>发现后台并没有什么利用点，继续审查代码</p>
 <p>在<code>login.php</code>中可以看到</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">include_once</span>(<span class="string">'config.php'</span>);</span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">isset</span>($_POST[<span class="string">'submit'</span>])) &#123; <span class="comment">// If form is submitted</span></span><br><span class="line">    $email = $_POST[<span class="string">'email'</span>];</span><br><span class="line">    $pass = md5($_POST[<span class="string">'pass'</span>]);</span><br><span class="line"></span><br><span class="line">    $sql = $pdo-&gt;prepare(<span class="string">"SELECT * FROM g0rmint WHERE email = :email AND pass = :pass"</span>);</span><br><span class="line">    $sql-&gt;bindParam(<span class="string">":email"</span>, $email);</span><br><span class="line">    $sql-&gt;bindParam(<span class="string">":pass"</span>, $pass);</span><br><span class="line">    $row = $sql-&gt;execute();</span><br><span class="line">    $result = $sql-&gt;fetch(PDO::FETCH_ASSOC);</span><br><span class="line">    <span class="keyword">if</span> (count($result) &gt; <span class="number">1</span>) &#123;</span><br><span class="line">        session_start();</span><br><span class="line">        $_SESSION[<span class="string">'username'</span>] = $result[<span class="string">'username'</span>];</span><br><span class="line">        header(<span class="string">'Location: index.php'</span>);</span><br><span class="line">        <span class="keyword">exit</span>();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        $log = $email;</span><br><span class="line">        $reason = <span class="string">"Failed login attempt detected with email: "</span>;</span><br><span class="line">        addlog($log, $reason);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
 
@@ -569,7 +569,7 @@
 
 <img src="//songxpu.github.io/2019/08/10/g0rmint/蚁剑2.png" width="600" height>
 
-<h5 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h5><p>查看系统信息</p>
+<h4 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h4><p>查看系统信息</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">uname -a</span><br><span class="line">cat /proc/version</span><br></pre></td></tr></table></figure>
 
 <img src="//songxpu.github.io/2019/08/10/g0rmint/sysinfo.png" width="800" height>
