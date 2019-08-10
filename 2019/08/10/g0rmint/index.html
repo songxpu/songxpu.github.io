@@ -96,13 +96,13 @@
 
 
 
-  <meta name="description" content="前言这里自动设置的是桥接，记得修改为NAT 靶机难度不大，但是十分狗血，莫名其妙的问题一大堆 渗透测试主机发现netdiscover:netdiscover -r 192.168.64.0/24   端口扫描  仅开放22与80端口，看样子需要从web层面进行渗透 Web信息收集（1）目录扫描 扫描器发现，网站根目录下存在robots.txt，打开提示/g0rmint/ 继续使用扫描器发现：log">
+  <meta name="description" content="前言这里自动设置的是桥接，记得修改为NAT 靶机难度不大，但是细节上存在大量问题">
 <meta name="keywords" content="渗透测试,提权,vulnhub">
 <meta property="og:type" content="article">
 <meta property="og:title" content="g0rmint渗透实战">
 <meta property="og:url" content="https://songxpu.github.io/2019/08/10/g0rmint/index.html">
 <meta property="og:site_name" content="Pines404">
-<meta property="og:description" content="前言这里自动设置的是桥接，记得修改为NAT 靶机难度不大，但是十分狗血，莫名其妙的问题一大堆 渗透测试主机发现netdiscover:netdiscover -r 192.168.64.0/24   端口扫描  仅开放22与80端口，看样子需要从web层面进行渗透 Web信息收集（1）目录扫描 扫描器发现，网站根目录下存在robots.txt，打开提示/g0rmint/ 继续使用扫描器发现：log">
+<meta property="og:description" content="前言这里自动设置的是桥接，记得修改为NAT 靶机难度不大，但是细节上存在大量问题">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://songxpu.github.io/2019/08/10/g0rmint/ip.png">
 <meta property="og:image" content="https://songxpu.github.io/2019/08/10/g0rmint/nmap-A.png">
@@ -119,10 +119,10 @@
 <meta property="og:image" content="https://songxpu.github.io/2019/08/10/g0rmint/提权.png">
 <meta property="og:image" content="https://songxpu.github.io/2019/08/10/g0rmint/flag.png">
 <meta property="og:image" content="https://songxpu.github.io/2019/08/10/g0rmint/更换内核.png">
-<meta property="og:updated_time" content="2019-08-10T10:26:04.326Z">
+<meta property="og:updated_time" content="2019-08-10T11:56:10.121Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="g0rmint渗透实战">
-<meta name="twitter:description" content="前言这里自动设置的是桥接，记得修改为NAT 靶机难度不大，但是十分狗血，莫名其妙的问题一大堆 渗透测试主机发现netdiscover:netdiscover -r 192.168.64.0/24   端口扫描  仅开放22与80端口，看样子需要从web层面进行渗透 Web信息收集（1）目录扫描 扫描器发现，网站根目录下存在robots.txt，打开提示/g0rmint/ 继续使用扫描器发现：log">
+<meta name="twitter:description" content="前言这里自动设置的是桥接，记得修改为NAT 靶机难度不大，但是细节上存在大量问题">
 <meta name="twitter:image" content="https://songxpu.github.io/2019/08/10/g0rmint/ip.png">
 
 
@@ -443,7 +443,7 @@
                 
               
 
-              <time title="创建时间：2019-08-10 17:26:14 / 修改时间：18:26:04" itemprop="dateCreated datePublished" datetime="2019-08-10T17:26:14+08:00">2019-08-10</time>
+              <time title="创建时间：2019-08-10 17:26:14 / 修改时间：19:56:10" itemprop="dateCreated datePublished" datetime="2019-08-10T17:26:14+08:00">2019-08-10</time>
             
 
             
@@ -536,7 +536,9 @@
 
       
         <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>这里自动设置的是桥接，记得修改为NAT</p>
-<p>靶机难度不大，但是十分狗血，莫名其妙的问题一大堆</p>
+<p>靶机难度不大，但是细节上存在大量问题</p>
+ <a id="more"></a>
+
 <h3 id="渗透测试"><a href="#渗透测试" class="headerlink" title="渗透测试"></a>渗透测试</h3><h4 id="主机发现"><a href="#主机发现" class="headerlink" title="主机发现"></a>主机发现</h4><p><strong>netdiscover</strong>:<code>netdiscover -r 192.168.64.0/24</code></p>
 <img src="//songxpu.github.io/2019/08/10/g0rmint/ip.png" width="700" height>
 
