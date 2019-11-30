@@ -668,7 +668,7 @@
 <li><p><strong>利用dns将域名解析为内网ip</strong></p>
 </li>
 <li><p><strong>利用301或者302跳转</strong></p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">http:<span class="comment">//www.th1s.cn/test/ssrf.php</span></span><br><span class="line">ssrf.php里面的内容为：</span><br><span class="line"><span class="meta">&lt;?php</span> header(<span class="string">'Location:10.1.1.1'</span>);<span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">http</span>://www.th1s.cn/test/ssrf.php</span><br><span class="line">ssrf.php里面的内容为：</span><br><span class="line"><span class="meta">&lt;?</span>php header(<span class="string">'Location:10.1.1.1'</span>);<span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
 
 </li>
 </ol>
